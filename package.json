@@ -1,0 +1,25 @@
+{
+  "name": "reccall",
+  "version": "1.0.0",
+  "description": "RecCall: MCP server for recording and calling context shortcuts in Cursor",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "reccall": "./index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "dev": "tsc --watch"
+  },
+  "keywords": ["mcp", "cursor", "context", "shortcuts", "reccall"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
