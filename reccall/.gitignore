@@ -1,7 +1,0 @@
-node_modules/
-index.js
-index.d.ts
-*.log
-.DS_Store
-.vscode/
-.idea/
