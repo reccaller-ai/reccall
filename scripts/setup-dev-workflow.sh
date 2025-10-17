@@ -31,9 +31,9 @@ if command -v gh >/dev/null 2>&1; then
     if [ "$CURRENT_BRANCH" != "main" ]; then
         echo "📋 Current branch: $CURRENT_BRANCH"
         echo "💡 For development branches, ensure:"
-        echo "   - Manual review is required"
-        echo "   - No auto-merge is enabled"
-        echo "   - All CI checks must pass"
+        echo "   - Manual review is required via /approve command"
+        echo "   - Auto-merge only when all checks pass"
+        echo "   - Failing checks prevent auto-merge even with /approve"
         echo "   - Pre-commit checks are run locally"
     fi
 fi

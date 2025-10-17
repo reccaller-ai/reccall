@@ -28,9 +28,15 @@ Before raising a PR, ensure:
 6. Create PR with manual review requirement
 7. Wait for manual approval before merge
 
-## No Auto-merge
+## Auto-merge with Manual Approval
 
-- PRs will **never** be auto-merged
-- All merges require **manual approval**
-- Reviewers must explicitly approve changes
+- PRs require **manual approval** via `/approve` command from admins
+- Once approved with `/approve`, PRs will be **auto-merged when all checks pass**
+- **Failing checks prevent auto-merge** even with `/approve` command
+- Reviewers must explicitly approve changes with `/approve` comment
 - Maintainers have full control over merge process
+- Auto-merge only happens when:
+  - ✅ Admin has approved the PR
+  - ✅ Admin has commented `/approve`
+  - ✅ All CI checks are passing
+  - ✅ All required status checks are green
