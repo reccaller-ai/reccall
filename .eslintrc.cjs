@@ -32,7 +32,8 @@ module.exports = {
     'node_modules/',
     'dist/',
     'build/',
-    '*.js',
     '*.d.ts',
+    '*.ts',
+    'index.js',
   ],
 };

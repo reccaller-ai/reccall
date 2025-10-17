@@ -111,3 +111,6 @@ build/
 lib/
 *.js.map
 *.d.ts.map
+
+# Development workflow scripts
+scripts/pre-commit.sh
