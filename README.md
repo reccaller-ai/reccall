@@ -26,6 +26,21 @@ A simple Model Context Protocol (MCP) server that lets you record context/instru
 
 ### Quick Setup
 
+**Option 1: Automated Installation (Recommended)**
+```bash
+curl -sfL https://reccaller.ai/install.sh | sh -
+```
+
+The automated installer provides:
+- 🔍 **Prerequisites Check**: Verifies Node.js 18+ and npm
+- 📦 **Automatic Download**: Clones and builds RecCall from GitHub
+- ⚙️ **Smart Configuration**: Automatically configures Cursor IDE
+- 🔄 **Update Support**: Updates existing installations seamlessly
+- 💾 **Backup Protection**: Creates backups before modifying configs
+- 🛠️ **Cross-Platform**: Works on macOS, Linux, and Windows
+
+**Option 2: Manual Installation**
+
 1. **Clone or download this repository**
 
 2. **Install dependencies:**
@@ -46,9 +61,19 @@ A simple Model Context Protocol (MCP) server that lets you record context/instru
 
 ## ⚙️ Configuration
 
-### Add to Cursor
+### Automated Configuration (Recommended)
 
-You need to configure Cursor to use this MCP server. The configuration file location varies by OS:
+If you used the automated installer, the Cursor configuration is handled automatically! The installer will:
+
+- ✅ Detect your operating system and Cursor config location
+- ✅ Backup any existing configuration files
+- ✅ Automatically add/update the RecCall MCP server configuration
+- ✅ Preserve existing MCP servers in your configuration
+- ✅ Handle both new installations and updates
+
+### Manual Configuration (If Needed)
+
+If you installed manually or need to configure manually, you need to configure Cursor to use this MCP server. The configuration file location varies by OS:
 
 **macOS:**
 ```
