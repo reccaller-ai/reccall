@@ -1,0 +1,55 @@
+name: PR Quick Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  quick-check:
+    name: Quick PR Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Type check
+      run: npm run type-check
+      
+    - name: Build project
+      run: npm run build
+      
+    - name: Run tests
+      run: npm test
+      continue-on-error: true
+      
+    - name: Quick security audit (high/critical only)
+      run: npm audit --audit-level high
+      
+    - name: Branch naming check
+      run: |
+        BRANCH_NAME="${{ github.head_ref }}"
+        echo "Checking branch name: $BRANCH_NAME"
+        
+        if [[ $BRANCH_NAME =~ ^(feature|bugfix|hotfix|release|docs|refactor|test|chore)/.+ ]]; then
+          echo "✅ Branch name follows convention"
+        else
+          echo "❌ Branch name does not follow convention"
+          echo "Expected format: type/description (e.g., feature/add-user-auth)"
+          echo "Allowed types: feature, bugfix, hotfix, release, docs, refactor, test, chore"
+          echo "Current branch: $BRANCH_NAME"
+          exit 1
+        fi
