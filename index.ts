@@ -62,6 +62,33 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: "rec_list",
+        description: "List all stored context shortcuts (equivalent to rec -l)",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: "rec_update",
+        description: "Update/replace an existing context shortcut (equivalent to rec -u <shortcut> <context>)",
+        inputSchema: {
+          type: "object",
+          properties: {
+            shortcut: {
+              type: "string",
+              description: "The shortcut name/alias to update",
+            },
+            context: {
+              type: "string",
+              description: "The new context or instruction to store",
+            },
+          },
+          required: ["shortcut", "context"],
+        },
+      },
+      {
         name: "call",
         description: "Call a stored context shortcut",
         inputSchema: {
@@ -87,6 +114,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { shortcut, context } = args as { shortcut: string; context: string };
     
     const shortcuts = await loadShortcuts();
+
+    // Check if shortcut already exists and warn
+    if (shortcuts[shortcut]) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `⚠️  Warning: Shortcut '${shortcut}' already exists!\n\nCurrent context: ${shortcuts[shortcut]}\n\nTo update it, use: rec_update ${shortcut} <new_context>\nTo keep the existing shortcut, choose a different name.`,
+          },
+        ],
+      };
+    }
+
     shortcuts[shortcut] = context;
     await saveShortcuts(shortcuts);
 
@@ -95,6 +135,64 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         {
           type: "text",
           text: `✓ Shortcut '${shortcut}' has been recorded successfully!\n\nStored context:\n${context}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "rec_list") {
+    const shortcuts = await loadShortcuts();
+    const shortcutList = Object.keys(shortcuts);
+    
+    if (shortcutList.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "No shortcuts stored yet. Use 'rec <shortcut> <context>' to create your first shortcut.",
+          },
+        ],
+      };
+    }
+
+    const shortcutDetails = shortcutList.map(key => 
+      `• ${key}: ${shortcuts[key].substring(0, 100)}${shortcuts[key].length > 100 ? '...' : ''}`
+    ).join('\n');
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `📋 Stored shortcuts (${shortcutList.length}):\n\n${shortcutDetails}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "rec_update") {
+    const { shortcut, context } = args as { shortcut: string; context: string };
+    
+    const shortcuts = await loadShortcuts();
+
+    if (!shortcuts[shortcut]) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `✗ Error: Shortcut '${shortcut}' does not exist. Use 'rec <shortcut> <context>' to create a new shortcut.`,
+          },
+        ],
+      };
+    }
+
+    shortcuts[shortcut] = context;
+    await saveShortcuts(shortcuts);
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `✓ Shortcut '${shortcut}' has been updated successfully!\n\nUpdated context:\n${context}`,
         },
       ],
     };
