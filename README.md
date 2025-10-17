@@ -7,9 +7,12 @@ A simple Model Context Protocol (MCP) server that lets you record context/instru
 ## 🎯 Features
 
 - **rec**: Record a shortcut with context/instructions
+- **rec_list**: List all stored shortcuts (equivalent to `rec -l`)
+- **rec_update**: Update/replace an existing shortcut (equivalent to `rec -u`)
 - **call**: Call (retrieve) stored context by shortcut name
 - **Persistent Storage**: All shortcuts saved to `~/.reccall.json`
-- **Simple API**: Just two commands to master
+- **Smart Duplicate Detection**: Warns when creating duplicate shortcuts
+- **Enhanced Error Handling**: Clear feedback for non-existent shortcuts
 
 ## 📦 Installation
 
@@ -131,6 +134,36 @@ Or more naturally:
 Save a shortcut called "react-component" with the context: "Create React functional components with TypeScript. Use proper prop types, add JSDoc comments, implement error boundaries, and use React.memo for performance optimization."
 ```
 
+### Listing Shortcuts (rec_list)
+
+To see all your stored shortcuts:
+
+```
+List all my shortcuts
+```
+
+Or:
+
+```
+Use the rec_list tool to show me what shortcuts I have
+```
+
+This will display all your stored shortcuts with their contexts.
+
+### Updating a Shortcut (rec_update)
+
+To update an existing shortcut:
+
+```
+Update my 'apitest' shortcut with: "When testing APIs, always include comprehensive error handling, timeout configuration, request/response logging, authentication testing, and rate limiting validation. Use axios with interceptors for auth tokens and implement retry logic."
+```
+
+Or:
+
+```
+Use the rec_update tool to change my 'react-component' shortcut to: "Create React functional components with TypeScript, proper prop types, JSDoc comments, error boundaries, React.memo for performance, and include unit tests with React Testing Library."
+```
+
 ### Calling a Shortcut (call)
 
 To retrieve and use a stored context:
@@ -204,6 +237,15 @@ npm run dev
 ```
 
 This watches for TypeScript changes and recompiles automatically.
+
+### Available Commands
+
+| Command | Description | Usage |
+|---------|-------------|-------|
+| `rec` | Record a new shortcut | `rec <shortcut> <context>` |
+| `rec_list` | List all stored shortcuts | `rec_list` |
+| `rec_update` | Update an existing shortcut | `rec_update <shortcut> <new_context>` |
+| `call` | Call a stored shortcut | `call <shortcut>` |
 
 ### Project Structure
 ```
