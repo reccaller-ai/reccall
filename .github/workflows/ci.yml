@@ -126,6 +126,7 @@ jobs:
           echo "❌ Branch name does not follow convention"
           echo "Expected format: type/description (e.g., feature/add-user-auth)"
           echo "Allowed types: feature, bugfix, hotfix, release, docs, refactor, test, chore"
+          echo "Current branch: $BRANCH_NAME"
           exit 1
         fi
 

@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   auto-merge:
@@ -22,6 +23,8 @@ jobs:
       
     - name: Check if PR is approved by admin
       id: check-approval
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         # Get PR reviews
         REVIEWS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '.reviews[] | select(.state == "APPROVED") | .author.login')
@@ -43,6 +46,8 @@ jobs:
         
     - name: Check for /approve command
       id: check-approve-command
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         # Get PR comments
         COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[] | select(.author.login | test("^reccaller-ai$|^${{ github.repository_owner }}$")) | .body')
@@ -58,6 +63,8 @@ jobs:
         
     - name: Auto merge if conditions met
       if: steps.check-approval.outputs.approved_by_admin == 'true' && steps.check-approve-command.outputs.approve_command_found == 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         echo "🚀 Auto-merging PR #${{ github.event.pull_request.number }}"
         
@@ -69,6 +76,8 @@ jobs:
         
     - name: Comment if conditions not met
       if: steps.check-approval.outputs.approved_by_admin == 'false' || steps.check-approve-command.outputs.approve_command_found == 'false'
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         echo "⏳ Auto-merge conditions not met"
         
@@ -95,6 +104,8 @@ jobs:
     
     steps:
     - name: Delete feature branch
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         echo "🧹 Cleaning up merged branch: ${{ github.head_ref }}"
         gh pr view ${{ github.event.pull_request.number }} --json headRefName --jq '.headRefName' | xargs -I {} gh api repos/${{ github.repository }}/git/refs/heads/{} -X DELETE
