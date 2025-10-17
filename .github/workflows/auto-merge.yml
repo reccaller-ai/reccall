@@ -5,10 +5,6 @@ on:
     types: [opened, synchronize, review_requested, review_request_removed]
   pull_request_review:
     types: [submitted]
-  check_suite:
-    types: [completed]
-  check_run:
-    types: [completed]
 
 permissions:
   contents: write
