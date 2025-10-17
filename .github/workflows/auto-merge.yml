@@ -1,0 +1,101 @@
+name: Auto Merge with Approval
+
+on:
+  pull_request:
+    types: [opened, synchronize, review_requested, review_request_removed]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Auto Merge Approved PRs
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check if PR is approved by admin
+      id: check-approval
+      run: |
+        # Get PR reviews
+        REVIEWS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '.reviews[] | select(.state == "APPROVED") | .author.login')
+        
+        # Check if any admin has approved
+        ADMINS=("reccaller-ai" "${{ github.repository_owner }}")
+        APPROVED_BY_ADMIN=false
+        
+        for admin in "${ADMINS[@]}"; do
+          if echo "$REVIEWS" | grep -q "^$admin$"; then
+            APPROVED_BY_ADMIN=true
+            break
+          fi
+        done
+        
+        echo "approved_by_admin=$APPROVED_BY_ADMIN" >> $GITHUB_OUTPUT
+        echo "Reviews: $REVIEWS"
+        echo "Approved by admin: $APPROVED_BY_ADMIN"
+        
+    - name: Check for /approve command
+      id: check-approve-command
+      run: |
+        # Get PR comments
+        COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[] | select(.author.login | test("^reccaller-ai$|^${{ github.repository_owner }}$")) | .body')
+        
+        # Check for /approve command
+        if echo "$COMMENTS" | grep -q "/approve"; then
+          echo "approve_command_found=true" >> $GITHUB_OUTPUT
+        else
+          echo "approve_command_found=false" >> $GITHUB_OUTPUT
+        fi
+        
+        echo "Comments with /approve: $(echo "$COMMENTS" | grep "/approve" || echo "None")"
+        
+    - name: Auto merge if conditions met
+      if: steps.check-approval.outputs.approved_by_admin == 'true' && steps.check-approve-command.outputs.approve_command_found == 'true'
+      run: |
+        echo "🚀 Auto-merging PR #${{ github.event.pull_request.number }}"
+        
+        # Enable auto-merge
+        gh pr merge ${{ github.event.pull_request.number }} --squash --auto
+        
+        # Add comment
+        gh pr comment ${{ github.event.pull_request.number }} --body "✅ **Auto-merge enabled!** This PR will be automatically merged once all checks pass."
+        
+    - name: Comment if conditions not met
+      if: steps.check-approval.outputs.approved_by_admin == 'false' || steps.check-approve-command.outputs.approve_command_found == 'false'
+      run: |
+        echo "⏳ Auto-merge conditions not met"
+        
+        # Add helpful comment
+        if [ "${{ steps.check-approval.outputs.approved_by_admin }}" == "false" ]; then
+          echo "❌ Missing admin approval"
+        fi
+        
+        if [ "${{ steps.check-approve-command.outputs.approve_command_found }}" == "false" ]; then
+          echo "❌ Missing /approve command from admin"
+        fi
+        
+        gh pr comment ${{ github.event.pull_request.number }} --body "⏳ **Auto-merge pending conditions:**
+        
+        - [ ] Admin approval required
+        - [ ] Admin must comment \`/approve\` to enable auto-merge
+        
+        Once both conditions are met, this PR will be automatically merged! 🚀"
+
+  cleanup:
+    name: Cleanup merged branches
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    
+    steps:
+    - name: Delete feature branch
+      run: |
+        echo "🧹 Cleaning up merged branch: ${{ github.head_ref }}"
+        gh pr view ${{ github.event.pull_request.number }} --json headRefName --jq '.headRefName' | xargs -I {} gh api repos/${{ github.repository }}/git/refs/heads/{} -X DELETE
+        echo "✅ Branch deleted successfully"

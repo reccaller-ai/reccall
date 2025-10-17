@@ -1,0 +1,43 @@
+# Branch Protection Configuration
+# This file documents the branch protection rules for the repository
+
+main:
+  required_status_checks:
+    strict: true
+    contexts:
+      - "ci/build-and-test"
+      - "ci/lint"
+      - "ci/security-scan"
+  enforce_admins: true
+  required_pull_request_reviews:
+    required_approving_review_count: 1
+    dismiss_stale_reviews: true
+    require_code_owner_reviews: true
+    require_last_push_approval: true
+  restrictions:
+    users: []  # No direct push users
+    teams: []  # No direct push teams
+  allow_force_pushes: false
+  allow_deletions: false
+  required_linear_history: true
+  allow_squash_merge: true
+  allow_merge_commit: false
+  allow_rebase_merge: true
+  delete_head_branches: true
+
+# Branch naming patterns
+branch_naming:
+  feature: "feature/[JIRA-123]-short-description"
+  bugfix: "bugfix/[JIRA-123]-short-description"
+  hotfix: "hotfix/[JIRA-123]-short-description"
+  release: "release/v1.0.0"
+  docs: "docs/short-description"
+  refactor: "refactor/short-description"
+  test: "test/short-description"
+  chore: "chore/short-description"
+
+# Examples:
+# feature/RC-001-add-user-authentication
+# bugfix/RC-002-fix-login-validation
+# hotfix/RC-003-security-patch
+# docs/RC-004-update-api-documentation
