@@ -1,0 +1,6 @@
+{
+  "shortcut": "performance-debug",
+  "context": "Debug performance issues: profile the application, identify bottlenecks, check resource usage, analyze network requests, review data queries, and optimize critical paths. Use appropriate profiling tools and monitoring.",
+  "category": "debugging",
+  "description": "Performance debugging and optimization guidelines"
+}
