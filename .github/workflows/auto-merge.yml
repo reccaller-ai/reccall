@@ -145,51 +145,6 @@ jobs:
           fi
         fi
 
-    - name: Wait for CI checks to complete
-      if: steps.check-approval.outputs.approved_by_admin == 'true' && steps.check-approve-command.outputs.approve_command_found == 'true' && steps.check-ci.outputs.ALL_CHECKS_PASSING == 'true'
-      env:
-        GH_TOKEN: ${{ github.token }}
-      run: |
-        echo "⏳ Waiting for CI checks to complete..."
-        
-        # Wait for required status checks to complete
-        MAX_ATTEMPTS=30
-        ATTEMPT=0
-        
-        while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-          # Check if all required status checks are completed
-          STATUS_CHECKS=$(gh pr view ${{ steps.get-pr-number.outputs.pr_number }} --json statusCheckRollup --jq '.statusCheckRollup[] | select(.context == "Build, Test & Lint" or .context == "Security Scan") | {context: .context, state: .state, conclusion: .conclusion}')
-          
-          if [ -n "$STATUS_CHECKS" ]; then
-            # Check if all required checks are successful
-            ALL_SUCCESS=true
-            echo "$STATUS_CHECKS" | jq -r '.[] | "\(.context)|\(.state)|\(.conclusion)"' | while IFS='|' read -r context state conclusion; do
-              if [ "$state" != "SUCCESS" ] && [ "$conclusion" != "SUCCESS" ]; then
-                echo "❌ Check $context is not successful: state=$state, conclusion=$conclusion"
-                ALL_SUCCESS=false
-              else
-                echo "✅ Check $context is successful"
-              fi
-            done
-            
-            if [ "$ALL_SUCCESS" = "true" ]; then
-              echo "✅ All required CI checks are successful!"
-              break
-            fi
-          else
-            echo "⏳ Required CI checks not found yet, waiting..."
-          fi
-          
-          ATTEMPT=$((ATTEMPT + 1))
-          echo "Attempt $ATTEMPT/$MAX_ATTEMPTS - waiting 10 seconds..."
-          sleep 10
-        done
-        
-        if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-          echo "❌ Timeout waiting for CI checks to complete"
-          exit 1
-        fi
-
     - name: Auto merge if conditions met
       if: steps.check-approval.outputs.approved_by_admin == 'true' && steps.check-approve-command.outputs.approve_command_found == 'true' && steps.check-ci.outputs.ALL_CHECKS_PASSING == 'true'
       env:
