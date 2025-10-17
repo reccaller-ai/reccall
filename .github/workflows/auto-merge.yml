@@ -5,6 +5,8 @@ on:
     types: [opened, synchronize, review_requested, review_request_removed]
   pull_request_review:
     types: [submitted]
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write
@@ -15,9 +17,18 @@ jobs:
   auto-merge:
     name: Auto Merge Approved PRs
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false || (github.event_name == 'issue_comment' && github.event.issue.pull_request)
     
     steps:
+    - name: Get PR number
+      id: get-pr-number
+      run: |
+        if [ "${{ github.event_name }}" = "issue_comment" ]; then
+          echo "pr_number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+        else
+          echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+        fi
+        
     - name: Checkout code
       uses: actions/checkout@v4
       
@@ -27,8 +38,8 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: |
         # Get PR reviews and author info
-        REVIEWS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '.reviews[] | select(.state == "APPROVED") | .author.login')
-        PR_AUTHOR=$(gh pr view ${{ github.event.pull_request.number }} --json author --jq '.author.login')
+        REVIEWS=$(gh pr view ${{ steps.get-pr-number.outputs.pr_number }} --json reviews --jq '.reviews[] | select(.state == "APPROVED") | .author.login')
+        PR_AUTHOR=$(gh pr view ${{ steps.get-pr-number.outputs.pr_number }} --json author --jq '.author.login')
         
         # Check if any admin has approved
         ADMINS=("reccaller-ai" "${{ github.repository_owner }}" "ishaileshpant")
@@ -77,7 +88,7 @@ jobs:
         done
         
         # Get PR comments from admin users only
-        COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq ".comments[] | select(.author.login | test(\"$ADMIN_PATTERN\")) | .body")
+        COMMENTS=$(gh pr view ${{ steps.get-pr-number.outputs.pr_number }} --json comments --jq ".comments[] | select(.author.login | test(\"$ADMIN_PATTERN\")) | .body")
         
         # Check for /approve command
         if echo "$COMMENTS" | grep -q "/approve"; then
@@ -93,10 +104,10 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        echo "🔍 Checking CI status for PR #${{ github.event.pull_request.number }}"
+        echo "🔍 Checking CI status for PR #${{ steps.get-pr-number.outputs.pr_number }}"
         
         # Get PR status checks with proper null handling
-        STATUS_CHECKS=$(gh pr view ${{ github.event.pull_request.number }} --json statusCheckRollup --jq '.statusCheckRollup // [] | map(select(.context and (.context | test("^(Build, Test & Lint|Security Scan)$")))) | map({context: .context, state: .state, conclusion: .conclusion})')
+        STATUS_CHECKS=$(gh pr view ${{ steps.get-pr-number.outputs.pr_number }} --json statusCheckRollup --jq '.statusCheckRollup // [] | map(select(.context and (.context | test("^(Build, Test & Lint|Security Scan)$")))) | map({context: .context, state: .state, conclusion: .conclusion})')
         
         echo "Status checks: $STATUS_CHECKS"
         
@@ -139,17 +150,17 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        echo "🚀 Auto-merging PR #${{ github.event.pull_request.number }}"
+        echo "🚀 Auto-merging PR #${{ steps.get-pr-number.outputs.pr_number }}"
         
         # Enable auto-merge using GitHub API
-        gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/merge \
+        gh api repos/${{ github.repository }}/pulls/${{ steps.get-pr-number.outputs.pr_number }}/merge \
           --method PUT \
           --field merge_method=squash \
-          --field commit_title="${{ github.event.pull_request.title }}" \
+          --field commit_title="${{ github.event.pull_request.title || github.event.issue.title }}" \
           --field commit_message="Auto-merged via /approve command"
         
         # Add comment
-        gh pr comment ${{ github.event.pull_request.number }} --body "✅ **Auto-merge enabled!** This PR will be automatically merged once all checks pass."
+        gh pr comment ${{ steps.get-pr-number.outputs.pr_number }} --body "✅ **Auto-merge enabled!** This PR will be automatically merged once all checks pass."
         
     - name: Comment if conditions not met
       if: steps.check-approval.outputs.approved_by_admin == 'false' || steps.check-approve-command.outputs.approve_command_found == 'false' || steps.check-ci.outputs.ALL_CHECKS_PASSING == 'false'
@@ -184,7 +195,7 @@ jobs:
         
         STATUS_MESSAGE="${STATUS_MESSAGE}\nOnce all conditions are met, this PR will be automatically merged! 🚀"
         
-        gh pr comment ${{ github.event.pull_request.number }} --body "$STATUS_MESSAGE"
+        gh pr comment ${{ steps.get-pr-number.outputs.pr_number }} --body "$STATUS_MESSAGE"
 
   cleanup:
     name: Cleanup merged branches
