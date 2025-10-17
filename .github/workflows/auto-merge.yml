@@ -86,37 +86,43 @@ jobs:
       run: |
         echo "🔍 Checking CI status for PR #${{ github.event.pull_request.number }}"
         
-        # Get PR status checks
-        STATUS_CHECKS=$(gh pr view ${{ github.event.pull_request.number }} --json statusCheckRollup --jq '.statusCheckRollup[] | select(.context | test("^ci/")) | {context: .context, state: .state, conclusion: .conclusion}')
+        # Get PR status checks with proper null handling
+        STATUS_CHECKS=$(gh pr view ${{ github.event.pull_request.number }} --json statusCheckRollup --jq '.statusCheckRollup // [] | map(select(.context and (.context | test("^ci/")))) | map({context: .context, state: .state, conclusion: .conclusion})')
         
         echo "Status checks: $STATUS_CHECKS"
         
-        # Check if all required CI checks are passing
-        ALL_CHECKS_PASSING=true
-        FAILED_CHECKS=""
+        # Check if we have any CI checks
+        CHECK_COUNT=$(echo "$STATUS_CHECKS" | jq 'length')
+        echo "Found $CHECK_COUNT CI checks"
         
-        # Check each CI status
-        echo "$STATUS_CHECKS" | jq -r '.context' | while read -r context; do
-          if [ -n "$context" ]; then
-            state=$(echo "$STATUS_CHECKS" | jq -r --arg ctx "$context" 'select(.context == $ctx) | .state')
-            conclusion=$(echo "$STATUS_CHECKS" | jq -r --arg ctx "$context" 'select(.context == $ctx) | .conclusion')
-            
-            echo "Check $context: state=$state, conclusion=$conclusion"
-            
-            if [ "$state" != "SUCCESS" ] && [ "$conclusion" != "SUCCESS" ]; then
-              echo "❌ Check $context is not passing"
-              echo "ALL_CHECKS_PASSING=false" >> $GITHUB_OUTPUT
-              echo "FAILED_CHECKS=$FAILED_CHECKS $context" >> $GITHUB_OUTPUT
-            fi
-          fi
-        done
-        
-        # If no failed checks found, all are passing
-        if [ -z "$FAILED_CHECKS" ]; then
+        if [ "$CHECK_COUNT" -eq 0 ]; then
+          echo "⚠️  No CI checks found - assuming checks are passing"
           echo "ALL_CHECKS_PASSING=true" >> $GITHUB_OUTPUT
-          echo "✅ All CI checks are passing"
         else
-          echo "❌ Some CI checks are failing: $FAILED_CHECKS"
+          # Check if all required CI checks are passing
+          ALL_CHECKS_PASSING=true
+          FAILED_CHECKS=""
+          
+          # Check each CI status
+          echo "$STATUS_CHECKS" | jq -r '.[] | "\(.context)|\(.state)|\(.conclusion)"' | while IFS='|' read -r context state conclusion; do
+            if [ -n "$context" ]; then
+              echo "Check $context: state=$state, conclusion=$conclusion"
+              
+              if [ "$state" != "SUCCESS" ] && [ "$conclusion" != "SUCCESS" ]; then
+                echo "❌ Check $context is not passing"
+                echo "ALL_CHECKS_PASSING=false" >> $GITHUB_OUTPUT
+                echo "FAILED_CHECKS=$FAILED_CHECKS $context" >> $GITHUB_OUTPUT
+              fi
+            fi
+          done
+          
+          # If no failed checks found, all are passing
+          if [ -z "$FAILED_CHECKS" ]; then
+            echo "ALL_CHECKS_PASSING=true" >> $GITHUB_OUTPUT
+            echo "✅ All CI checks are passing"
+          else
+            echo "❌ Some CI checks are failing: $FAILED_CHECKS"
+          fi
         fi
 
     - name: Auto merge if conditions met
