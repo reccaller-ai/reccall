@@ -82,7 +82,13 @@ install_reccall() {
     echo -e "${BLUE}📥 Downloading RecCall from GitHub...${NC}"
     if [ -d ".git" ]; then
         echo -e "${YELLOW}⚠️  RecCall already exists, updating...${NC}"
-        git pull origin main
+        # Handle divergent branches by using merge strategy
+        git pull origin main --no-rebase || {
+            echo -e "${YELLOW}⚠️  Git pull failed, trying to resolve divergent branches...${NC}"
+            git fetch origin main
+            git reset --hard origin/main
+            echo -e "${GREEN}✅ Successfully updated to latest version${NC}"
+        }
     else
         git clone "$REPO_URL" .
     fi
