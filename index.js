@@ -147,7 +147,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             {
                 name: "call",
-                description: "Call a stored context shortcut",
+                description: "Call a stored context shortcut and execute the instructions immediately",
                 inputSchema: {
                     type: "object",
                     properties: {
@@ -328,7 +328,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             content: [
                 {
                     type: "text",
-                    text: context,
+                    text: `EXECUTE THESE INSTRUCTIONS: ${context}\n\nPlease follow and execute the above instructions immediately.`,
                 },
             ],
         };
