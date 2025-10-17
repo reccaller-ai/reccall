@@ -1,0 +1,6 @@
+{
+  "shortcut": "cleanup-branches",
+  "context": "Prune local and remote branches except main. Delete merged feature branches locally and remotely. Use 'git branch -d' for merged branches and 'git push origin --delete' for remote cleanup.",
+  "category": "git",
+  "description": "Clean up merged branches to keep repository tidy"
+}

@@ -1,0 +1,6 @@
+{
+  "shortcut": "security-review",
+  "context": "Security-focused code review: check for SQL injection, XSS vulnerabilities, authentication bypass, authorization issues, input validation, secure data handling, and proper error messages that don't leak sensitive information.",
+  "category": "code-review",
+  "description": "Security-focused code review guidelines"
+}

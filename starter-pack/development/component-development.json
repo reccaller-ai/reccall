@@ -1,0 +1,6 @@
+{
+  "shortcut": "component-development",
+  "context": "Create reusable components with proper separation of concerns. Use clear interfaces/types, add comprehensive documentation, implement error handling, and optimize for performance. Include unit tests and follow consistent naming conventions.",
+  "category": "development",
+  "description": "Generic component development best practices"
+}

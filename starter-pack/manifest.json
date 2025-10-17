@@ -1,0 +1,70 @@
+{
+  "name": "RecCall Starter Pack",
+  "version": "1.0.0",
+  "description": "Common development recipes and shortcuts for RecCall",
+  "categories": [
+    "development",
+    "git",
+    "deployment",
+    "debugging",
+    "code-review"
+  ],
+  "recipes": [
+    {
+      "file": "development/component-development.json",
+      "category": "development"
+    },
+    {
+      "file": "development/api-testing.json",
+      "category": "development"
+    },
+    {
+      "file": "development/documentation.json",
+      "category": "development"
+    },
+    {
+      "file": "development/error-handling.json",
+      "category": "development"
+    },
+    {
+      "file": "development/performance-optimization.json",
+      "category": "development"
+    },
+    {
+      "file": "git/cleanup-branches.json",
+      "category": "git"
+    },
+    {
+      "file": "git/sync-main.json",
+      "category": "git"
+    },
+    {
+      "file": "git/create-feature-branch.json",
+      "category": "git"
+    },
+    {
+      "file": "deployment/deploy.json",
+      "category": "deployment"
+    },
+    {
+      "file": "deployment/pre-deploy-check.json",
+      "category": "deployment"
+    },
+    {
+      "file": "debugging/debug.json",
+      "category": "debugging"
+    },
+    {
+      "file": "debugging/performance-debug.json",
+      "category": "debugging"
+    },
+    {
+      "file": "code-review/code-review.json",
+      "category": "code-review"
+    },
+    {
+      "file": "code-review/security-review.json",
+      "category": "code-review"
+    }
+  ]
+}

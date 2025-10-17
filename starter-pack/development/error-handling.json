@@ -1,0 +1,6 @@
+{
+  "shortcut": "error-handling",
+  "context": "Implement comprehensive error handling: catch and handle all possible error conditions, provide meaningful error messages, log errors appropriately, implement graceful degradation, and ensure the system remains stable even when errors occur.",
+  "category": "development",
+  "description": "Generic error handling best practices"
+}

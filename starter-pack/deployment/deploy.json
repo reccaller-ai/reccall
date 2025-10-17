@@ -1,0 +1,6 @@
+{
+  "shortcut": "deploy",
+  "context": "Build the project, run tests, and deploy to production. Before deploying: run tests, check environment variables, review changelog, backup data, verify rollback plan, monitor metrics post-deploy.",
+  "category": "deployment",
+  "description": "Complete deployment checklist and process"
+}

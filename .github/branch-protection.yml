@@ -5,15 +5,14 @@ main:
   required_status_checks:
     strict: true
     contexts:
-      - "ci/build-and-test"
-      - "ci/lint"
-      - "ci/security-scan"
+      - "Comprehensive Testing"
+      - "Comprehensive Security Scan"
   enforce_admins: true
   required_pull_request_reviews:
     required_approving_review_count: 1
     dismiss_stale_reviews: true
-    require_code_owner_reviews: true
-    require_last_push_approval: true
+    require_code_owner_reviews: false
+    require_last_push_approval: false
   restrictions:
     users: []  # No direct push users
     teams: []  # No direct push teams

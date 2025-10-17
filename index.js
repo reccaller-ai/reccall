@@ -6,13 +6,53 @@ import fs from "fs/promises";
 import path from "path";
 import os from "os";
 const STORAGE_FILE = path.join(os.homedir(), ".reccall.json");
+const STARTER_PACK_DIR = path.join(__dirname, "starter-pack");
+// Load starter pack recipes
+async function loadStarterPack() {
+    const shortcuts = {};
+    try {
+        const manifestPath = path.join(STARTER_PACK_DIR, "manifest.json");
+        const manifestData = await fs.readFile(manifestPath, "utf-8");
+        const manifest = JSON.parse(manifestData);
+        for (const recipe of manifest.recipes) {
+            try {
+                const recipePath = path.join(STARTER_PACK_DIR, recipe.file);
+                const recipeData = await fs.readFile(recipePath, "utf-8");
+                const recipeObj = JSON.parse(recipeData);
+                shortcuts[recipeObj.shortcut] = recipeObj.context;
+            }
+            catch (error) {
+                console.error(`Failed to load recipe ${recipe.file}:`, error);
+            }
+        }
+    }
+    catch (error) {
+        console.error("Failed to load starter pack:", error);
+    }
+    return shortcuts;
+}
 // Initialize storage
 async function loadShortcuts() {
     try {
         const data = await fs.readFile(STORAGE_FILE, "utf-8");
-        return JSON.parse(data);
+        const userShortcuts = JSON.parse(data);
+        // If no user shortcuts exist, load starter pack
+        if (Object.keys(userShortcuts).length === 0) {
+            const starterPack = await loadStarterPack();
+            if (Object.keys(starterPack).length > 0) {
+                await saveShortcuts(starterPack);
+                return starterPack;
+            }
+        }
+        return userShortcuts;
     }
     catch {
+        // If storage file doesn't exist, load starter pack
+        const starterPack = await loadStarterPack();
+        if (Object.keys(starterPack).length > 0) {
+            await saveShortcuts(starterPack);
+            return starterPack;
+        }
         return {};
     }
 }
@@ -117,6 +157,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         },
                     },
                     required: ["shortcut"],
+                },
+            },
+            {
+                name: "rec_reload_starter_pack",
+                description: "Reload the starter pack recipes (overwrites existing shortcuts)",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        confirm: {
+                            type: "boolean",
+                            description: "Confirmation to reload starter pack (this will overwrite existing shortcuts)",
+                        },
+                    },
+                    required: ["confirm"],
                 },
             },
         ],
@@ -275,6 +329,40 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 {
                     type: "text",
                     text: context,
+                },
+            ],
+        };
+    }
+    if (name === "rec_reload_starter_pack") {
+        const { confirm } = args;
+        if (!confirm) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `⚠️  Confirmation required to reload starter pack.\n\nThis will overwrite ALL existing shortcuts with the starter pack recipes.\n\nTo proceed, use: rec_reload_starter_pack with confirm: true`,
+                    },
+                ],
+            };
+        }
+        const starterPack = await loadStarterPack();
+        const recipeCount = Object.keys(starterPack).length;
+        if (recipeCount === 0) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `✗ No starter pack recipes found. Check if the starter-pack directory exists and contains valid recipes.`,
+                    },
+                ],
+            };
+        }
+        await saveShortcuts(starterPack);
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `✓ Starter pack has been reloaded successfully!\n\nLoaded ${recipeCount} recipe(s) from the starter pack.`,
                 },
             ],
         };

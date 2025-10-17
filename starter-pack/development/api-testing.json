@@ -1,0 +1,6 @@
+{
+  "shortcut": "api-testing",
+  "context": "When testing APIs, always include comprehensive error handling, timeout configuration, request/response logging, authentication testing, and rate limiting validation. Test both happy paths and edge cases, validate response schemas, and implement proper retry logic.",
+  "category": "development",
+  "description": "Comprehensive API testing guidelines"
+}
