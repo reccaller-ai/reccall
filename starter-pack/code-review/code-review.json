@@ -1,0 +1,6 @@
+{
+  "shortcut": "code-review",
+  "context": "Review code for: security vulnerabilities, performance issues, error handling, code style consistency, test coverage, documentation quality, and accessibility. Check for proper error handling, input validation, and edge cases.",
+  "category": "code-review",
+  "description": "Comprehensive code review checklist"
+}

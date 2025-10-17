@@ -1,0 +1,6 @@
+{
+  "shortcut": "pre-deploy-check",
+  "context": "Before deploying: run tests, check environment variables, review changelog, backup data, verify rollback plan, check for breaking changes, and ensure all dependencies are up to date.",
+  "category": "deployment",
+  "description": "Pre-deployment checklist to ensure safe releases"
+}
