@@ -527,7 +527,12 @@
                 <li>npm or yarn</li>
             </ul>
             
-            <h3>Quick Setup</h3>
+            <h3>🚀 One-Command Install (Recommended)</h3>
+            <p style="margin-bottom: 1rem; color: var(--gray-600);">Install RecCall with a single command:</p>
+            <div class="code-block">curl -sfL https://reccaller.ai/install.sh | sh -</div>
+            <p style="margin-top: 1rem; color: var(--gray-600);">This will automatically download, build, and configure RecCall for your system.</p>
+            
+            <h3>Manual Setup</h3>
             <div class="code-block"><span class="comment"># 1. Clone the repository</span>
 git clone https://github.com/reccaller-ai/reccall.git
 cd reccall
@@ -543,7 +548,7 @@ pwd
 <span class="comment"># Copy this path - you'll need it for Cursor config</span></div>
             
             <h3>Configure Cursor IDE</h3>
-            <p style="margin-bottom: 1rem; color: var(--gray-600);">Add this to your Cursor configuration file:</p>
+            <p style="margin-bottom: 1rem; color: var(--gray-600);"><strong>Note:</strong> The one-command install automatically configures Cursor IDE. For manual setup, add this to your Cursor configuration file:</p>
             <div class="code-block">{
   <span class="string">"mcpServers"</span>: {
     <span class="string">"reccall"</span>: {
