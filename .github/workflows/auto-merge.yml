@@ -31,7 +31,7 @@ jobs:
         PR_AUTHOR=$(gh pr view ${{ github.event.pull_request.number }} --json author --jq '.author.login')
         
         # Check if any admin has approved
-        ADMINS=("reccaller-ai" "${{ github.repository_owner }}")
+        ADMINS=("reccaller-ai" "${{ github.repository_owner }}" "ishaileshpant")
         APPROVED_BY_ADMIN=false
         
         # Check if PR author is an admin (self-approval allowed for admins)
