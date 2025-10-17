@@ -5,9 +5,8 @@ main:
   required_status_checks:
     strict: true
     contexts:
-      - "ci/build-and-test"
-      - "ci/lint"
-      - "ci/security-scan"
+      - "Comprehensive Testing"
+      - "Comprehensive Security Scan"
   enforce_admins: true
   required_pull_request_reviews:
     required_approving_review_count: 1

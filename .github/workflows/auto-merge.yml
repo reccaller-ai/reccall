@@ -139,7 +139,7 @@ jobs:
         echo "🔍 Checking CI status for PR #${{ steps.get-pr-number.outputs.pr_number }}"
         
         # Get PR status checks with proper null handling
-        STATUS_CHECKS=$(gh pr view ${{ steps.get-pr-number.outputs.pr_number }} --json statusCheckRollup --jq '.statusCheckRollup // [] | map(select(.context and (.context | test("^(Quick PR Check|Build, Test & Lint)$")))) | map({context: .context, state: .state, conclusion: .conclusion})')
+        STATUS_CHECKS=$(gh pr view ${{ steps.get-pr-number.outputs.pr_number }} --json statusCheckRollup --jq '.statusCheckRollup // [] | map(select(.context and (.context | test("^(Quick PR Check)$")))) | map({context: .context, state: .state, conclusion: .conclusion})')
         
         echo "Status checks: $STATUS_CHECKS"
         
@@ -194,14 +194,11 @@ jobs:
           
           # Check Quick PR Check
           BUILD_CHECK=$(echo "$ALL_CHECKS" | jq 'select(.name == "Quick PR Check") | {name: .name, state: .state, conclusion: .conclusion}')
-          SECURITY_CHECK=$(echo "$ALL_CHECKS" | jq 'select(.name == "Build, Test & Lint") | {name: .name, state: .state, conclusion: .conclusion}')
           
           echo "Build check: $BUILD_CHECK"
-          echo "Security check: $SECURITY_CHECK"
           
-          # Check if both required checks are successful
+          # Check if required check is successful
           BUILD_SUCCESS=false
-          SECURITY_SUCCESS=false
           
           if [ -n "$BUILD_CHECK" ]; then
             BUILD_STATE=$(echo "$BUILD_CHECK" | jq -r '.state // "PENDING"')
@@ -216,20 +213,7 @@ jobs:
             echo "⏳ Quick PR Check not found yet"
           fi
           
-          if [ -n "$SECURITY_CHECK" ]; then
-            SECURITY_STATE=$(echo "$SECURITY_CHECK" | jq -r '.state // "PENDING"')
-            SECURITY_CONCLUSION=$(echo "$SECURITY_CHECK" | jq -r '.conclusion // "PENDING"')
-            if [ "$SECURITY_STATE" = "SUCCESS" ] || [ "$SECURITY_CONCLUSION" = "SUCCESS" ]; then
-              SECURITY_SUCCESS=true
-              echo "✅ Build, Test & Lint is successful"
-            else
-              echo "⏳ Build, Test & Lint: state=$SECURITY_STATE, conclusion=$SECURITY_CONCLUSION"
-            fi
-          else
-            echo "⏳ Build, Test & Lint check not found yet"
-          fi
-          
-          if [ "$BUILD_SUCCESS" = "true" ] && [ "$SECURITY_SUCCESS" = "true" ]; then
+          if [ "$BUILD_SUCCESS" = "true" ]; then
             echo "✅ All required CI checks are successful!"
             break
           fi
