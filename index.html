@@ -3,9 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RecCall - Record and Call Context Shortcuts</title>
-    <meta name="description" content="Record and call context shortcuts in Cursor IDE with MCP. A simple Model Context Protocol server for AI conversations.">
+    <title>RecCall - Professional Context Management for AI Development</title>
+    <meta name="description" content="Enterprise-grade Model Context Protocol server for Cursor IDE. Record, manage, and recall context shortcuts with precision and reliability.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -13,93 +41,195 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--gray-800);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
             min-height: 100vh;
+            font-weight: 400;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0 2rem;
         }
         
+        /* Header */
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 3rem;
+            padding: 4rem 0 6rem;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(37, 99, 235, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(6, 182, 212, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            color: white;
         }
         
         .header h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
         }
         
-        .header p {
-            font-size: 1.3rem;
+        .header .subtitle {
+            font-size: 1.5rem;
             opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-weight: 400;
+            color: var(--gray-300);
+        }
+        
+        .header .description {
+            font-size: 1.125rem;
+            opacity: 0.8;
             max-width: 600px;
             margin: 0 auto;
+            color: var(--gray-400);
         }
         
+        /* Cards */
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 2.5rem;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-xl);
+            transition: all 0.3s ease;
         }
         
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+        
+        .card h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        /* Features Grid */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
         }
         
         .feature {
-            background: white;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
         
         .feature:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
         }
         
         .feature h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
+            color: var(--gray-900);
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
         }
         
-        .feature code {
-            background: #f4f4f4;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 0.9rem;
+        .feature p {
+            color: var(--gray-600);
+            line-height: 1.6;
         }
         
+        /* Commands */
         .commands {
-            background: #f8f9fa;
-            border-radius: 8px;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
             padding: 1.5rem;
-            margin: 1rem 0;
+            margin: 1.5rem 0;
         }
         
         .command {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-200);
         }
         
         .command:last-child {
@@ -107,107 +237,238 @@
         }
         
         .command-name {
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-weight: bold;
-            color: #667eea;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--gray-100);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
         }
         
         .command-desc {
-            color: #666;
+            color: var(--gray-600);
             flex: 1;
             margin-left: 1rem;
+            font-size: 0.95rem;
         }
         
+        /* Code blocks */
+        .code-block {
+            background: var(--gray-900);
+            color: var(--gray-100);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            border: 1px solid var(--gray-700);
+        }
+        
+        .code-block .comment {
+            color: var(--gray-400);
+        }
+        
+        .code-block .string {
+            color: #10b981;
+        }
+        
+        .code-block .keyword {
+            color: #8b5cf6;
+        }
+        
+        /* Buttons */
         .cta {
             text-align: center;
-            margin-top: 3rem;
+            margin: 4rem 0;
         }
         
         .btn {
-            display: inline-block;
-            background: #667eea;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary);
             color: white;
             padding: 1rem 2rem;
-            border-radius: 8px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 600;
-            transition: background 0.3s ease;
+            font-size: 1rem;
+            transition: all 0.3s ease;
             margin: 0.5rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
         }
         
         .btn:hover {
-            background: #5a6fd8;
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
         
         .btn-secondary {
             background: transparent;
-            border: 2px solid white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             color: white;
+            backdrop-filter: blur(10px);
         }
         
         .btn-secondary:hover {
-            background: white;
-            color: #667eea;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
         }
         
-        .footer {
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .stat {
             text-align: center;
             color: white;
-            margin-top: 3rem;
-            opacity: 0.8;
         }
         
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            color: var(--gray-300);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: var(--gray-400);
+            margin-top: 4rem;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive */
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2.5rem;
             }
             
             .container {
-                padding: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
             }
             
             .command {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 0.5rem;
             }
             
             .command-desc {
                 margin-left: 0;
-                margin-top: 0.5rem;
             }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>RecCall</h1>
-            <p>Record and call context shortcuts in Cursor IDE with MCP. A simple Model Context Protocol server that lets you record context/instructions once and call them instantly in your AI conversations.</p>
+            <div class="header-content">
+                <div class="badge">🚀 Model Context Protocol Server</div>
+                <h1>RecCall</h1>
+                <p class="subtitle">Professional Context Management for AI Development</p>
+                <p class="description">Enterprise-grade Model Context Protocol server for Cursor IDE. Record, manage, and recall context shortcuts with precision and reliability.</p>
+            </div>
         </div>
         
-        <div class="card">
-            <h2>🎯 Features</h2>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Commands</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">339</div>
+                <div class="stat-label">Lines of Code</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">TypeScript</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">MIT</div>
+                <div class="stat-label">License</div>
+            </div>
+        </div>
+        
+        <div class="card fade-in-up">
+            <h2>🎯 Core Features</h2>
             <div class="features">
                 <div class="feature">
-                    <h3>📝 Record Shortcuts</h3>
-                    <p>Save context and instructions with simple shortcuts for instant recall in AI conversations.</p>
+                    <div class="feature-icon">📝</div>
+                    <h3>Record Context Shortcuts</h3>
+                    <p>Save complex instructions and context with simple shortcuts for instant recall in AI conversations.</p>
                 </div>
                 <div class="feature">
-                    <h3>📋 List & Manage</h3>
-                    <p>View all your shortcuts, update existing ones, or delete them when no longer needed.</p>
+                    <div class="feature-icon">📋</div>
+                    <h3>Complete CRUD Operations</h3>
+                    <p>Create, read, update, delete, and purge shortcuts with full management capabilities.</p>
                 </div>
                 <div class="feature">
-                    <h3>🔄 Instant Recall</h3>
-                    <p>Call any stored shortcut instantly to inject context into your AI conversations.</p>
+                    <div class="feature-icon">🔄</div>
+                    <h3>Instant Context Injection</h3>
+                    <p>Call any stored shortcut instantly to inject precise context into your AI conversations.</p>
                 </div>
                 <div class="feature">
-                    <h3>💾 Persistent Storage</h3>
-                    <p>All shortcuts are saved locally and persist between sessions.</p>
+                    <div class="feature-icon">💾</div>
+                    <h3>Persistent Local Storage</h3>
+                    <p>All shortcuts saved to <code>~/.reccall.json</code> and persist between sessions.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Smart Error Handling</h3>
+                    <p>Idempotent operations, duplicate detection, and confirmation prompts for safety.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Built with MCP SDK</h3>
+                    <p>Powered by the official <code>@modelcontextprotocol/sdk</code> for reliability and performance.</p>
                 </div>
             </div>
         </div>
         
-        <div class="card">
+        <div class="card fade-in-up">
             <h2>🚀 Available Commands</h2>
             <div class="commands">
                 <div class="command">
@@ -216,11 +477,11 @@
                 </div>
                 <div class="command">
                     <span class="command-name">rec_list</span>
-                    <span class="command-desc">List all stored shortcuts</span>
+                    <span class="command-desc">List all stored shortcuts (equivalent to rec -l)</span>
                 </div>
                 <div class="command">
                     <span class="command-name">rec_update</span>
-                    <span class="command-desc">Update/replace an existing shortcut</span>
+                    <span class="command-desc">Update/replace an existing shortcut (equivalent to rec -u)</span>
                 </div>
                 <div class="command">
                     <span class="command-name">rec_delete</span>
@@ -237,33 +498,153 @@
             </div>
         </div>
         
-        <div class="card">
-            <h2>💡 Example Usage</h2>
-            <p>Once configured in Cursor, you can use these commands in your AI chat:</p>
-            <div class="commands">
-                <div class="command">
-                    <span class="command-name">Save a shortcut</span>
-                    <span class="command-desc">"Save a shortcut called 'react-component' with the context: 'Create React functional components with TypeScript...'"</span>
+        <div class="card fade-in-up">
+            <h2>📦 Installation</h2>
+            <h3>Prerequisites</h3>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--gray-600);">
+                <li>Node.js 18 or higher</li>
+                <li>Cursor IDE with MCP support</li>
+                <li>npm or yarn</li>
+            </ul>
+            
+            <h3>Quick Setup</h3>
+            <div class="code-block">
+<span class="comment"># 1. Clone the repository</span>
+git clone https://github.com/reccaller-ai/reccall.git
+cd reccall
+
+<span class="comment"># 2. Install dependencies</span>
+npm install
+
+<span class="comment"># 3. Build the project</span>
+npm run build
+
+<span class="comment"># 4. Note the absolute path</span>
+pwd
+<span class="comment"># Copy this path - you'll need it for Cursor config</span>
+            </div>
+            
+            <h3>Configure Cursor IDE</h3>
+            <p style="margin-bottom: 1rem; color: var(--gray-600);">Add this to your Cursor configuration file:</p>
+            <div class="code-block">
+{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"reccall"</span>: {
+      <span class="string">"command"</span>: <span class="string">"node"</span>,
+      <span class="string">"args"</span>: [<span class="string">"/FULL/PATH/TO/reccall/index.js"</span>]
+    }
+  }
+}
+            </div>
+            
+            <p style="margin-top: 1rem; color: var(--gray-600);"><strong>Configuration file locations:</strong></p>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--gray-600);">
+                <li><strong>macOS:</strong> <code>~/.cursor/config.json</code></li>
+                <li><strong>Linux:</strong> <code>~/.cursor/config.json</code></li>
+                <li><strong>Windows:</strong> <code>%APPDATA%\Cursor\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json</code></li>
+            </ul>
+            
+            <p style="margin-top: 1rem; color: var(--warning);"><strong>⚠️ Important:</strong> After adding the configuration, completely restart Cursor for the changes to take effect.</p>
+        </div>
+        
+        <div class="card fade-in-up">
+            <h2>💡 Actual Usage Examples</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--gray-600);">Once configured, you interact with RecCall through natural language in Cursor's AI chat:</p>
+            
+            <h3>Recording Shortcuts</h3>
+            <div class="code-block">
+<span class="comment"># Natural language approach</span>
+Save a shortcut called "react-component" with the context: "Create React functional components with TypeScript. Use proper prop types, add JSDoc comments, implement error boundaries, and use React.memo for performance optimization."
+
+<span class="comment"># Direct tool usage</span>
+Use the rec tool to save this:
+Shortcut: apitest
+Context: When testing APIs, always include error handling, timeout configuration, and proper request/response logging. Use axios with interceptors for auth tokens.
+            </div>
+            
+            <h3>Listing Shortcuts</h3>
+            <div class="code-block">
+<span class="comment"># Natural language</span>
+List all my shortcuts
+
+<span class="comment"># Direct tool usage</span>
+Use the rec_list tool to show me what shortcuts I have
+            </div>
+            
+            <h3>Updating Shortcuts</h3>
+            <div class="code-block">
+<span class="comment"># Natural language</span>
+Update my 'apitest' shortcut with: "When testing APIs, always include comprehensive error handling, timeout configuration, request/response logging, authentication testing, and rate limiting validation. Use axios with interceptors for auth tokens and implement retry logic."
+
+<span class="comment"># Direct tool usage</span>
+Use the rec_update tool to change my 'react-component' shortcut to: "Create React functional components with TypeScript, proper prop types, JSDoc comments, error boundaries, React.memo for performance, and include unit tests with React Testing Library."
+            </div>
+            
+            <h3>Deleting Shortcuts</h3>
+            <div class="code-block">
+<span class="comment"># Natural language</span>
+Delete my 'old-shortcut' shortcut
+
+<span class="comment"># Direct tool usage</span>
+Use the rec_delete tool to remove the 'temp-shortcut' shortcut
+            </div>
+            
+            <h3>Calling Shortcuts</h3>
+            <div class="code-block">
+<span class="comment"># Natural language</span>
+Call the 'apitest' shortcut
+
+<span class="comment"># Direct tool usage</span>
+Use the call tool to get my 'react-component' guidelines
+            </div>
+            
+            <h3>Purging All Shortcuts</h3>
+            <div class="code-block">
+<span class="comment"># Natural language</span>
+Purge all my shortcuts
+
+<span class="comment"># Direct tool usage</span>
+Use the rec_purge tool to delete all stored shortcuts
+            </div>
+            
+            <p style="margin-top: 1.5rem; color: var(--gray-600);"><strong>Note:</strong> The AI will automatically call the appropriate MCP tools based on your natural language requests. You don't need to use the tool names directly.</p>
+        </div>
+        
+        <div class="card fade-in-up">
+            <h2>🏗️ Architecture & Technology</h2>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Model Context Protocol</h3>
+                    <p>Built on the official <code>@modelcontextprotocol/sdk</code> for seamless integration with Cursor IDE.</p>
                 </div>
-                <div class="command">
-                    <span class="command-name">List shortcuts</span>
-                    <span class="command-desc">"List all my shortcuts"</span>
+                <div class="feature">
+                    <div class="feature-icon">📁</div>
+                    <h3>Local Storage</h3>
+                    <p>Shortcuts stored in <code>~/.reccall.json</code> using Node.js file system APIs.</p>
                 </div>
-                <div class="command">
-                    <span class="command-name">Call shortcut</span>
-                    <span class="command-desc">"Call the 'react-component' shortcut"</span>
+                <div class="feature">
+                    <div class="feature-icon">🔧</div>
+                    <h3>TypeScript</h3>
+                    <p>Fully typed with TypeScript for reliability and developer experience.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📦</div>
+                    <h3>Minimal Dependencies</h3>
+                    <p>Only depends on the MCP SDK and Node.js built-ins for maximum compatibility.</p>
                 </div>
             </div>
         </div>
         
         <div class="cta">
-            <a href="https://github.com/reccaller-ai/reccall" class="btn">View on GitHub</a>
-            <a href="https://github.com/reccaller-ai/reccall#installation" class="btn btn-secondary">Get Started</a>
+            <a href="https://github.com/reccaller-ai/reccall" class="btn">📁 View on GitHub</a>
+            <a href="https://github.com/reccaller-ai/reccall/archive/refs/heads/main.zip" class="btn btn-secondary">⬇️ Download</a>
         </div>
         
         <div class="footer">
-            <p>Built with the Model Context Protocol SDK by Anthropic</p>
+            <p>Built with the <a href="https://github.com/modelcontextprotocol" style="color: var(--accent); text-decoration: none;">Model Context Protocol SDK</a> by Anthropic</p>
             <p>MIT License - feel free to use this in your own projects!</p>
+            <p style="margin-top: 1rem; opacity: 0.7;">Version 1.0.0 • 339 lines of TypeScript • 6 MCP tools</p>
         </div>
     </div>
 </body>
