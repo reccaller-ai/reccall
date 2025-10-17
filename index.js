@@ -5,6 +5,9 @@ import { CallToolRequestSchema, ListToolsRequestSchema, } from "@modelcontextpro
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const STORAGE_FILE = path.join(os.homedir(), ".reccall.json");
 const STARTER_PACK_DIR = path.join(__dirname, "starter-pack");
 // Load starter pack recipes
