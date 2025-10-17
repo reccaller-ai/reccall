@@ -64,7 +64,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: |
         # Get PR comments
-        COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[] | select(.author.login | test("^reccaller-ai$|^${{ github.repository_owner }}$")) | .body')
+        COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[] | select(.author.login | test("^reccaller-ai$|^${{ github.repository_owner }}$|^ishaileshpant$")) | .body')
         
         # Check for /approve command
         if echo "$COMMENTS" | grep -q "/approve"; then
