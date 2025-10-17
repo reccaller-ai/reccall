@@ -8,8 +8,6 @@ on:
 
 env:
   NODE_VERSION: '18'
-  NPM_CACHE_FOLDER: ~/.npm
-  NPM_CACHE_KEY: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
 jobs:
   build-and-test:
