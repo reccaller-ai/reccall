@@ -98,6 +98,96 @@ install_reccall() {
     echo -e "${GREEN}✅ RecCall installed successfully!${NC}"
 }
 
+# Backup existing config file
+backup_config() {
+    if [ -f "$CURSOR_CONFIG_FILE" ]; then
+        BACKUP_FILE="${CURSOR_CONFIG_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
+        cp "$CURSOR_CONFIG_FILE" "$BACKUP_FILE"
+        echo -e "${BLUE}📋 Backed up existing config to: $BACKUP_FILE${NC}"
+    fi
+}
+
+# Check if jq is available for JSON manipulation
+check_jq() {
+    if ! command -v jq &> /dev/null; then
+        echo -e "${YELLOW}⚠️  jq is not installed. Installing jq for JSON manipulation...${NC}"
+        
+        case "$(uname -s)" in
+            Darwin*)
+                if command -v brew &> /dev/null; then
+                    brew install jq
+                else
+                    echo -e "${RED}❌ Homebrew not found. Please install jq manually: https://stedolan.github.io/jq/download/${NC}"
+                    return 1
+                fi
+                ;;
+            Linux*)
+                if command -v apt-get &> /dev/null; then
+                    sudo apt-get update && sudo apt-get install -y jq
+                elif command -v yum &> /dev/null; then
+                    sudo yum install -y jq
+                elif command -v dnf &> /dev/null; then
+                    sudo dnf install -y jq
+                else
+                    echo -e "${RED}❌ Package manager not found. Please install jq manually: https://stedolan.github.io/jq/download/${NC}"
+                    return 1
+                fi
+                ;;
+            *)
+                echo -e "${RED}❌ Please install jq manually: https://stedolan.github.io/jq/download/${NC}"
+                return 1
+                ;;
+        esac
+    fi
+    return 0
+}
+
+# Update existing config with reccall server
+update_existing_config() {
+    local config_file="$1"
+    local reccall_path="$2"
+    
+    echo -e "${BLUE}🔄 Updating existing Cursor configuration...${NC}"
+    
+    # Check if reccall server already exists
+    if jq -e '.mcpServers.reccall' "$config_file" > /dev/null 2>&1; then
+        echo -e "${YELLOW}⚠️  RecCall server already exists in config. Updating...${NC}"
+        # Update existing reccall server configuration
+        jq --arg path "$reccall_path" '.mcpServers.reccall = {"command": "node", "args": [$path]}' "$config_file" > "${config_file}.tmp" && mv "${config_file}.tmp" "$config_file"
+    else
+        echo -e "${BLUE}➕ Adding RecCall server to existing configuration...${NC}"
+        # Add reccall server to existing mcpServers
+        if jq -e '.mcpServers' "$config_file" > /dev/null 2>&1; then
+            # mcpServers exists, add reccall to it
+            jq --arg path "$reccall_path" '.mcpServers.reccall = {"command": "node", "args": [$path]}' "$config_file" > "${config_file}.tmp" && mv "${config_file}.tmp" "$config_file"
+        else
+            # mcpServers doesn't exist, create it with reccall
+            jq --arg path "$reccall_path" '. + {"mcpServers": {"reccall": {"command": "node", "args": [$path]}}}' "$config_file" > "${config_file}.tmp" && mv "${config_file}.tmp" "$config_file"
+        fi
+    fi
+    
+    echo -e "${GREEN}✅ Configuration updated successfully!${NC}"
+}
+
+# Create new config file
+create_new_config() {
+    local config_file="$1"
+    local reccall_path="$2"
+    
+    echo -e "${BLUE}📝 Creating new Cursor configuration...${NC}"
+    cat > "$config_file" << EOF
+{
+  "mcpServers": {
+    "reccall": {
+      "command": "node",
+      "args": ["$reccall_path"]
+    }
+  }
+}
+EOF
+    echo -e "${GREEN}✅ Configuration created successfully!${NC}"
+}
+
 # Configure Cursor IDE
 configure_cursor() {
     echo -e "${BLUE}⚙️  Configuring Cursor IDE...${NC}"
@@ -110,30 +200,38 @@ configure_cursor() {
     
     # Check if config file exists
     if [ -f "$CURSOR_CONFIG_FILE" ]; then
-        echo -e "${YELLOW}⚠️  Cursor config file already exists.${NC}"
-        echo -e "${YELLOW}   Please manually add the following to your Cursor config:${NC}"
-        echo ""
-        echo -e "${BLUE}   \"mcpServers\": {${NC}"
-        echo -e "${BLUE}     \"reccall\": {${NC}"
-        echo -e "${BLUE}       \"command\": \"node\",${NC}"
-        echo -e "${BLUE}       \"args\": [\"$RECCALL_PATH\"]${NC}"
-        echo -e "${BLUE}     }${NC}"
-        echo -e "${BLUE}   }${NC}"
-        echo ""
-        echo -e "${YELLOW}   Config file location: $CURSOR_CONFIG_FILE${NC}"
+        echo -e "${BLUE}📋 Found existing Cursor configuration.${NC}"
+        
+        # Check if jq is available
+        if check_jq; then
+            # Backup existing config
+            backup_config
+            
+            # Validate JSON format
+            if jq empty "$CURSOR_CONFIG_FILE" 2>/dev/null; then
+                # Valid JSON, update it
+                update_existing_config "$CURSOR_CONFIG_FILE" "$RECCALL_PATH"
+            else
+                echo -e "${RED}❌ Invalid JSON in existing config file. Creating backup and new config...${NC}"
+                backup_config
+                create_new_config "$CURSOR_CONFIG_FILE" "$RECCALL_PATH"
+            fi
+        else
+            echo -e "${YELLOW}⚠️  Cannot automatically update config without jq.${NC}"
+            echo -e "${YELLOW}   Please manually add the following to your Cursor config:${NC}"
+            echo ""
+            echo -e "${BLUE}   \"mcpServers\": {${NC}"
+            echo -e "${BLUE}     \"reccall\": {${NC}"
+            echo -e "${BLUE}       \"command\": \"node\",${NC}"
+            echo -e "${BLUE}       \"args\": [\"$RECCALL_PATH\"]${NC}"
+            echo -e "${BLUE}     }${NC}"
+            echo -e "${BLUE}   }${NC}"
+            echo ""
+            echo -e "${YELLOW}   Config file location: $CURSOR_CONFIG_FILE${NC}"
+        fi
     else
-        echo -e "${BLUE}📝 Creating Cursor configuration...${NC}"
-        cat > "$CURSOR_CONFIG_FILE" << EOF
-{
-  "mcpServers": {
-    "reccall": {
-      "command": "node",
-      "args": ["$RECCALL_PATH"]
-    }
-  }
-}
-EOF
-        echo -e "${GREEN}✅ Cursor configuration created!${NC}"
+        echo -e "${BLUE}📝 No existing configuration found.${NC}"
+        create_new_config "$CURSOR_CONFIG_FILE" "$RECCALL_PATH"
     fi
 }
 
@@ -155,7 +253,11 @@ show_completion() {
     echo -e "${BLUE}🔧 Installation details:${NC}"
     echo -e "   • ${YELLOW}Installed to: $INSTALL_DIR${NC}"
     echo -e "   • ${YELLOW}Cursor config: $CURSOR_CONFIG_FILE${NC}"
+    if [ -f "$CURSOR_CONFIG_FILE" ] && [ -f "${CURSOR_CONFIG_FILE}.backup."* ] 2>/dev/null; then
+        echo -e "   • ${YELLOW}Config backup: ${CURSOR_CONFIG_FILE}.backup.*${NC}"
+    fi
     echo ""
+    echo -e "${GREEN}✨ Configuration automatically updated! No manual setup required.${NC}"
     echo -e "${GREEN}🚀 Happy coding with RecCall!${NC}"
 }
 
