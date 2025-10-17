@@ -48,8 +48,8 @@ cat > /tmp/branch-protection.json << EOF
   "required_pull_request_reviews": {
     "required_approving_review_count": 1,
     "dismiss_stale_reviews": true,
-    "require_code_owner_reviews": true,
-    "require_last_push_approval": true
+    "require_code_owner_reviews": false,
+    "require_last_push_approval": false
   },
   "restrictions": null,
   "allow_force_pushes": false,
@@ -87,7 +87,9 @@ echo -e "${GREEN}🎉 Branch protection update completed!${NC}"
 echo ""
 echo -e "${BLUE}📋 Summary of changes:${NC}"
 echo -e "  • Updated required status checks to: Quick PR Check"
-echo -e "  • Maintained all other protection settings"
+echo -e "  • Disabled 'require_last_push_approval' to allow admin self-approval"
+echo -e "  • Disabled 'require_code_owner_reviews' for simpler workflow"
 echo -e "  • PRs will now only wait for the fast 'Quick PR Check' workflow"
 echo ""
 echo -e "${YELLOW}💡 Note: Comprehensive security scans now run on main branch and daily schedule${NC}"
+echo -e "${GREEN}✅ Admins can now self-approve their own PRs!${NC}"
