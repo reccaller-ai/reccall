@@ -11,7 +11,7 @@
   ],
   "recipes": [
     {
-      "file": "development/react-component.json",
+      "file": "development/component-development.json",
       "category": "development"
     },
     {
@@ -20,6 +20,14 @@
     },
     {
       "file": "development/documentation.json",
+      "category": "development"
+    },
+    {
+      "file": "development/error-handling.json",
+      "category": "development"
+    },
+    {
+      "file": "development/performance-optimization.json",
       "category": "development"
     },
     {

@@ -9,9 +9,11 @@ starter-pack/
 ├── manifest.json              # Starter pack configuration
 ├── README.md                  # This file
 ├── development/               # Development-related shortcuts
-│   ├── react-component.json
+│   ├── component-development.json
 │   ├── api-testing.json
-│   └── documentation.json
+│   ├── documentation.json
+│   ├── error-handling.json
+│   └── performance-optimization.json
 ├── git/                       # Git workflow shortcuts
 │   ├── cleanup-branches.json
 │   ├── sync-main.json
@@ -30,9 +32,11 @@ starter-pack/
 ## 🎯 Categories
 
 ### Development
-- **react-component**: Create React components with TypeScript best practices
+- **component-development**: Generic component development best practices
 - **api-testing**: Comprehensive API testing guidelines
 - **documentation**: Documentation writing best practices
+- **error-handling**: Generic error handling best practices
+- **performance-optimization**: Generic performance optimization guidelines
 
 ### Git
 - **cleanup-branches**: Clean up merged branches

@@ -1,0 +1,6 @@
+{
+  "shortcut": "performance-optimization",
+  "context": "Optimize for performance: identify bottlenecks, minimize resource usage, implement caching strategies, optimize database queries, reduce bundle sizes, and monitor performance metrics. Focus on critical paths and user experience.",
+  "category": "development",
+  "description": "Generic performance optimization guidelines"
+}

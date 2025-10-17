@@ -137,14 +137,16 @@ After adding the configuration, **completely restart Cursor** for the changes to
 
 ## 🚀 Starter Pack
 
-RecCall comes with a **starter pack** of 12 common development recipes that are automatically loaded on first installation:
+RecCall comes with a **starter pack** of 14 generic development recipes that are automatically loaded on first installation:
 
 ### 📁 Categories
 
-**Development (3 recipes)**
-- `react-component`: Create React components with TypeScript best practices
+**Development (5 recipes)**
+- `component-development`: Generic component development best practices
 - `api-testing`: Comprehensive API testing guidelines  
 - `documentation`: Documentation writing best practices
+- `error-handling`: Generic error handling best practices
+- `performance-optimization`: Generic performance optimization guidelines
 
 **Git (3 recipes)**
 - `cleanup-branches`: Clean up merged branches
@@ -166,8 +168,10 @@ RecCall comes with a **starter pack** of 12 common development recipes that are 
 ### 🔄 Managing the Starter Pack
 
 - **Auto-loaded**: Starter pack recipes are automatically loaded on first installation
+- **Generic Focus**: Recipes focus on universal development concepts rather than specific technologies
 - **Reload**: Use `rec_reload_starter_pack` to reload all starter pack recipes (overwrites existing shortcuts)
 - **Customize**: You can modify, update, or delete any starter pack recipe like any other shortcut
+- **Extensible**: Add platform-specific recipes later under appropriate categories
 
 ## 🚀 Usage
 
