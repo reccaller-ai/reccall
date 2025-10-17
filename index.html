@@ -265,6 +265,18 @@
             line-height: 1.6;
             overflow-x: auto;
             border: 1px solid var(--gray-700);
+            white-space: pre;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
         
         .code-block .comment {
@@ -277,6 +289,14 @@
         
         .code-block .keyword {
             color: #8b5cf6;
+        }
+        
+        .code-block .number {
+            color: #f59e0b;
+        }
+        
+        .code-block .operator {
+            color: var(--gray-300);
         }
         
         /* Buttons */
@@ -508,8 +528,7 @@
             </ul>
             
             <h3>Quick Setup</h3>
-            <div class="code-block">
-<span class="comment"># 1. Clone the repository</span>
+            <div class="code-block"><span class="comment"># 1. Clone the repository</span>
 git clone https://github.com/reccaller-ai/reccall.git
 cd reccall
 
@@ -521,21 +540,18 @@ npm run build
 
 <span class="comment"># 4. Note the absolute path</span>
 pwd
-<span class="comment"># Copy this path - you'll need it for Cursor config</span>
-            </div>
+<span class="comment"># Copy this path - you'll need it for Cursor config</span></div>
             
             <h3>Configure Cursor IDE</h3>
             <p style="margin-bottom: 1rem; color: var(--gray-600);">Add this to your Cursor configuration file:</p>
-            <div class="code-block">
-{
+            <div class="code-block">{
   <span class="string">"mcpServers"</span>: {
     <span class="string">"reccall"</span>: {
       <span class="string">"command"</span>: <span class="string">"node"</span>,
       <span class="string">"args"</span>: [<span class="string">"/FULL/PATH/TO/reccall/index.js"</span>]
     }
   }
-}
-            </div>
+}</div>
             
             <p style="margin-top: 1rem; color: var(--gray-600);"><strong>Configuration file locations:</strong></p>
             <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--gray-600);">
@@ -552,60 +568,48 @@ pwd
             <p style="margin-bottom: 1.5rem; color: var(--gray-600);">Once configured, you interact with RecCall through natural language in Cursor's AI chat:</p>
             
             <h3>Recording Shortcuts</h3>
-            <div class="code-block">
-<span class="comment"># Natural language approach</span>
+            <div class="code-block"><span class="comment"># Natural language approach</span>
 Save a shortcut called "react-component" with the context: "Create React functional components with TypeScript. Use proper prop types, add JSDoc comments, implement error boundaries, and use React.memo for performance optimization."
 
 <span class="comment"># Direct tool usage</span>
 Use the rec tool to save this:
 Shortcut: apitest
-Context: When testing APIs, always include error handling, timeout configuration, and proper request/response logging. Use axios with interceptors for auth tokens.
-            </div>
+Context: When testing APIs, always include error handling, timeout configuration, and proper request/response logging. Use axios with interceptors for auth tokens.</div>
             
             <h3>Listing Shortcuts</h3>
-            <div class="code-block">
-<span class="comment"># Natural language</span>
+            <div class="code-block"><span class="comment"># Natural language</span>
 List all my shortcuts
 
 <span class="comment"># Direct tool usage</span>
-Use the rec_list tool to show me what shortcuts I have
-            </div>
+Use the rec_list tool to show me what shortcuts I have</div>
             
             <h3>Updating Shortcuts</h3>
-            <div class="code-block">
-<span class="comment"># Natural language</span>
+            <div class="code-block"><span class="comment"># Natural language</span>
 Update my 'apitest' shortcut with: "When testing APIs, always include comprehensive error handling, timeout configuration, request/response logging, authentication testing, and rate limiting validation. Use axios with interceptors for auth tokens and implement retry logic."
 
 <span class="comment"># Direct tool usage</span>
-Use the rec_update tool to change my 'react-component' shortcut to: "Create React functional components with TypeScript, proper prop types, JSDoc comments, error boundaries, React.memo for performance, and include unit tests with React Testing Library."
-            </div>
+Use the rec_update tool to change my 'react-component' shortcut to: "Create React functional components with TypeScript, proper prop types, JSDoc comments, error boundaries, React.memo for performance, and include unit tests with React Testing Library."</div>
             
             <h3>Deleting Shortcuts</h3>
-            <div class="code-block">
-<span class="comment"># Natural language</span>
+            <div class="code-block"><span class="comment"># Natural language</span>
 Delete my 'old-shortcut' shortcut
 
 <span class="comment"># Direct tool usage</span>
-Use the rec_delete tool to remove the 'temp-shortcut' shortcut
-            </div>
+Use the rec_delete tool to remove the 'temp-shortcut' shortcut</div>
             
             <h3>Calling Shortcuts</h3>
-            <div class="code-block">
-<span class="comment"># Natural language</span>
+            <div class="code-block"><span class="comment"># Natural language</span>
 Call the 'apitest' shortcut
 
 <span class="comment"># Direct tool usage</span>
-Use the call tool to get my 'react-component' guidelines
-            </div>
+Use the call tool to get my 'react-component' guidelines</div>
             
             <h3>Purging All Shortcuts</h3>
-            <div class="code-block">
-<span class="comment"># Natural language</span>
+            <div class="code-block"><span class="comment"># Natural language</span>
 Purge all my shortcuts
 
 <span class="comment"># Direct tool usage</span>
-Use the rec_purge tool to delete all stored shortcuts
-            </div>
+Use the rec_purge tool to delete all stored shortcuts</div>
             
             <p style="margin-top: 1.5rem; color: var(--gray-600);"><strong>Note:</strong> The AI will automatically call the appropriate MCP tools based on your natural language requests. You don't need to use the tool names directly.</p>
         </div>
