@@ -1,35 +1,35 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import fs from "fs/promises";
-import path from "path";
-import os from "os";
-import { fileURLToPath } from "url";
+} from '@modelcontextprotocol/sdk/types.js';
+import fs from 'fs/promises';
+import path from 'path';
+import os from 'os';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const STORAGE_FILE = path.join(os.homedir(), ".reccall.json");
-const STARTER_PACK_DIR = path.join(__dirname, "starter-pack");
+const STORAGE_FILE = path.join(os.homedir(), '.reccall.json');
+const STARTER_PACK_DIR = path.join(__dirname, 'starter-pack');
 
 // Load starter pack recipes
 async function loadStarterPack(): Promise<Record<string, string>> {
   const shortcuts: Record<string, string> = {};
   
   try {
-    const manifestPath = path.join(STARTER_PACK_DIR, "manifest.json");
-    const manifestData = await fs.readFile(manifestPath, "utf-8");
+    const manifestPath = path.join(STARTER_PACK_DIR, 'manifest.json');
+    const manifestData = await fs.readFile(manifestPath, 'utf-8');
     const manifest = JSON.parse(manifestData);
     
     for (const recipe of manifest.recipes) {
       try {
         const recipePath = path.join(STARTER_PACK_DIR, recipe.file);
-        const recipeData = await fs.readFile(recipePath, "utf-8");
+        const recipeData = await fs.readFile(recipePath, 'utf-8');
         const recipeObj = JSON.parse(recipeData);
         shortcuts[recipeObj.shortcut] = recipeObj.context;
       } catch (error) {
@@ -37,7 +37,7 @@ async function loadStarterPack(): Promise<Record<string, string>> {
       }
     }
   } catch (error) {
-    console.error("Failed to load starter pack:", error);
+    console.error('Failed to load starter pack:', error);
   }
   
   return shortcuts;
@@ -46,7 +46,7 @@ async function loadStarterPack(): Promise<Record<string, string>> {
 // Initialize storage
 async function loadShortcuts(): Promise<Record<string, string>> {
   try {
-    const data = await fs.readFile(STORAGE_FILE, "utf-8");
+    const data = await fs.readFile(STORAGE_FILE, 'utf-8');
     const userShortcuts = JSON.parse(data);
     
     // If no user shortcuts exist, load starter pack
@@ -77,14 +77,14 @@ async function saveShortcuts(shortcuts: Record<string, string>): Promise<void> {
 // Create MCP server
 const server = new Server(
   {
-    name: "reccall",
-    version: "1.0.0",
+    name: 'reccall',
+    version: '1.0.0',
   },
   {
     capabilities: {
       tools: {},
     },
-  }
+  },
 );
 
 // List available tools
@@ -92,104 +92,104 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "rec",
-        description: "Record a new context shortcut with instructions",
+        name: 'rec',
+        description: 'Record a new context shortcut with instructions',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             shortcut: {
-              type: "string",
-              description: "The shortcut name/alias",
+              type: 'string',
+              description: 'The shortcut name/alias',
             },
             context: {
-              type: "string",
-              description: "The context or instruction to store",
+              type: 'string',
+              description: 'The context or instruction to store',
             },
           },
-          required: ["shortcut", "context"],
+          required: ['shortcut', 'context'],
         },
       },
       {
-        name: "rec_list",
-        description: "List all stored context shortcuts (equivalent to rec -l)",
+        name: 'rec_list',
+        description: 'List all stored context shortcuts (equivalent to rec -l)',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {},
           required: [],
         },
       },
       {
-        name: "rec_update",
-        description: "Update/replace an existing context shortcut (equivalent to rec -u <shortcut> <context>)",
+        name: 'rec_update',
+        description: 'Update/replace an existing context shortcut (equivalent to rec -u <shortcut> <context>)',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             shortcut: {
-              type: "string",
-              description: "The shortcut name/alias to update",
+              type: 'string',
+              description: 'The shortcut name/alias to update',
             },
             context: {
-              type: "string",
-              description: "The new context or instruction to store",
+              type: 'string',
+              description: 'The new context or instruction to store',
             },
           },
-          required: ["shortcut", "context"],
+          required: ['shortcut', 'context'],
         },
       },
       {
-        name: "rec_delete",
-        description: "Delete a context shortcut if it exists (idempotent operation)",
+        name: 'rec_delete',
+        description: 'Delete a context shortcut if it exists (idempotent operation)',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             shortcut: {
-              type: "string",
-              description: "The shortcut name/alias to delete",
+              type: 'string',
+              description: 'The shortcut name/alias to delete',
             },
           },
-          required: ["shortcut"],
+          required: ['shortcut'],
         },
       },
       {
-        name: "rec_purge",
-        description: "Purge all stored shortcuts (requires confirmation)",
+        name: 'rec_purge',
+        description: 'Purge all stored shortcuts (requires confirmation)',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             confirm: {
-              type: "boolean",
-              description: "Confirmation to proceed with purging all shortcuts",
+              type: 'boolean',
+              description: 'Confirmation to proceed with purging all shortcuts',
             },
           },
-          required: ["confirm"],
+          required: ['confirm'],
         },
       },
       {
-        name: "call",
-        description: "Call a stored context shortcut and execute the instructions immediately",
+        name: 'call',
+        description: 'Call a stored context shortcut and execute the instructions immediately',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             shortcut: {
-              type: "string",
-              description: "The shortcut name/alias to recall",
+              type: 'string',
+              description: 'The shortcut name/alias to recall',
             },
           },
-          required: ["shortcut"],
+          required: ['shortcut'],
         },
       },
       {
-        name: "rec_reload_starter_pack",
-        description: "Reload the starter pack recipes (overwrites existing shortcuts)",
+        name: 'rec_reload_starter_pack',
+        description: 'Reload the starter pack recipes (overwrites existing shortcuts)',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             confirm: {
-              type: "boolean",
-              description: "Confirmation to reload starter pack (this will overwrite existing shortcuts)",
+              type: 'boolean',
+              description: 'Confirmation to reload starter pack (this will overwrite existing shortcuts)',
             },
           },
-          required: ["confirm"],
+          required: ['confirm'],
         },
       },
     ],
@@ -200,7 +200,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
-  if (name === "rec") {
+  if (name === 'rec') {
     const { shortcut, context } = args as { shortcut: string; context: string };
     
     const shortcuts = await loadShortcuts();
@@ -210,7 +210,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: `⚠️  Warning: Shortcut '${shortcut}' already exists!\n\nCurrent context: ${shortcuts[shortcut]}\n\nTo update it, use: rec_update ${shortcut} <new_context>\nTo keep the existing shortcut, choose a different name.`,
           },
         ],
@@ -223,14 +223,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: `✓ Shortcut '${shortcut}' has been recorded successfully!\n\nStored context:\n${context}`,
         },
       ],
     };
   }
 
-  if (name === "rec_list") {
+  if (name === 'rec_list') {
     const shortcuts = await loadShortcuts();
     const shortcutList = Object.keys(shortcuts);
     
@@ -238,28 +238,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return {
         content: [
           {
-            type: "text",
-            text: "No shortcuts stored yet. Use 'rec <shortcut> <context>' to create your first shortcut.",
+            type: 'text',
+            text: 'No shortcuts stored yet. Use \'rec <shortcut> <context>\' to create your first shortcut.',
           },
         ],
       };
     }
 
     const shortcutDetails = shortcutList.map(key => 
-      `• ${key}: ${shortcuts[key].substring(0, 100)}${shortcuts[key].length > 100 ? '...' : ''}`
+      `• ${key}: ${shortcuts[key].substring(0, 100)}${shortcuts[key].length > 100 ? '...' : ''}`,
     ).join('\n');
 
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: `📋 Stored shortcuts (${shortcutList.length}):\n\n${shortcutDetails}`,
         },
       ],
     };
   }
 
-  if (name === "rec_update") {
+  if (name === 'rec_update') {
     const { shortcut, context } = args as { shortcut: string; context: string };
     
     const shortcuts = await loadShortcuts();
@@ -268,7 +268,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: `✗ Error: Shortcut '${shortcut}' does not exist. Use 'rec <shortcut> <context>' to create a new shortcut.`,
           },
         ],
@@ -281,14 +281,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: `✓ Shortcut '${shortcut}' has been updated successfully!\n\nUpdated context:\n${context}`,
         },
       ],
     };
   }
 
-  if (name === "rec_delete") {
+  if (name === 'rec_delete') {
     const { shortcut } = args as { shortcut: string };
     
     const shortcuts = await loadShortcuts();
@@ -297,7 +297,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: `ℹ️  Shortcut '${shortcut}' does not exist. No action needed (idempotent operation).`,
           },
         ],
@@ -310,22 +310,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: `✓ Shortcut '${shortcut}' has been deleted successfully!`,
         },
       ],
     };
   }
 
-  if (name === "rec_purge") {
+  if (name === 'rec_purge') {
     const { confirm } = args as { confirm: boolean };
     
     if (!confirm) {
       return {
         content: [
           {
-            type: "text",
-            text: `⚠️  Confirmation required to purge all shortcuts.\n\nThis will delete ALL stored shortcuts permanently.\n\nTo proceed, use: rec_purge with confirm: true`,
+            type: 'text',
+            text: '⚠️  Confirmation required to purge all shortcuts.\n\nThis will delete ALL stored shortcuts permanently.\n\nTo proceed, use: rec_purge with confirm: true',
           },
         ],
       };
@@ -338,8 +338,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return {
         content: [
           {
-            type: "text",
-            text: `ℹ️  No shortcuts to purge. Storage is already empty.`,
+            type: 'text',
+            text: 'ℹ️  No shortcuts to purge. Storage is already empty.',
           },
         ],
       };
@@ -351,14 +351,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: `✓ All shortcuts have been purged successfully!\n\nDeleted ${shortcutCount} shortcut(s).`,
         },
       ],
     };
   }
 
-  if (name === "call") {
+  if (name === 'call') {
     const { shortcut } = args as { shortcut: string };
     
     const shortcuts = await loadShortcuts();
@@ -368,8 +368,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return {
         content: [
           {
-            type: "text",
-            text: `✗ Shortcut '${shortcut}' not found.\n\nAvailable shortcuts: ${Object.keys(shortcuts).join(", ") || "none"}`,
+            type: 'text',
+            text: `✗ Shortcut '${shortcut}' not found.\n\nAvailable shortcuts: ${Object.keys(shortcuts).join(', ') || 'none'}`,
           },
         ],
       };
@@ -378,22 +378,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: `EXECUTE THESE INSTRUCTIONS: ${context}\n\nPlease follow and execute the above instructions immediately.`,
         },
       ],
     };
   }
 
-  if (name === "rec_reload_starter_pack") {
+  if (name === 'rec_reload_starter_pack') {
     const { confirm } = args as { confirm: boolean };
     
     if (!confirm) {
       return {
         content: [
           {
-            type: "text",
-            text: `⚠️  Confirmation required to reload starter pack.\n\nThis will overwrite ALL existing shortcuts with the starter pack recipes.\n\nTo proceed, use: rec_reload_starter_pack with confirm: true`,
+            type: 'text',
+            text: '⚠️  Confirmation required to reload starter pack.\n\nThis will overwrite ALL existing shortcuts with the starter pack recipes.\n\nTo proceed, use: rec_reload_starter_pack with confirm: true',
           },
         ],
       };
@@ -406,8 +406,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return {
         content: [
           {
-            type: "text",
-            text: `✗ No starter pack recipes found. Check if the starter-pack directory exists and contains valid recipes.`,
+            type: 'text',
+            text: '✗ No starter pack recipes found. Check if the starter-pack directory exists and contains valid recipes.',
           },
         ],
       };
@@ -418,7 +418,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: `✓ Starter pack has been reloaded successfully!\n\nLoaded ${recipeCount} recipe(s) from the starter pack.`,
         },
       ],
@@ -432,10 +432,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("RecCall MCP Server running on stdio");
+  console.error('RecCall MCP Server running on stdio');
 }
 
 main().catch((error) => {
-  console.error("Server error:", error);
+  console.error('Server error:', error);
   process.exit(1);
 });
