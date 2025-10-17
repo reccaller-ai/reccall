@@ -29,18 +29,39 @@ echo "✅ GitHub CLI is installed and authenticated"
 # Set up branch protection rules
 echo "🔧 Configuring branch protection rules..."
 
+# Create a temporary JSON file for the branch protection configuration
+cat > /tmp/branch-protection.json << EOF
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": ["ci/build-and-test", "ci/lint", "ci/security-scan"]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 1,
+    "dismiss_stale_reviews": true,
+    "require_code_owner_reviews": true,
+    "require_last_push_approval": true
+  },
+  "restrictions": {
+    "users": [],
+    "teams": []
+  },
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_linear_history": true,
+  "allow_squash_merge": true,
+  "allow_merge_commit": false,
+  "allow_rebase_merge": true
+}
+EOF
+
 gh api repos/$REPO_OWNER/$REPO_NAME/branches/$BRANCH/protection \
   --method PUT \
-  --field required_status_checks='{"strict":true,"contexts":["ci/build-and-test","ci/lint","ci/security-scan"]}' \
-  --field enforce_admins=true \
-  --field required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true,"require_code_owner_reviews":true,"require_last_push_approval":true}' \
-  --field restrictions='{"users":[],"teams":[]}' \
-  --field allow_force_pushes=false \
-  --field allow_deletions=false \
-  --field required_linear_history=true \
-  --field allow_squash_merge=true \
-  --field allow_merge_commit=false \
-  --field allow_rebase_merge=true
+  --input /tmp/branch-protection.json
+
+# Clean up temporary file
+rm /tmp/branch-protection.json
 
 echo "✅ Branch protection rules configured successfully!"
 
