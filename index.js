@@ -5,11 +5,6 @@ import { CallToolRequestSchema, ListToolsRequestSchema, } from "@modelcontextpro
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const STORAGE_FILE = path.join(os.homedir(), ".reccall.json");
 const STARTER_PACK_DIR = path.join(__dirname, "starter-pack");
 // Load starter pack recipes
@@ -152,7 +147,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             {
                 name: "call",
-                description: "Call a stored context shortcut",
+                description: "Call a stored context shortcut and execute the instructions immediately",
                 inputSchema: {
                     type: "object",
                     properties: {
@@ -333,7 +328,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             content: [
                 {
                     type: "text",
-                    text: context,
+                    text: `EXECUTE THESE INSTRUCTIONS: ${context}\n\nPlease follow and execute the above instructions immediately.`,
                 },
             ],
         };
