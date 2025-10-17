@@ -89,6 +89,34 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: "rec_delete",
+        description: "Delete a context shortcut if it exists (idempotent operation)",
+        inputSchema: {
+          type: "object",
+          properties: {
+            shortcut: {
+              type: "string",
+              description: "The shortcut name/alias to delete",
+            },
+          },
+          required: ["shortcut"],
+        },
+      },
+      {
+        name: "rec_purge",
+        description: "Purge all stored shortcuts (requires confirmation)",
+        inputSchema: {
+          type: "object",
+          properties: {
+            confirm: {
+              type: "boolean",
+              description: "Confirmation to proceed with purging all shortcuts",
+            },
+          },
+          required: ["confirm"],
+        },
+      },
+      {
         name: "call",
         description: "Call a stored context shortcut",
         inputSchema: {
@@ -193,6 +221,76 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         {
           type: "text",
           text: `✓ Shortcut '${shortcut}' has been updated successfully!\n\nUpdated context:\n${context}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "rec_delete") {
+    const { shortcut } = args as { shortcut: string };
+    
+    const shortcuts = await loadShortcuts();
+
+    if (!shortcuts[shortcut]) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `ℹ️  Shortcut '${shortcut}' does not exist. No action needed (idempotent operation).`,
+          },
+        ],
+      };
+    }
+
+    delete shortcuts[shortcut];
+    await saveShortcuts(shortcuts);
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `✓ Shortcut '${shortcut}' has been deleted successfully!`,
+        },
+      ],
+    };
+  }
+
+  if (name === "rec_purge") {
+    const { confirm } = args as { confirm: boolean };
+    
+    if (!confirm) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `⚠️  Confirmation required to purge all shortcuts.\n\nThis will delete ALL stored shortcuts permanently.\n\nTo proceed, use: rec_purge with confirm: true`,
+          },
+        ],
+      };
+    }
+
+    const shortcuts = await loadShortcuts();
+    const shortcutCount = Object.keys(shortcuts).length;
+
+    if (shortcutCount === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `ℹ️  No shortcuts to purge. Storage is already empty.`,
+          },
+        ],
+      };
+    }
+
+    // Clear all shortcuts
+    await saveShortcuts({});
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `✓ All shortcuts have been purged successfully!\n\nDeleted ${shortcutCount} shortcut(s).`,
         },
       ],
     };

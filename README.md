@@ -9,6 +9,8 @@ A simple Model Context Protocol (MCP) server that lets you record context/instru
 - **rec**: Record a shortcut with context/instructions
 - **rec_list**: List all stored shortcuts (equivalent to `rec -l`)
 - **rec_update**: Update/replace an existing shortcut (equivalent to `rec -u`)
+- **rec_delete**: Delete a shortcut (idempotent operation)
+- **rec_purge**: Purge all shortcuts (with confirmation)
 - **call**: Call (retrieve) stored context by shortcut name
 - **Persistent Storage**: All shortcuts saved to `~/.reccall.json`
 - **Smart Duplicate Detection**: Warns when creating duplicate shortcuts
@@ -164,6 +166,36 @@ Or:
 Use the rec_update tool to change my 'react-component' shortcut to: "Create React functional components with TypeScript, proper prop types, JSDoc comments, error boundaries, React.memo for performance, and include unit tests with React Testing Library."
 ```
 
+### Deleting a Shortcut (rec_delete)
+
+To delete a shortcut (idempotent - safe to run even if shortcut doesn't exist):
+
+```
+Delete my 'old-shortcut' shortcut
+```
+
+Or:
+
+```
+Use the rec_delete tool to remove the 'temp-shortcut' shortcut
+```
+
+### Purging All Shortcuts (rec_purge)
+
+To delete all shortcuts (requires confirmation):
+
+```
+Purge all my shortcuts
+```
+
+Or:
+
+```
+Use the rec_purge tool to delete all stored shortcuts
+```
+
+**Note**: The purge command will ask for confirmation before proceeding to prevent accidental data loss.
+
 ### Calling a Shortcut (call)
 
 To retrieve and use a stored context:
@@ -245,6 +277,8 @@ This watches for TypeScript changes and recompiles automatically.
 | `rec` | Record a new shortcut | `rec <shortcut> <context>` |
 | `rec_list` | List all stored shortcuts | `rec_list` |
 | `rec_update` | Update an existing shortcut | `rec_update <shortcut> <new_context>` |
+| `rec_delete` | Delete a shortcut (idempotent) | `rec_delete <shortcut>` |
+| `rec_purge` | Purge all shortcuts (with confirmation) | `rec_purge <confirm: true>` |
 | `call` | Call a stored shortcut | `call <shortcut>` |
 
 ### Project Structure
