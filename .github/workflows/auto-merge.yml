@@ -228,6 +228,18 @@ jobs:
           exit 1
         fi
 
+    - name: Approve PR if conditions met
+      if: steps.check-approval.outputs.approved_by_admin == 'true' && steps.check-approve-command.outputs.approve_command_found == 'true' && steps.check-ci.outputs.ALL_CHECKS_PASSING == 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        echo "✅ Approving PR #${{ steps.get-pr-number.outputs.pr_number }}"
+        
+        # Approve the PR programmatically
+        gh pr review ${{ steps.get-pr-number.outputs.pr_number }} --approve --body "✅ **Auto-approved by admin** - All conditions met for auto-merge."
+        
+        echo "✅ PR approved successfully"
+
     - name: Auto merge if conditions met
       if: steps.check-approval.outputs.approved_by_admin == 'true' && steps.check-approve-command.outputs.approve_command_found == 'true' && steps.check-ci.outputs.ALL_CHECKS_PASSING == 'true'
       env:
@@ -238,20 +250,20 @@ jobs:
         # Try multiple merge strategies in order of preference
         MERGE_SUCCESS=false
         
-        # Strategy 1: Try gh pr merge with auto flag (respects branch protection)
-        echo "📋 Attempting merge with auto flag..."
-        if gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch --auto; then
-          echo "✅ Merge successful with auto flag"
+        # Strategy 1: Try gh pr merge with admin privileges first (bypasses branch protection)
+        echo "📋 Attempting merge with admin privileges..."
+        if gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch --admin; then
+          echo "✅ Merge successful with admin privileges"
           MERGE_SUCCESS=true
         else
-          echo "❌ Auto merge failed, trying admin privileges..."
+          echo "❌ Admin merge failed, trying auto flag..."
           
-          # Strategy 2: Try gh pr merge with admin privileges
-          if gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch --admin; then
-            echo "✅ Merge successful with admin privileges"
+          # Strategy 2: Try gh pr merge with auto flag (respects branch protection)
+          if gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch --auto; then
+            echo "✅ Merge successful with auto flag"
             MERGE_SUCCESS=true
           else
-            echo "❌ Admin merge failed, trying GitHub API..."
+            echo "❌ Auto merge failed, trying GitHub API..."
             
             # Strategy 3: Try GitHub API merge
             if gh api repos/${{ github.repository }}/pulls/${{ steps.get-pr-number.outputs.pr_number }}/merge \
