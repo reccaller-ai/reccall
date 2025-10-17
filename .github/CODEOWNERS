@@ -1,0 +1,25 @@
+# Code Owners Configuration
+# This file defines who is responsible for code in different parts of the repository
+
+# Global owners - these users/teams will be requested for review on all PRs
+* @reccaller-ai
+
+# Core application files
+/index.ts @reccaller-ai
+/index.js @reccaller-ai
+/package.json @reccaller-ai
+/tsconfig.json @reccaller-ai
+
+# Documentation
+/README.md @reccaller-ai
+/docs/ @reccaller-ai
+
+# GitHub workflows and configuration
+/.github/ @reccaller-ai
+
+# Landing page
+/index.html @reccaller-ai
+
+# Configuration files
+/.gitignore @reccaller-ai
+/LICENSE @reccaller-ai

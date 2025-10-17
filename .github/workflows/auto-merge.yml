@@ -1,0 +1,126 @@
+name: Auto Merge with Approval
+
+on:
+  pull_request:
+    types: [opened, synchronize, review_requested, review_request_removed]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  auto-merge:
+    name: Auto Merge Approved PRs
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check if PR is approved by admin
+      id: check-approval
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # Get PR reviews and author info
+        REVIEWS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '.reviews[] | select(.state == "APPROVED") | .author.login')
+        PR_AUTHOR=$(gh pr view ${{ github.event.pull_request.number }} --json author --jq '.author.login')
+        
+        # Check if any admin has approved
+        ADMINS=("reccaller-ai" "${{ github.repository_owner }}" "ishaileshpant")
+        APPROVED_BY_ADMIN=false
+        
+        # Check if PR author is an admin (self-approval allowed for admins)
+        for admin in "${ADMINS[@]}"; do
+          if [ "$PR_AUTHOR" = "$admin" ]; then
+            echo "PR author $PR_AUTHOR is an admin - self-approval allowed"
+            APPROVED_BY_ADMIN=true
+            break
+          fi
+        done
+        
+        # If not self-approved, check for admin reviews
+        if [ "$APPROVED_BY_ADMIN" = "false" ]; then
+          for admin in "${ADMINS[@]}"; do
+            if echo "$REVIEWS" | grep -q "^$admin$"; then
+              APPROVED_BY_ADMIN=true
+              break
+            fi
+          done
+        fi
+        
+        echo "approved_by_admin=$APPROVED_BY_ADMIN" >> $GITHUB_OUTPUT
+        echo "Reviews: $REVIEWS"
+        echo "PR Author: $PR_AUTHOR"
+        echo "Approved by admin: $APPROVED_BY_ADMIN"
+        
+    - name: Check for /approve command
+      id: check-approve-command
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # Get PR comments
+        COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[] | select(.author.login | test("^reccaller-ai$|^${{ github.repository_owner }}$")) | .body')
+        
+        # Check for /approve command
+        if echo "$COMMENTS" | grep -q "/approve"; then
+          echo "approve_command_found=true" >> $GITHUB_OUTPUT
+        else
+          echo "approve_command_found=false" >> $GITHUB_OUTPUT
+        fi
+        
+        echo "Comments with /approve: $(echo "$COMMENTS" | grep "/approve" || echo "None")"
+        
+    - name: Auto merge if conditions met
+      if: steps.check-approval.outputs.approved_by_admin == 'true' && steps.check-approve-command.outputs.approve_command_found == 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        echo "🚀 Auto-merging PR #${{ github.event.pull_request.number }}"
+        
+        # Enable auto-merge
+        gh pr merge ${{ github.event.pull_request.number }} --squash --auto
+        
+        # Add comment
+        gh pr comment ${{ github.event.pull_request.number }} --body "✅ **Auto-merge enabled!** This PR will be automatically merged once all checks pass."
+        
+    - name: Comment if conditions not met
+      if: steps.check-approval.outputs.approved_by_admin == 'false' || steps.check-approve-command.outputs.approve_command_found == 'false'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        echo "⏳ Auto-merge conditions not met"
+        
+        # Add helpful comment
+        if [ "${{ steps.check-approval.outputs.approved_by_admin }}" == "false" ]; then
+          echo "❌ Missing admin approval"
+        fi
+        
+        if [ "${{ steps.check-approve-command.outputs.approve_command_found }}" == "false" ]; then
+          echo "❌ Missing /approve command from admin"
+        fi
+        
+        gh pr comment ${{ github.event.pull_request.number }} --body "⏳ **Auto-merge pending conditions:**
+        
+        - [ ] Admin approval required
+        - [ ] Admin must comment \`/approve\` to enable auto-merge
+        
+        Once both conditions are met, this PR will be automatically merged! 🚀"
+
+  cleanup:
+    name: Cleanup merged branches
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    
+    steps:
+    - name: Delete feature branch
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        echo "🧹 Cleaning up merged branch: ${{ github.head_ref }}"
+        gh pr view ${{ github.event.pull_request.number }} --json headRefName --jq '.headRefName' | xargs -I {} gh api repos/${{ github.repository }}/git/refs/heads/{} -X DELETE
+        echo "✅ Branch deleted successfully"
