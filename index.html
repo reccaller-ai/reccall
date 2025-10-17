@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecCall - Record and Call Context Shortcuts</title>
+    <meta name="description" content="Record and call context shortcuts in Cursor IDE with MCP. A simple Model Context Protocol server for AI conversations.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .feature code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .commands {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .command {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .command:last-child {
+            border-bottom: none;
+        }
+        
+        .command-name {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .command-desc {
+            color: #666;
+            flex: 1;
+            margin-left: 1rem;
+        }
+        
+        .cta {
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            margin: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .command {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .command-desc {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>RecCall</h1>
+            <p>Record and call context shortcuts in Cursor IDE with MCP. A simple Model Context Protocol server that lets you record context/instructions once and call them instantly in your AI conversations.</p>
+        </div>
+        
+        <div class="card">
+            <h2>🎯 Features</h2>
+            <div class="features">
+                <div class="feature">
+                    <h3>📝 Record Shortcuts</h3>
+                    <p>Save context and instructions with simple shortcuts for instant recall in AI conversations.</p>
+                </div>
+                <div class="feature">
+                    <h3>📋 List & Manage</h3>
+                    <p>View all your shortcuts, update existing ones, or delete them when no longer needed.</p>
+                </div>
+                <div class="feature">
+                    <h3>🔄 Instant Recall</h3>
+                    <p>Call any stored shortcut instantly to inject context into your AI conversations.</p>
+                </div>
+                <div class="feature">
+                    <h3>💾 Persistent Storage</h3>
+                    <p>All shortcuts are saved locally and persist between sessions.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>🚀 Available Commands</h2>
+            <div class="commands">
+                <div class="command">
+                    <span class="command-name">rec</span>
+                    <span class="command-desc">Record a new shortcut with context/instructions</span>
+                </div>
+                <div class="command">
+                    <span class="command-name">rec_list</span>
+                    <span class="command-desc">List all stored shortcuts</span>
+                </div>
+                <div class="command">
+                    <span class="command-name">rec_update</span>
+                    <span class="command-desc">Update/replace an existing shortcut</span>
+                </div>
+                <div class="command">
+                    <span class="command-name">rec_delete</span>
+                    <span class="command-desc">Delete a shortcut (idempotent operation)</span>
+                </div>
+                <div class="command">
+                    <span class="command-name">rec_purge</span>
+                    <span class="command-desc">Purge all shortcuts (with confirmation)</span>
+                </div>
+                <div class="command">
+                    <span class="command-name">call</span>
+                    <span class="command-desc">Call a stored shortcut</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>💡 Example Usage</h2>
+            <p>Once configured in Cursor, you can use these commands in your AI chat:</p>
+            <div class="commands">
+                <div class="command">
+                    <span class="command-name">Save a shortcut</span>
+                    <span class="command-desc">"Save a shortcut called 'react-component' with the context: 'Create React functional components with TypeScript...'"</span>
+                </div>
+                <div class="command">
+                    <span class="command-name">List shortcuts</span>
+                    <span class="command-desc">"List all my shortcuts"</span>
+                </div>
+                <div class="command">
+                    <span class="command-name">Call shortcut</span>
+                    <span class="command-desc">"Call the 'react-component' shortcut"</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta">
+            <a href="https://github.com/reccaller-ai/reccall" class="btn">View on GitHub</a>
+            <a href="https://github.com/reccaller-ai/reccall#installation" class="btn btn-secondary">Get Started</a>
+        </div>
+        
+        <div class="footer">
+            <p>Built with the Model Context Protocol SDK by Anthropic</p>
+            <p>MIT License - feel free to use this in your own projects!</p>
+        </div>
+    </div>
+</body>
+</html>
