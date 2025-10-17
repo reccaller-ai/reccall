@@ -34,7 +34,7 @@ cat > /tmp/branch-protection.json << EOF
 {
   "required_status_checks": {
     "strict": true,
-    "contexts": ["ci/build-test-lint", "ci/security-scan"]
+    "contexts": ["Build, Test & Lint", "Security Scan"]
   },
   "enforce_admins": false,
   "required_pull_request_reviews": {

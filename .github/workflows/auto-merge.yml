@@ -87,7 +87,7 @@ jobs:
         echo "🔍 Checking CI status for PR #${{ github.event.pull_request.number }}"
         
         # Get PR status checks with proper null handling
-        STATUS_CHECKS=$(gh pr view ${{ github.event.pull_request.number }} --json statusCheckRollup --jq '.statusCheckRollup // [] | map(select(.context and (.context | test("^ci/")))) | map({context: .context, state: .state, conclusion: .conclusion})')
+        STATUS_CHECKS=$(gh pr view ${{ github.event.pull_request.number }} --json statusCheckRollup --jq '.statusCheckRollup // [] | map(select(.context and (.context | test("^(Build, Test & Lint|Security Scan)$")))) | map({context: .context, state: .state, conclusion: .conclusion})')
         
         echo "Status checks: $STATUS_CHECKS"
         
