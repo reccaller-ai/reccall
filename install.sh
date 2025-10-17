@@ -95,6 +95,13 @@ install_reccall() {
     echo -e "${BLUE}🔨 Building RecCall...${NC}"
     npm run build
     
+    # Verify starter pack is included
+    if [ -d "starter-pack" ] && [ -f "starter-pack/manifest.json" ]; then
+        echo -e "${GREEN}✅ Starter pack included with ${NC}${BLUE}$(find starter-pack -name "*.json" | grep -v manifest.json | wc -l | tr -d ' ')${NC}${GREEN} common recipes${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Starter pack not found - installation will continue without default recipes${NC}"
+    fi
+    
     echo -e "${GREEN}✅ RecCall installed successfully!${NC}"
 }
 
@@ -246,9 +253,10 @@ show_completion() {
     echo -e "   3. ${YELLOW}Try: 'Save a shortcut called test with context: Hello World'${NC}"
     echo ""
     echo -e "${BLUE}📚 Usage examples:${NC}"
-    echo -e "   • ${YELLOW}Save a shortcut called 'react' with context: 'Create React components with TypeScript'${NC}"
     echo -e "   • ${YELLOW}List all my shortcuts${NC}"
-    echo -e "   • ${YELLOW}Call the 'react' shortcut${NC}"
+    echo -e "   • ${YELLOW}Call the 'react-component' shortcut${NC}"
+    echo -e "   • ${YELLOW}Save a new shortcut called 'my-shortcut' with context: 'My custom instructions'${NC}"
+    echo -e "   • ${YELLOW}Reload starter pack recipes${NC}"
     echo ""
     echo -e "${BLUE}🔧 Installation details:${NC}"
     echo -e "   • ${YELLOW}Installed to: $INSTALL_DIR${NC}"

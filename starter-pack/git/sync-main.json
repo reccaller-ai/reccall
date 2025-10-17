@@ -1,0 +1,6 @@
+{
+  "shortcut": "sync-main",
+  "context": "Switch to main branch and pull latest changes from origin. Ensure working directory is clean before switching.",
+  "category": "git",
+  "description": "Sync main branch with latest remote changes"
+}

@@ -1,0 +1,6 @@
+{
+  "shortcut": "debug",
+  "context": "Debug systematically: reproduce the issue, check logs, verify inputs, test assumptions, isolate the problem, use breakpoints, and document the solution. Enable debug logging and run the application in debug mode.",
+  "category": "debugging",
+  "description": "Systematic debugging approach and best practices"
+}

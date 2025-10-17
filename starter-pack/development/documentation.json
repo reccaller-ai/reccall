@@ -1,0 +1,6 @@
+{
+  "shortcut": "documentation",
+  "context": "Write documentation with: clear purpose statement, usage examples, parameter descriptions, return value details, error conditions, and related functions. Include code examples and markdown formatting for readability.",
+  "category": "development",
+  "description": "Guidelines for writing comprehensive documentation"
+}

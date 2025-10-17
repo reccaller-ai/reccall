@@ -12,9 +12,11 @@ A simple Model Context Protocol (MCP) server that lets you record context/instru
 - **rec_delete**: Delete a shortcut (idempotent operation)
 - **rec_purge**: Purge all shortcuts (with confirmation)
 - **call**: Call (retrieve) stored context by shortcut name
+- **rec_reload_starter_pack**: Reload starter pack recipes
 - **Persistent Storage**: All shortcuts saved to `~/.reccall.json`
 - **Smart Duplicate Detection**: Warns when creating duplicate shortcuts
 - **Enhanced Error Handling**: Clear feedback for non-existent shortcuts
+- **🚀 Starter Pack**: 12 pre-loaded common development recipes
 
 ## 📦 Installation
 
@@ -133,6 +135,40 @@ Add this to your configuration file (replace `/FULL/PATH/TO/reccall` with your a
 
 After adding the configuration, **completely restart Cursor** for the changes to take effect.
 
+## 🚀 Starter Pack
+
+RecCall comes with a **starter pack** of 12 common development recipes that are automatically loaded on first installation:
+
+### 📁 Categories
+
+**Development (3 recipes)**
+- `react-component`: Create React components with TypeScript best practices
+- `api-testing`: Comprehensive API testing guidelines  
+- `documentation`: Documentation writing best practices
+
+**Git (3 recipes)**
+- `cleanup-branches`: Clean up merged branches
+- `sync-main`: Sync main branch with remote
+- `create-feature-branch`: Create feature branches with proper naming
+
+**Deployment (2 recipes)**
+- `deploy`: Complete deployment checklist
+- `pre-deploy-check`: Pre-deployment safety checks
+
+**Debugging (2 recipes)**
+- `debug`: Systematic debugging approach
+- `performance-debug`: Performance debugging guidelines
+
+**Code Review (2 recipes)**
+- `code-review`: Comprehensive code review checklist
+- `security-review`: Security-focused code review
+
+### 🔄 Managing the Starter Pack
+
+- **Auto-loaded**: Starter pack recipes are automatically loaded on first installation
+- **Reload**: Use `rec_reload_starter_pack` to reload all starter pack recipes (overwrites existing shortcuts)
+- **Customize**: You can modify, update, or delete any starter pack recipe like any other shortcut
+
 ## 🚀 Usage
 
 Once configured, you can use these tools in Cursor's AI chat:
@@ -218,49 +254,57 @@ Use the rec_purge tool to delete all stored shortcuts
 To retrieve and use a stored context:
 
 ```
-Call the 'apitest' shortcut
+Call the 'react-component' shortcut
 ```
 
 Or:
 
 ```
-Use the call tool to get my 'react-component' guidelines
+Use the call tool to get my 'api-testing' guidelines
 ```
 
 The stored context will be injected into the conversation, and the AI will follow those instructions!
 
+### Reloading the Starter Pack (rec_reload_starter_pack)
+
+To reload all starter pack recipes (this will overwrite existing shortcuts):
+
+```
+Reload the starter pack recipes
+```
+
+Or:
+
+```
+Use the rec_reload_starter_pack tool to restore all default recipes
+```
+
 ## 💡 Example Shortcuts
 
-Here are some useful shortcuts you might want to create:
+The starter pack includes many common shortcuts, but here are some additional ones you might want to create:
 
-### Code Review
+### Custom Development
 ```
-Shortcut: codereview
-Context: Review code for: security vulnerabilities, performance issues, error handling, code style consistency, test coverage, documentation quality, and accessibility.
-```
-
-### API Testing
-```
-Shortcut: apitest
-Context: API tests should include: happy path tests, error scenarios, edge cases, authentication/authorization, rate limiting, timeout handling, and response validation.
+Shortcut: my-react-setup
+Context: My personal React setup includes: Vite, TypeScript, Tailwind CSS, React Router, and Zustand for state management.
 ```
 
-### Documentation
+### Project-Specific
 ```
-Shortcut: docs
-Context: Write documentation with: clear purpose statement, usage examples, parameter descriptions, return value details, error conditions, and related functions.
-```
-
-### Debugging
-```
-Shortcut: debug
-Context: Debug systematically: reproduce the issue, check logs, verify inputs, test assumptions, isolate the problem, use breakpoints, and document the solution.
+Shortcut: my-api-patterns
+Context: For this project, always use: Express.js with TypeScript, JWT authentication, MongoDB with Mongoose, and comprehensive error handling.
 ```
 
-### Deploy Checklist
+### Team Standards
 ```
-Shortcut: deploy
-Context: Before deploying: run tests, check environment variables, review changelog, backup database, verify rollback plan, monitor metrics post-deploy.
+Shortcut: team-standards
+Context: Follow our team standards: ESLint + Prettier, conventional commits, 80% test coverage, and code review required for all PRs.
+```
+
+### Environment Setup
+```
+Shortcut: dev-env
+Context: Set up development environment: Node.js 18+, Docker for services, VS Code with our extensions, and configure environment variables.
 ```
 
 ## 📁 Storage

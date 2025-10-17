@@ -1,0 +1,6 @@
+{
+  "shortcut": "api-testing",
+  "context": "When testing APIs, always include comprehensive error handling, timeout configuration, request/response logging, authentication testing, and rate limiting validation. Use axios with interceptors for auth tokens and implement retry logic with exponential backoff.",
+  "category": "development",
+  "description": "Comprehensive API testing guidelines"
+}

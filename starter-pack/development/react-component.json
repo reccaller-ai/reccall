@@ -1,0 +1,6 @@
+{
+  "shortcut": "react-component",
+  "context": "Create React functional components with TypeScript. Use proper prop types, add JSDoc comments, implement error boundaries, and use React.memo for performance optimization. Include unit tests with React Testing Library.",
+  "category": "development",
+  "description": "Template for creating React components with best practices"
+}

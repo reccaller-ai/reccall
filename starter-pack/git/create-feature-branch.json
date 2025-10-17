@@ -1,0 +1,6 @@
+{
+  "shortcut": "create-feature-branch",
+  "context": "Call sync-main and then create a new feature branch following the branch naming convention (feature/description). Ensure branch name is descriptive and follows the project's naming standards.",
+  "category": "git",
+  "description": "Create a new feature branch with proper naming convention"
+}
