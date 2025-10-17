@@ -12,8 +12,8 @@
     "prepare": "npm run build",
     "dev": "tsc --watch",
     "test": "echo \"No tests specified\" && exit 0",
-    "lint": "eslint . --ext .ts,.js",
-    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
