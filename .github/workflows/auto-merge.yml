@@ -26,22 +26,36 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        # Get PR reviews
+        # Get PR reviews and author info
         REVIEWS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '.reviews[] | select(.state == "APPROVED") | .author.login')
+        PR_AUTHOR=$(gh pr view ${{ github.event.pull_request.number }} --json author --jq '.author.login')
         
         # Check if any admin has approved
         ADMINS=("reccaller-ai" "${{ github.repository_owner }}")
         APPROVED_BY_ADMIN=false
         
+        # Check if PR author is an admin (self-approval allowed for admins)
         for admin in "${ADMINS[@]}"; do
-          if echo "$REVIEWS" | grep -q "^$admin$"; then
+          if [ "$PR_AUTHOR" = "$admin" ]; then
+            echo "PR author $PR_AUTHOR is an admin - self-approval allowed"
             APPROVED_BY_ADMIN=true
             break
           fi
         done
         
+        # If not self-approved, check for admin reviews
+        if [ "$APPROVED_BY_ADMIN" = "false" ]; then
+          for admin in "${ADMINS[@]}"; do
+            if echo "$REVIEWS" | grep -q "^$admin$"; then
+              APPROVED_BY_ADMIN=true
+              break
+            fi
+          done
+        fi
+        
         echo "approved_by_admin=$APPROVED_BY_ADMIN" >> $GITHUB_OUTPUT
         echo "Reviews: $REVIEWS"
+        echo "PR Author: $PR_AUTHOR"
         echo "Approved by admin: $APPROVED_BY_ADMIN"
         
     - name: Check for /approve command

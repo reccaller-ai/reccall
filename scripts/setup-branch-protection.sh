@@ -36,12 +36,12 @@ cat > /tmp/branch-protection.json << EOF
     "strict": true,
     "contexts": ["ci/build-and-test", "ci/lint", "ci/security-scan"]
   },
-  "enforce_admins": true,
+  "enforce_admins": false,
   "required_pull_request_reviews": {
     "required_approving_review_count": 1,
     "dismiss_stale_reviews": true,
     "require_code_owner_reviews": true,
-    "require_last_push_approval": true
+    "require_last_push_approval": false
   },
   "restrictions": {
     "users": [],
