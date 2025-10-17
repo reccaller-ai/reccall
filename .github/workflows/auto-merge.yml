@@ -63,8 +63,21 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        # Get PR comments
-        COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[] | select(.author.login | test("^reccaller-ai$|^${{ github.repository_owner }}$|^ishaileshpant$")) | .body')
+        # Define admin users (same as in approval check)
+        ADMINS=("reccaller-ai" "${{ github.repository_owner }}" "ishaileshpant")
+        
+        # Build regex pattern for admin users
+        ADMIN_PATTERN=""
+        for admin in "${ADMINS[@]}"; do
+          if [ -z "$ADMIN_PATTERN" ]; then
+            ADMIN_PATTERN="^$admin$"
+          else
+            ADMIN_PATTERN="$ADMIN_PATTERN|^$admin$"
+          fi
+        done
+        
+        # Get PR comments from admin users only
+        COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq ".comments[] | select(.author.login | test(\"$ADMIN_PATTERN\")) | .body")
         
         # Check for /approve command
         if echo "$COMMENTS" | grep -q "/approve"; then
