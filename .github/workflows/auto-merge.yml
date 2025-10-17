@@ -12,6 +12,8 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
+  actions: write
+  statuses: write
 
 jobs:
   auto-merge:
@@ -219,8 +221,12 @@ jobs:
       run: |
         echo "🚀 Auto-merging PR #${{ steps.get-pr-number.outputs.pr_number }}"
         
-        # Merge PR with admin privileges
-        gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch --admin
+        # Merge PR using GitHub API with proper authentication
+        gh api repos/${{ github.repository }}/pulls/${{ steps.get-pr-number.outputs.pr_number }}/merge \
+          --method PUT \
+          --field merge_method=squash \
+          --field commit_title="${{ github.event.pull_request.title || github.event.issue.title }}" \
+          --field commit_message="Auto-merged via /approve command"
         
         # Add comment
         gh pr comment ${{ steps.get-pr-number.outputs.pr_number }} --body "✅ **PR merged successfully!** Auto-merged via /approve command."
