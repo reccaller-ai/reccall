@@ -152,8 +152,8 @@ jobs:
       run: |
         echo "🚀 Auto-merging PR #${{ steps.get-pr-number.outputs.pr_number }}"
         
-        # Try to merge PR with force flag to bypass branch protection
-        gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch --admin --force
+        # Merge PR with admin privileges
+        gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch --admin
         
         # Add comment
         gh pr comment ${{ steps.get-pr-number.outputs.pr_number }} --body "✅ **PR merged successfully!** Auto-merged via /approve command."
