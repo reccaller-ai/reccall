@@ -12,6 +12,9 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
+  actions: write
+  statuses: write
+  checks: write
 
 jobs:
   auto-merge:
@@ -31,6 +34,35 @@ jobs:
         
     - name: Checkout code
       uses: actions/checkout@v4
+      
+    - name: Check repository permissions
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        echo "🔍 Checking repository permissions..."
+        
+        # Check if we can access the repository
+        if gh repo view ${{ github.repository }} > /dev/null 2>&1; then
+          echo "✅ Repository access: OK"
+        else
+          echo "❌ Repository access: FAILED"
+        fi
+        
+        # Check if we can view the PR
+        if gh pr view ${{ steps.get-pr-number.outputs.pr_number }} > /dev/null 2>&1; then
+          echo "✅ PR access: OK"
+        else
+          echo "❌ PR access: FAILED"
+        fi
+        
+        # Check branch protection status
+        echo "🔒 Checking branch protection..."
+        PROTECTION_STATUS=$(gh api repos/${{ github.repository }}/branches/main/protection --jq '.required_status_checks.contexts // []' 2>/dev/null || echo "[]")
+        echo "Required status checks: $PROTECTION_STATUS"
+        
+        # Check current user permissions
+        echo "👤 Current user: $(gh api user --jq '.login')"
+        echo "🏢 Repository owner: ${{ github.repository_owner }}"
       
     - name: Check if PR is approved by admin
       id: check-approval
@@ -219,11 +251,46 @@ jobs:
       run: |
         echo "🚀 Auto-merging PR #${{ steps.get-pr-number.outputs.pr_number }}"
         
-        # Merge PR with admin privileges
-        gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch --admin
+        # Try multiple merge strategies in order of preference
+        MERGE_SUCCESS=false
         
-        # Add comment
-        gh pr comment ${{ steps.get-pr-number.outputs.pr_number }} --body "✅ **PR merged successfully!** Auto-merged via /approve command."
+        # Strategy 1: Try gh pr merge with admin privileges
+        echo "📋 Attempting merge with admin privileges..."
+        if gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch --admin; then
+          echo "✅ Merge successful with admin privileges"
+          MERGE_SUCCESS=true
+        else
+          echo "❌ Admin merge failed, trying GitHub API..."
+          
+          # Strategy 2: Try GitHub API merge
+          if gh api repos/${{ github.repository }}/pulls/${{ steps.get-pr-number.outputs.pr_number }}/merge \
+            --method PUT \
+            --field merge_method=squash \
+            --field commit_title="${{ github.event.pull_request.title || github.event.issue.title }}" \
+            --field commit_message="Auto-merged via /approve command"; then
+            echo "✅ Merge successful with GitHub API"
+            MERGE_SUCCESS=true
+          else
+            echo "❌ GitHub API merge failed, trying basic merge..."
+            
+            # Strategy 3: Try basic merge without admin flag
+            if gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch; then
+              echo "✅ Merge successful with basic merge"
+              MERGE_SUCCESS=true
+            else
+              echo "❌ All merge strategies failed"
+            fi
+          fi
+        fi
+        
+        # Provide feedback based on merge result
+        if [ "$MERGE_SUCCESS" = "true" ]; then
+          echo "🎉 PR merged successfully!"
+          gh pr comment ${{ steps.get-pr-number.outputs.pr_number }} --body "✅ **PR merged successfully!** Auto-merged via /approve command."
+        else
+          echo "⚠️  Auto-merge failed - manual intervention required"
+          gh pr comment ${{ steps.get-pr-number.outputs.pr_number }} --body "⚠️ **Auto-merge failed** - The PR meets all conditions but couldn't be merged automatically due to permissions. Please merge manually or check repository settings.\n\n**Conditions met:**\n- ✅ Admin approval\n- ✅ /approve command\n- ✅ All CI checks passing\n\n**Possible solutions:**\n1. Check branch protection settings\n2. Verify GitHub Actions permissions\n3. Merge manually"
+        fi
         
     - name: Comment if conditions not met
       if: steps.check-approval.outputs.approved_by_admin == 'false' || steps.check-approve-command.outputs.approve_command_found == 'false' || steps.check-ci.outputs.ALL_CHECKS_PASSING == 'false'
