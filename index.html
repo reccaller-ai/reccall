@@ -328,8 +328,12 @@ npm run build</div>
             const copyBtn = document.createElement('button');
             copyBtn.className = 'copy-btn';
             copyBtn.textContent = 'Copy';
+            
+            // Store the original text content before adding the button
+            const originalText = block.textContent.trim();
+            
             copyBtn.onclick = () => {
-                navigator.clipboard.writeText(block.textContent).then(() => {
+                navigator.clipboard.writeText(originalText).then(() => {
                     copyBtn.textContent = 'Copied!';
                     setTimeout(() => copyBtn.textContent = 'Copy', 2000);
                 });
