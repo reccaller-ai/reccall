@@ -24,11 +24,11 @@ detect_cursor_config() {
     case "$(uname -s)" in
         Darwin*)
             CURSOR_CONFIG_DIR="$HOME/.cursor"
-            CURSOR_CONFIG_FILE="$CURSOR_CONFIG_DIR/config.json"
+            CURSOR_CONFIG_FILE="$CURSOR_CONFIG_DIR/mcp.json"
             ;;
         Linux*)
             CURSOR_CONFIG_DIR="$HOME/.cursor"
-            CURSOR_CONFIG_FILE="$CURSOR_CONFIG_DIR/config.json"
+            CURSOR_CONFIG_FILE="$CURSOR_CONFIG_DIR/mcp.json"
             ;;
         CYGWIN*|MINGW32*|MSYS*|MINGW*)
             CURSOR_CONFIG_DIR="$APPDATA/Cursor/User/globalStorage/saoudrizwan.claude-dev/settings"

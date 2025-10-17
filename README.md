@@ -77,20 +77,12 @@ If you installed manually or need to configure manually, you need to configure C
 
 **macOS:**
 ```
-~/.cursor/config.json
-```
-or
-```
-~/Library/Application Support/Cursor/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
+~/.cursor/mcp.json
 ```
 
 **Linux:**
 ```
-~/.cursor/config.json
-```
-or
-```
-~/.config/Cursor/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
+~/.cursor/mcp.json
 ```
 
 **Windows:**
@@ -113,7 +105,7 @@ Add this to your configuration file (replace `/FULL/PATH/TO/reccall` with your a
 }
 ```
 
-**Example (macOS/Linux):**
+**Example (macOS/Linux - ~/.cursor/mcp.json):**
 ```json
 {
   "mcpServers": {
@@ -125,7 +117,7 @@ Add this to your configuration file (replace `/FULL/PATH/TO/reccall` with your a
 }
 ```
 
-**Example (Windows):**
+**Example (Windows - cline_mcp_settings.json):**
 ```json
 {
   "mcpServers": {
