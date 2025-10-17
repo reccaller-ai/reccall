@@ -152,15 +152,11 @@ jobs:
       run: |
         echo "🚀 Auto-merging PR #${{ steps.get-pr-number.outputs.pr_number }}"
         
-        # Enable auto-merge using GitHub API
-        gh api repos/${{ github.repository }}/pulls/${{ steps.get-pr-number.outputs.pr_number }}/merge \
-          --method PUT \
-          --field merge_method=squash \
-          --field commit_title="${{ github.event.pull_request.title || github.event.issue.title }}" \
-          --field commit_message="Auto-merged via /approve command"
+        # Merge PR directly (bypass auto-merge restrictions)
+        gh pr merge ${{ steps.get-pr-number.outputs.pr_number }} --squash --delete-branch
         
         # Add comment
-        gh pr comment ${{ steps.get-pr-number.outputs.pr_number }} --body "✅ **Auto-merge enabled!** This PR will be automatically merged once all checks pass."
+        gh pr comment ${{ steps.get-pr-number.outputs.pr_number }} --body "✅ **PR merged successfully!** Auto-merged via /approve command."
         
     - name: Comment if conditions not met
       if: steps.check-approval.outputs.approved_by_admin == 'false' || steps.check-approve-command.outputs.approve_command_found == 'false' || steps.check-ci.outputs.ALL_CHECKS_PASSING == 'false'
