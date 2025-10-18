@@ -288,6 +288,6 @@ reccall() {
 export -f reccall
 
 # If script is run directly, execute the command
-if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
     reccall "$@"
 fi
