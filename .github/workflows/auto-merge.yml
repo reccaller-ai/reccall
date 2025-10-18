@@ -192,7 +192,7 @@ jobs:
           # Get all status checks and filter for required ones
           ALL_CHECKS=$(gh pr view ${{ steps.get-pr-number.outputs.pr_number }} --json statusCheckRollup --jq '.statusCheckRollup[]')
           
-          # Check Quick PR Check
+          # Check for required CI checks
           BUILD_CHECK=$(echo "$ALL_CHECKS" | jq 'select(.name == "Quick PR Check") | {name: .name, state: .state, conclusion: .conclusion}')
           
           echo "Build check: $BUILD_CHECK"
@@ -205,12 +205,12 @@ jobs:
             BUILD_CONCLUSION=$(echo "$BUILD_CHECK" | jq -r '.conclusion // "PENDING"')
             if [ "$BUILD_STATE" = "SUCCESS" ] || [ "$BUILD_CONCLUSION" = "SUCCESS" ]; then
               BUILD_SUCCESS=true
-              echo "✅ Quick PR Check is successful"
+              echo "✅ Required CI check is successful"
             else
-              echo "⏳ Quick PR Check: state=$BUILD_STATE, conclusion=$BUILD_CONCLUSION"
+              echo "⏳ Required CI check: state=$BUILD_STATE, conclusion=$BUILD_CONCLUSION"
             fi
           else
-            echo "⏳ Quick PR Check not found yet"
+            echo "⏳ Required CI checks not found yet"
           fi
           
           if [ "$BUILD_SUCCESS" = "true" ]; then
