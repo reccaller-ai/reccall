@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RecCall - Context Shortcuts for Cursor IDE</title>
-    <meta name="description" content="Record and recall context shortcuts in Cursor IDE. Boost your AI development workflow with smart context management.">
+    <title>RecCall - Universal Context Shortcuts for AI IDEs</title>
+    <meta name="description" content="Record and recall context shortcuts across AI IDEs and environments. Works with Cursor, VSCode, Warp, and CLI. Boost your development workflow with smart context management.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -264,7 +264,7 @@
     <div class="container">
         <div class="hero">
             <h1>RecCall</h1>
-            <p>Record and recall context shortcuts in Cursor IDE. Boost your AI development workflow with smart context management.</p>
+            <p>Record and recall context shortcuts across AI IDEs and environments. Works with Cursor, VSCode, Warp, and CLI. Boost your development workflow with smart context management.</p>
         </div>
 
         <div class="install-section">
@@ -275,30 +275,52 @@
         </div>
 
         <div class="section">
+            <h2>🌐 Multi-Platform Support</h2>
+            <div class="features">
+                <div class="feature">
+                    <h4>🎯 Cursor IDE</h4>
+                    <p>Native MCP integration with AI chat interface. Use natural language to record and recall shortcuts.</p>
+                </div>
+                <div class="feature">
+                    <h4>💻 VSCode</h4>
+                    <p>Full extension with command palette, keyboard shortcuts, and auto-insert functionality.</p>
+                </div>
+                <div class="feature">
+                    <h4>⚡ Warp Terminal</h4>
+                    <p>Shell integration with rich output, tab completion, and quick command-line access.</p>
+                </div>
+                <div class="feature">
+                    <h4>🖥️ CLI Tool</h4>
+                    <p>Complete command-line interface with all features: record, call, search, import/export.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
             <h2>📋 What You Get</h2>
             <div class="features">
                 <div class="feature">
-                    <h4>Record Shortcuts</h4>
-                    <p>Save complex instructions as simple shortcuts you can recall anytime.</p>
+                    <h4>Universal Data Sharing</h4>
+                    <p>All platforms share the same shortcuts. Create in one, use everywhere.</p>
                 </div>
                 <div class="feature">
                     <h4>Smart Recall</h4>
                     <p>Access your saved context with natural language or direct commands.</p>
                 </div>
                 <div class="feature">
-                    <h4>Cursor Integration</h4>
-                    <p>Works seamlessly with Cursor IDE's AI chat interface.</p>
+                    <h4>Cross-Platform Sync</h4>
+                    <p>Shortcuts created in Cursor are available in VSCode, Warp, and CLI instantly.</p>
                 </div>
                 <div class="feature">
                     <h4>🚀 Starter Pack</h4>
-                    <p>14 pre-loaded generic development recipes ready to use immediately.</p>
+                    <p>18 pre-loaded generic development recipes ready to use immediately.</p>
                 </div>
             </div>
         </div>
 
         <div class="section">
             <h2>🎁 Starter Pack Included</h2>
-            <p>RecCall comes with 14 carefully crafted generic development recipes that work across any technology stack:</p>
+            <p>RecCall comes with 18 carefully crafted generic development recipes that work across any technology stack:</p>
             
             <div class="starter-pack-grid">
                 <div class="starter-pack-category">
@@ -334,14 +356,28 @@
                     <p><strong>code-review:</strong> Comprehensive code review checklist</p>
                     <p><strong>security-review:</strong> Security-focused code review</p>
                 </div>
+                
+                <div class="starter-pack-category">
+                    <h4>📋 Project Management (3 recipes)</h4>
+                    <p><strong>create-pr:</strong> Pull request creation guidelines</p>
+                    <p><strong>landing-update:</strong> Update landing page and sync documentation</p>
+                    <p><strong>update-pr:</strong> Update current branch PR and keep docs in sync</p>
+                </div>
             </div>
             
             <h3>💡 Usage Examples</h3>
-            <p>Try these commands in Cursor after installation:</p>
-            <div class="code-block">call component-development</div>
-            <div class="code-block">call api-testing</div>
-            <div class="code-block">call deploy</div>
-            <div class="code-block">rec_reload_starter_pack</div>
+            <p>Try these commands across all platforms:</p>
+            <div class="code-block"># Cursor IDE (MCP)
+call component-development
+
+# VSCode (Extension)
+Ctrl+Shift+C → Select "component-development"
+
+# Warp Terminal
+reccall call component-development
+
+# CLI Tool
+reccall call component-development</div>
         </div>
 
         <div class="section">
@@ -349,20 +385,42 @@
             
             <h3>1. Record a Shortcut</h3>
             <p>Save a complex instruction as a shortcut:</p>
-            <div class="code-block">rec "deploy" "build the project, run tests, and deploy to production"</div>
+            <div class="code-block"># Cursor IDE (MCP)
+rec "deploy" "build the project, run tests, and deploy to production"
+
+# VSCode (Extension)
+Ctrl+Shift+R → Enter shortcut name and context
+
+# Warp Terminal / CLI
+reccall rec deploy "build the project, run tests, and deploy to production"</div>
             
             <h3>2. Recall the Shortcut</h3>
-            <p>Use it in Cursor chat:</p>
-            <div class="code-block">call deploy</div>
+            <p>Use it across all platforms:</p>
+            <div class="code-block"># Cursor IDE (MCP)
+call deploy
+
+# VSCode (Extension)
+Ctrl+Shift+C → Select "deploy"
+
+# Warp Terminal / CLI
+reccall call deploy</div>
             
             <h3>3. Manage Shortcuts</h3>
             <p>List all your shortcuts:</p>
-            <div class="code-block">rec_list</div>
+            <div class="code-block"># Cursor IDE (MCP)
+rec_list
+
+# VSCode (Extension)
+Ctrl+Shift+L
+
+# Warp Terminal / CLI
+reccall list</div>
         </div>
 
         <div class="section">
             <h2>🛠️ Available Commands</h2>
             
+            <h3>Cursor IDE (MCP)</h3>
             <p><span class="command">rec "name" "instruction"</span> - Record a new shortcut</p>
             <p><span class="command">call name</span> - Recall a shortcut</p>
             <p><span class="command">rec_list</span> - List all shortcuts</p>
@@ -370,6 +428,22 @@
             <p><span class="command">rec_delete "name"</span> - Delete a shortcut</p>
             <p><span class="command">rec_purge</span> - Delete all shortcuts</p>
             <p><span class="command">rec_reload_starter_pack</span> - Reload starter pack recipes</p>
+            
+            <h3>VSCode Extension</h3>
+            <p><span class="command">Ctrl+Shift+R</span> - Record a new shortcut</p>
+            <p><span class="command">Ctrl+Shift+C</span> - Recall a shortcut</p>
+            <p><span class="command">Ctrl+Shift+L</span> - List all shortcuts</p>
+            <p><span class="command">Command Palette</span> - Access all RecCall commands</p>
+            
+            <h3>Warp Terminal / CLI</h3>
+            <p><span class="command">reccall rec name context</span> - Record a new shortcut</p>
+            <p><span class="command">reccall call name</span> - Recall a shortcut</p>
+            <p><span class="command">reccall list</span> - List all shortcuts</p>
+            <p><span class="command">reccall search query</span> - Search shortcuts</p>
+            <p><span class="command">reccall update name context</span> - Update a shortcut</p>
+            <p><span class="command">reccall delete name</span> - Delete a shortcut</p>
+            <p><span class="command">reccall purge --yes</span> - Delete all shortcuts</p>
+            <p><span class="command">reccall import/export file</span> - Backup and restore</p>
         </div>
 
         <div class="section">
@@ -394,22 +468,30 @@
             <h2>🔧 Manual Setup</h2>
             <p>If you prefer manual installation:</p>
             
-            <h3>1. Clone and Install</h3>
-            <div class="code-block">git clone https://github.com/reccaller-ai/reccall.git
-cd reccall
-npm install
-npm run build</div>
+            <h3>1. Install Globally</h3>
+            <div class="code-block">npm install -g reccall</div>
             
-            <h3>2. Configure Cursor</h3>
+            <h3>2. Configure Each Platform</h3>
+            
+            <h4>Cursor IDE (MCP)</h4>
             <p>Add to your Cursor MCP configuration:</p>
             <div class="code-block">{
   "mcpServers": {
     "reccall": {
-      "command": "node",
-      "args": ["/path/to/reccall/index.js"]
+      "command": "reccall-mcp",
+      "args": []
     }
   }
 }</div>
+            
+            <h4>VSCode Extension</h4>
+            <div class="code-block">code --install-extension reccall</div>
+            
+            <h4>Warp Terminal</h4>
+            <div class="code-block">echo 'source $(which reccall-warp.sh)' >> ~/.zshrc</div>
+            
+            <h4>CLI Tool</h4>
+            <p>Available globally as <code>reccall</code> command after installation.</p>
         </div>
 
         <div class="footer">

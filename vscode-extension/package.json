@@ -1,0 +1,159 @@
+{
+  "name": "reccall",
+  "displayName": "RecCall",
+  "description": "Record and call context shortcuts in VSCode",
+  "version": "1.0.0",
+  "publisher": "reccaller-ai",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets",
+    "Productivity"
+  ],
+  "keywords": [
+    "shortcuts",
+    "context",
+    "ai",
+    "productivity",
+    "snippets"
+  ],
+  "activationEvents": [
+    "onCommand:reccall.record",
+    "onCommand:reccall.call",
+    "onCommand:reccall.list",
+    "onCommand:reccall.search"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "reccall.record",
+        "title": "Record Shortcut",
+        "category": "RecCall"
+      },
+      {
+        "command": "reccall.call",
+        "title": "Call Shortcut",
+        "category": "RecCall"
+      },
+      {
+        "command": "reccall.list",
+        "title": "List Shortcuts",
+        "category": "RecCall"
+      },
+      {
+        "command": "reccall.search",
+        "title": "Search Shortcuts",
+        "category": "RecCall"
+      },
+      {
+        "command": "reccall.update",
+        "title": "Update Shortcut",
+        "category": "RecCall"
+      },
+      {
+        "command": "reccall.delete",
+        "title": "Delete Shortcut",
+        "category": "RecCall"
+      },
+      {
+        "command": "reccall.reloadStarterPack",
+        "title": "Reload Starter Pack",
+        "category": "RecCall"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "reccall.record",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "reccall.call",
+        "key": "ctrl+shift+c",
+        "mac": "cmd+shift+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "reccall.list",
+        "key": "ctrl+shift+l",
+        "mac": "cmd+shift+l"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "reccall.record",
+          "group": "reccall",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "reccall.call",
+          "group": "reccall",
+          "when": "editorTextFocus"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "reccall.record",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "reccall.call",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "reccall.list"
+        },
+        {
+          "command": "reccall.search"
+        },
+        {
+          "command": "reccall.update"
+        },
+        {
+          "command": "reccall.delete"
+        },
+        {
+          "command": "reccall.reloadStarterPack"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "RecCall",
+      "properties": {
+        "reccall.storagePath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path for RecCall storage file (default: ~/.reccall.json)"
+        },
+        "reccall.autoInsert": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically insert called shortcuts into the editor"
+        },
+        "reccall.showNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notifications for RecCall operations"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "commander": "^12.0.0"
+  }
+}
