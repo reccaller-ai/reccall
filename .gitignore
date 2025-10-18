@@ -112,5 +112,21 @@ lib/
 *.js.map
 *.d.ts.map
 
-# Development workflow scripts
-scripts/pre-commit.sh
+# VSCode extension build artifacts
+vscode-extension/out/
+vscode-extension/*.vsix
+vscode-extension/package-lock.json
+
+# Temporary files
+*.tmp
+*.temp
+*.backup
+*.bak
+
+# Test directories
+test-*/
+tmp-*/
+temp-*/
+
+# Development workflow scripts (keep the scripts, just ignore if they're temporary)
+# scripts/pre-commit.sh

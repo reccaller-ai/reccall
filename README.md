@@ -1,34 +1,44 @@
 # RecCall
 
-**Rec**ord and **Call** context shortcuts in Cursor IDE with MCP.
+**Rec**ord and **Call** context shortcuts across AI IDEs and environments.
 
-A simple Model Context Protocol (MCP) server that lets you record context/instructions once and call them instantly in your AI conversations.
+A universal context shortcut system that works with Cursor IDE (MCP), VSCode (extension), Warp Terminal (shell integration), and CLI. Record context/instructions once and call them instantly across all your development tools.
 
 ## 🎯 Features
 
+### Universal Commands
 - **rec**: Record a shortcut with context/instructions
-- **rec_list**: List all stored shortcuts (equivalent to `rec -l`)
-- **rec_update**: Update/replace an existing shortcut (equivalent to `rec -u`)
+- **rec_list**: List all stored shortcuts
+- **rec_update**: Update/replace an existing shortcut
 - **rec_delete**: Delete a shortcut (idempotent operation)
 - **rec_purge**: Purge all shortcuts (with confirmation)
 - **call**: Call (retrieve) stored context by shortcut name
 - **rec_reload_starter_pack**: Reload starter pack recipes
-- **Persistent Storage**: All shortcuts saved to `~/.reccall.json`
+
+### Multi-Platform Support
+- **🖥️ Cursor IDE**: MCP server integration
+- **💻 VSCode**: Native extension with Command Palette
+- **⚡ Warp Terminal**: Shell integration with colored output
+- **🔧 CLI**: Command-line interface for any terminal
+
+### Core Features
+- **Universal Storage**: All shortcuts saved to `~/.reccall.json` (shared across platforms)
+- **Cross-Platform Sync**: Create shortcuts in one tool, use in all others
 - **Smart Duplicate Detection**: Warns when creating duplicate shortcuts
 - **Enhanced Error Handling**: Clear feedback for non-existent shortcuts
-- **🚀 Starter Pack**: 12 pre-loaded common development recipes
+- **🚀 Starter Pack**: 18 pre-loaded common development recipes
 
 ## 📦 Installation
 
 ### Prerequisites
 
 - Node.js 18 or higher
-- Cursor IDE with MCP support
 - npm or yarn
+- One or more of: Cursor IDE, VSCode, Warp Terminal, or any terminal
 
 ### Quick Setup
 
-**Option 1: Automated Installation (Recommended)**
+**Single Command Installation (Recommended)**
 ```bash
 curl -sfL https://reccaller.ai/install.sh | sh -
 ```
@@ -36,7 +46,7 @@ curl -sfL https://reccaller.ai/install.sh | sh -
 The automated installer provides:
 - 🔍 **Prerequisites Check**: Verifies Node.js 18+ and npm
 - 📦 **Automatic Download**: Clones and builds RecCall from GitHub
-- ⚙️ **Smart Configuration**: Automatically configures Cursor IDE
+- ⚙️ **Multi-Platform Configuration**: Automatically configures all available platforms
 - 🔄 **Update Support**: Updates existing installations seamlessly
 - 💾 **Backup Protection**: Creates backups before modifying configs
 - 🛠️ **Cross-Platform**: Works on macOS, Linux, and Windows
@@ -349,12 +359,39 @@ This watches for TypeScript changes and recompiles automatically.
 ### Project Structure
 ```
 reccall/
-├── index.ts          # Main server code
-├── index.js          # Compiled JavaScript (generated)
-├── package.json      # Dependencies and scripts
-├── tsconfig.json     # TypeScript configuration
-├── .gitignore        # Git ignore rules
-└── README.md         # This file
+├── docs/                    # Documentation
+│   ├── README.md           # Documentation index
+│   ├── README-MULTIPLATFORM.md  # Multi-platform guide
+│   ├── development/        # Development docs
+│   └── contributing/       # Contributing guidelines
+├── scripts/                # Development scripts
+├── src/                    # Source code
+├── starter-pack/          # Default shortcuts
+├── vscode-extension/      # VSCode extension
+├── warp-integration/      # Warp terminal integration
+├── index.ts               # Main MCP server
+├── package.json           # Dependencies and scripts
+├── tsconfig.json          # TypeScript configuration
+├── install.sh             # Multi-platform installer
+└── README.md              # This file
+```
+
+## 📖 Documentation
+
+### Quick Reference
+- **[Multi-Platform Guide](docs/README-MULTIPLATFORM.md)** - Comprehensive usage guide for all platforms
+- **[Development Workflow](docs/development/DEV_WORKFLOW.md)** - Development setup and processes
+- **[Contributing Guide](docs/contributing/BRANCH_NAMING.md)** - Branch naming and contribution guidelines
+
+### Documentation Structure
+```
+docs/
+├── README.md                    # Documentation index
+├── README-MULTIPLATFORM.md     # Multi-platform usage guide
+├── development/
+│   └── DEV_WORKFLOW.md         # Development workflow
+└── contributing/
+    └── BRANCH_NAMING.md        # Branch naming conventions
 ```
 
 ## 🐛 Troubleshooting
