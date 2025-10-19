@@ -7,7 +7,14 @@
     "git",
     "deployment",
     "debugging",
-    "code-review"
+    "code-review",
+    "testing",
+    "database",
+    "security",
+    "devops",
+    "frontend",
+    "backend",
+    "project-management"
   ],
   "recipes": [
     {
@@ -65,6 +72,66 @@
     {
       "file": "code-review/security-review.json",
       "category": "code-review"
+    },
+    {
+      "file": "testing/unit-tests.json",
+      "category": "testing"
+    },
+    {
+      "file": "testing/integration-tests.json",
+      "category": "testing"
+    },
+    {
+      "file": "testing/test-coverage.json",
+      "category": "testing"
+    },
+    {
+      "file": "database/migrations.json",
+      "category": "database"
+    },
+    {
+      "file": "database/query-optimization.json",
+      "category": "database"
+    },
+    {
+      "file": "security/authentication.json",
+      "category": "security"
+    },
+    {
+      "file": "security/authorization.json",
+      "category": "security"
+    },
+    {
+      "file": "devops/monitoring.json",
+      "category": "devops"
+    },
+    {
+      "file": "devops/logging.json",
+      "category": "devops"
+    },
+    {
+      "file": "frontend/ui-components.json",
+      "category": "frontend"
+    },
+    {
+      "file": "frontend/accessibility.json",
+      "category": "frontend"
+    },
+    {
+      "file": "backend/api-design.json",
+      "category": "backend"
+    },
+    {
+      "file": "backend/microservices.json",
+      "category": "backend"
+    },
+    {
+      "file": "project-management/estimation.json",
+      "category": "project-management"
+    },
+    {
+      "file": "project-management/communication.json",
+      "category": "project-management"
     }
   ]
 }

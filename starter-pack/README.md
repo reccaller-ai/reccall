@@ -24,9 +24,31 @@ starter-pack/
 ├── debugging/                 # Debugging shortcuts
 │   ├── debug.json
 │   └── performance-debug.json
-└── code-review/               # Code review shortcuts
-    ├── code-review.json
-    └── security-review.json
+├── code-review/               # Code review shortcuts
+│   ├── code-review.json
+│   └── security-review.json
+├── testing/                   # Testing shortcuts
+│   ├── unit-tests.json
+│   ├── integration-tests.json
+│   └── test-coverage.json
+├── database/                  # Database shortcuts
+│   ├── migrations.json
+│   └── query-optimization.json
+├── security/                  # Security shortcuts
+│   ├── authentication.json
+│   └── authorization.json
+├── devops/                    # DevOps shortcuts
+│   ├── monitoring.json
+│   └── logging.json
+├── frontend/                  # Frontend shortcuts
+│   ├── ui-components.json
+│   └── accessibility.json
+├── backend/                   # Backend shortcuts
+│   ├── api-design.json
+│   └── microservices.json
+└── project-management/        # Project management shortcuts
+    ├── estimation.json
+    └── communication.json
 ```
 
 ## 🎯 Categories
@@ -54,6 +76,35 @@ starter-pack/
 ### Code Review
 - **code-review**: Comprehensive code review checklist
 - **security-review**: Security-focused code review
+
+### Testing
+- **unit-tests**: Write comprehensive unit tests with proper coverage
+- **integration-tests**: Create integration tests for component interactions
+- **test-coverage**: Analyze and improve test coverage
+
+### Database
+- **migrations**: Create and manage database migrations safely
+- **query-optimization**: Optimize database queries for performance
+
+### Security
+- **authentication**: Implement secure authentication mechanisms
+- **authorization**: Implement proper authorization and access control
+
+### DevOps
+- **monitoring**: Set up comprehensive monitoring and alerting
+- **logging**: Implement comprehensive logging strategies
+
+### Frontend
+- **ui-components**: Create reusable and accessible UI components
+- **accessibility**: Implement web accessibility (a11y) best practices
+
+### Backend
+- **api-design**: Design and implement RESTful APIs with best practices
+- **microservices**: Design and implement microservices architecture
+
+### Project Management
+- **estimation**: Provide accurate project and task estimation
+- **communication**: Facilitate effective team communication
 
 ## 🚀 Usage
 
