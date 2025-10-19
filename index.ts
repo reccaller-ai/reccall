@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const STORAGE_FILE = path.join(os.homedir(), '.reccall.json');
-const STARTER_PACK_DIR = path.join(__dirname, 'starter-pack');
+const STARTER_PACK_DIR = path.join(__dirname, '..', 'starter-pack');
 
 // Load starter pack recipes
 async function loadStarterPack(): Promise<Record<string, string>> {
@@ -23,8 +23,12 @@ async function loadStarterPack(): Promise<Record<string, string>> {
   
   try {
     const manifestPath = path.join(STARTER_PACK_DIR, 'manifest.json');
+    console.log('Loading starter pack from:', STARTER_PACK_DIR);
+    console.log('Manifest path:', manifestPath);
+    
     const manifestData = await fs.readFile(manifestPath, 'utf-8');
     const manifest = JSON.parse(manifestData);
+    console.log('Total recipes in manifest:', manifest.recipes.length);
     
     for (const recipe of manifest.recipes) {
       try {
@@ -32,6 +36,7 @@ async function loadStarterPack(): Promise<Record<string, string>> {
         const recipeData = await fs.readFile(recipePath, 'utf-8');
         const recipeObj = JSON.parse(recipeData);
         shortcuts[recipeObj.shortcut] = recipeObj.context;
+        console.log('✓ Loaded:', recipeObj.shortcut);
       } catch (error) {
         console.error(`Failed to load recipe ${recipe.file}:`, error);
       }
@@ -40,6 +45,7 @@ async function loadStarterPack(): Promise<Record<string, string>> {
     console.error('Failed to load starter pack:', error);
   }
   
+  console.log('Total shortcuts loaded:', Object.keys(shortcuts).length);
   return shortcuts;
 }
 
