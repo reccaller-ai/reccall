@@ -1,0 +1,6 @@
+{
+  "shortcut": "ui-components",
+  "context": "When creating UI components: follow design system principles and consistency, implement proper accessibility (ARIA labels, keyboard navigation, screen reader support), use semantic HTML elements, implement responsive design for all screen sizes, use proper TypeScript types and interfaces, implement proper error states and loading states, use consistent naming conventions and file structure, implement proper prop validation and documentation, use CSS-in-JS or CSS modules for styling, implement proper event handling and state management, use proper testing strategies (unit, integration, visual regression), and ensure components are reusable and composable. Best practices: accessibility, responsive design, TypeScript, testing, and maintainability.",
+  "category": "frontend",
+  "description": "Create reusable and accessible UI components with best practices"
+}

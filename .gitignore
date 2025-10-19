@@ -115,7 +115,9 @@ lib/
 # VSCode extension build artifacts
 vscode-extension/out/
 vscode-extension/*.vsix
-vscode-extension/package-lock.json
+
+# Note: Root package-lock.json should be committed for reproducible builds
+# VSCode extension package-lock.json can be ignored as it's a sub-project
 
 # Temporary files
 *.tmp

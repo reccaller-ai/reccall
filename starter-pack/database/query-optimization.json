@@ -1,0 +1,6 @@
+{
+  "shortcut": "query-optimization",
+  "context": "When optimizing database queries: analyze query execution plans, identify slow queries using profiling tools, add appropriate indexes for frequently queried columns, avoid N+1 query problems, use proper JOIN strategies, implement query result caching, optimize WHERE clauses and filtering, use pagination for large result sets, avoid SELECT * and fetch only needed columns, use prepared statements to prevent SQL injection, implement connection pooling, monitor query performance metrics, and consider denormalization for read-heavy workloads. Tools: query profilers, EXPLAIN plans, performance monitoring, and database-specific optimization features.",
+  "category": "database",
+  "description": "Optimize database queries for better performance and efficiency"
+}

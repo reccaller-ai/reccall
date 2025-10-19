@@ -26,7 +26,7 @@ A universal context shortcut system that works with Cursor IDE (MCP), VSCode (ex
 - **Cross-Platform Sync**: Create shortcuts in one tool, use in all others
 - **Smart Duplicate Detection**: Warns when creating duplicate shortcuts
 - **Enhanced Error Handling**: Clear feedback for non-existent shortcuts
-- **🚀 Starter Pack**: 18 pre-loaded common development recipes
+- **🚀 Starter Pack**: 29 pre-loaded common development recipes
 
 ## 📦 Installation
 
@@ -147,7 +147,7 @@ After adding the configuration, **completely restart Cursor** for the changes to
 
 ## 🚀 Starter Pack
 
-RecCall comes with a **starter pack** of 14 generic development recipes that are automatically loaded on first installation:
+RecCall comes with a **starter pack** of 29 generic development recipes that are automatically loaded on first installation:
 
 ### 📁 Categories
 
@@ -174,6 +174,35 @@ RecCall comes with a **starter pack** of 14 generic development recipes that are
 **Code Review (2 recipes)**
 - `code-review`: Comprehensive code review checklist
 - `security-review`: Security-focused code review
+
+**Testing (3 recipes)**
+- `unit-tests`: Write comprehensive unit tests with proper coverage
+- `integration-tests`: Test interaction between multiple components
+- `test-coverage`: Analyze test coverage and identify untested code paths
+
+**Database (2 recipes)**
+- `migrations`: Create and manage database migrations safely
+- `query-optimization`: Optimize database queries with execution plan analysis
+
+**Security (2 recipes)**
+- `authentication`: Implement secure authentication mechanisms
+- `authorization`: Implement authorization with role-based access control
+
+**DevOps (2 recipes)**
+- `monitoring`: Set up application performance monitoring
+- `logging`: Implement structured logging with consistent formats
+
+**Frontend (2 recipes)**
+- `ui-components`: Create UI components following design system principles
+- `accessibility`: Implement accessibility with semantic HTML and ARIA
+
+**Backend (2 recipes)**
+- `api-design`: Design APIs using RESTful principles and proper status codes
+- `microservices`: Implement microservices with proper service boundaries
+
+**Project Management (2 recipes)**
+- `estimation`: Provide accurate estimates by breaking down tasks
+- `communication`: Facilitate communication with clear channels and protocols
 
 ### 🔄 Managing the Starter Pack
 

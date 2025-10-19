@@ -1,0 +1,6 @@
+{
+  "shortcut": "test-coverage",
+  "context": "When analyzing test coverage: identify untested code paths and critical business logic, focus on covering edge cases and error conditions, ensure all public APIs have test coverage, prioritize testing complex algorithms and business rules, use coverage reports to find gaps in testing, aim for meaningful coverage over high percentages, test both positive and negative scenarios, ensure error handling code is tested, verify that all conditional branches are covered, test with various input types and ranges, and document any uncovered code with justification. Tools: coverage reports, mutation testing, static analysis, and manual review of critical paths.",
+  "category": "testing",
+  "description": "Analyze and improve test coverage to ensure comprehensive testing"
+}

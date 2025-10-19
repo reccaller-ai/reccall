@@ -1,0 +1,6 @@
+{
+  "shortcut": "integration-tests",
+  "context": "When writing integration tests: test the interaction between multiple components/modules, verify data flow through the system, test API endpoints with real database connections, use test databases with proper setup/teardown, test authentication and authorization flows, verify external service integrations with mocks, test error handling across component boundaries, ensure tests are isolated and don't affect each other, use realistic test data, test both success and failure scenarios, verify logging and monitoring integration, and test performance under realistic conditions. Focus on: API contracts, database operations, third-party integrations, authentication flows, and end-to-end user journeys.",
+  "category": "testing",
+  "description": "Create integration tests that verify component interactions and system behavior"
+}

@@ -1,0 +1,6 @@
+{
+  "shortcut": "unit-tests",
+  "context": "When writing unit tests: focus on testing individual functions/methods in isolation, use descriptive test names that explain the scenario, arrange-act-assert pattern, mock external dependencies, test both happy path and edge cases, aim for high code coverage but prioritize meaningful tests, use proper assertions with clear error messages, keep tests simple and focused on one behavior, avoid testing implementation details, use setup/teardown for test data, and ensure tests are fast and deterministic. Include tests for: normal operation, error conditions, boundary values, null/undefined inputs, and edge cases.",
+  "category": "testing",
+  "description": "Write comprehensive unit tests with proper coverage and best practices"
+}

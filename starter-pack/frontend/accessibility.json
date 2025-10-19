@@ -1,0 +1,6 @@
+{
+  "shortcut": "accessibility",
+  "context": "When implementing accessibility: use semantic HTML elements (header, nav, main, section, article), implement proper ARIA labels and roles, ensure keyboard navigation works for all interactive elements, provide alternative text for images and media, use proper color contrast ratios (WCAG AA/AAA), implement focus management and visible focus indicators, provide skip links for navigation, use descriptive link text and button labels, implement proper form labels and error messages, ensure screen reader compatibility, test with actual assistive technologies, implement responsive design for different devices, and follow WCAG 2.1 guidelines. Tools: axe-core, Lighthouse, WAVE, and manual testing with screen readers.",
+  "category": "frontend",
+  "description": "Implement web accessibility (a11y) best practices for inclusive design"
+}

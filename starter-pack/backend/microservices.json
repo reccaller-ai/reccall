@@ -1,0 +1,6 @@
+{
+  "shortcut": "microservices",
+  "context": "When implementing microservices: design services around business capabilities, implement proper service boundaries and domain separation, use API gateways for external communication, implement service discovery and registration, use circuit breakers for fault tolerance, implement proper data consistency patterns (eventual consistency, saga pattern), use message queues for asynchronous communication, implement proper monitoring and observability, use containerization and orchestration (Docker, Kubernetes), implement proper security (service-to-service authentication), use proper configuration management, implement proper testing strategies (contract testing, integration testing), and follow DevOps practices for deployment. Patterns: Domain-driven design, CQRS, event sourcing, and distributed systems patterns.",
+  "category": "backend",
+  "description": "Design and implement microservices architecture with proper patterns and practices"
+}

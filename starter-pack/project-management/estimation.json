@@ -1,0 +1,6 @@
+{
+  "shortcut": "estimation",
+  "context": "When providing estimates: break down tasks into smaller, manageable pieces, use historical data and similar past projects for reference, consider complexity, uncertainty, and risk factors, use multiple estimation techniques (story points, time-based, t-shirt sizing), involve the team in estimation discussions, account for dependencies and external factors, include buffer time for unexpected issues, consider different skill levels and experience, document assumptions and constraints, provide ranges rather than single point estimates, review and adjust estimates based on new information, and communicate estimate confidence levels. Techniques: Planning poker, three-point estimation, Delphi method, and historical analysis.",
+  "category": "project-management",
+  "description": "Provide accurate project and task estimation using proven techniques"
+}

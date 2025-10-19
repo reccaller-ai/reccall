@@ -1,0 +1,6 @@
+{
+  "shortcut": "api-design",
+  "context": "When designing APIs: use RESTful principles and HTTP methods correctly, implement proper status codes and error responses, use consistent URL patterns and resource naming, implement proper authentication and authorization, use versioning strategies (URL, header, or content negotiation), implement rate limiting and throttling, use proper content types and accept headers, implement pagination for list endpoints, use proper HTTP caching headers, implement comprehensive API documentation (OpenAPI/Swagger), use proper validation and error handling, implement logging and monitoring, and follow security best practices. Standards: REST principles, HTTP status codes, OpenAPI specification, and API versioning strategies.",
+  "category": "backend",
+  "description": "Design and implement RESTful APIs with best practices and standards"
+}

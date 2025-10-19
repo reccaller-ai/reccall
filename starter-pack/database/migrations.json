@@ -1,0 +1,6 @@
+{
+  "shortcut": "migrations",
+  "context": "When working with database migrations: always backup the database before running migrations, write reversible migrations when possible, test migrations on a copy of production data, use transactions for atomic operations, avoid breaking changes in a single migration, split large migrations into smaller chunks, include rollback procedures, validate data integrity after migrations, use proper indexing strategies, consider performance impact on large tables, document migration purposes and dependencies, version control all migration files, and test migrations in staging environment first. Best practices: incremental changes, data validation, performance testing, rollback planning, and comprehensive documentation.",
+  "category": "database",
+  "description": "Create and manage database migrations safely and efficiently"
+}

@@ -1,0 +1,6 @@
+{
+  "shortcut": "monitoring",
+  "context": "When setting up monitoring: implement application performance monitoring (APM), set up infrastructure monitoring for servers and services, configure log aggregation and analysis, implement health checks and uptime monitoring, set up error tracking and exception monitoring, configure alerting for critical metrics and thresholds, implement distributed tracing for microservices, monitor resource usage (CPU, memory, disk, network), set up business metrics and KPI tracking, implement synthetic monitoring for user journeys, configure security monitoring and intrusion detection, and establish monitoring dashboards and reporting. Tools: Prometheus, Grafana, ELK stack, New Relic, DataDog, and custom monitoring solutions.",
+  "category": "devops",
+  "description": "Set up comprehensive monitoring and alerting for applications and infrastructure"
+}

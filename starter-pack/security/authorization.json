@@ -1,0 +1,6 @@
+{
+  "shortcut": "authorization",
+  "context": "When implementing authorization: use principle of least privilege, implement role-based access control (RBAC), validate permissions on every request, use proper access control lists (ACLs), implement resource-level permissions, check authorization before processing requests, use secure token validation, implement proper session management, validate user roles and permissions, use secure API endpoints with proper authentication, implement audit logging for access attempts, use secure headers and CORS policies, validate all user inputs, and implement proper error handling without information leakage. Security patterns: RBAC, ABAC, OAuth2, JWT validation, and secure API design.",
+  "category": "security",
+  "description": "Implement proper authorization and access control mechanisms"
+}

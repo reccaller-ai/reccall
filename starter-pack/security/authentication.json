@@ -1,0 +1,6 @@
+{
+  "shortcut": "authentication",
+  "context": "When implementing authentication: use strong password policies and hashing (bcrypt, Argon2), implement multi-factor authentication (MFA), use secure session management with proper expiration, implement account lockout after failed attempts, use HTTPS for all authentication flows, store passwords securely with salt, implement proper logout functionality, use secure tokens (JWT with proper expiration), validate all user inputs, implement rate limiting for login attempts, use secure cookie settings, implement password reset with secure tokens, and log authentication events for security monitoring. Security considerations: OWASP guidelines, secure storage, session security, and threat protection.",
+  "category": "security",
+  "description": "Implement secure authentication mechanisms and user management"
+}

@@ -1,0 +1,6 @@
+{
+  "shortcut": "logging",
+  "context": "When implementing logging: use structured logging with consistent formats (JSON), implement different log levels (DEBUG, INFO, WARN, ERROR, FATAL), include correlation IDs for request tracing, log all important business events and user actions, implement log rotation and retention policies, use centralized log aggregation, include contextual information (user ID, session ID, request ID), implement security logging for audit trails, use appropriate log levels for different scenarios, implement log sampling for high-volume events, include performance metrics in logs, and ensure sensitive data is not logged. Best practices: structured logging, log levels, correlation IDs, security considerations, and log management.",
+  "category": "devops",
+  "description": "Implement comprehensive logging strategies for debugging and monitoring"
+}
