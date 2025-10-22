@@ -228,7 +228,7 @@ program
     Object.entries(shortcuts).forEach(([key, context]) => {
       if (key.toLowerCase().includes(query.toLowerCase()) || 
           context.toLowerCase().includes(query.toLowerCase())) {
-        results.push({key, context});
+        results.push({ key, context });
       }
     });
     
@@ -240,7 +240,7 @@ program
     console.log(`🔍 Found ${results.length} shortcut(s) matching "${query}":`);
     console.log();
     
-    results.forEach(({key, context}) => {
+    results.forEach(({ key, context }) => {
       const preview = context.substring(0, 100);
       const truncated = context.length > 100 ? '...' : '';
       console.log(`• ${key}: ${preview}${truncated}`);
@@ -294,7 +294,7 @@ program
     
     console.log('📊 RecCall Information');
     console.log('====================');
-    console.log(`Version: 1.0.0`);
+    console.log('Version: 1.0.0');
     console.log(`Storage file: ${STORAGE_FILE}`);
     console.log(`Total shortcuts: ${count}`);
     console.log();

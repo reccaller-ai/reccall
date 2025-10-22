@@ -19,7 +19,17 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
-  "keywords": ["mcp", "cursor", "vscode", "warp", "cli", "context", "shortcuts", "reccall", "ai-ide"],
+  "keywords": [
+    "mcp",
+    "cursor",
+    "vscode",
+    "warp",
+    "cli",
+    "context",
+    "shortcuts",
+    "reccall",
+    "ai-ide"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -27,11 +37,16 @@
     "commander": "^12.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
+    "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
+    "jest": "^30.2.0",
     "prettier": "^3.0.0",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
     "typescript": "^5.6.0"
   }
 }

@@ -292,7 +292,7 @@ configure_cursor() {
     mkdir -p "$CURSOR_CONFIG_DIR"
     
     # Get absolute path to the installed RecCall
-    RECCALL_PATH="$(pwd)/index.js"
+    RECCALL_PATH="$(pwd)/dist/index.js"
     
     # Check if config file exists
     if [ -f "$CURSOR_CONFIG_FILE" ]; then

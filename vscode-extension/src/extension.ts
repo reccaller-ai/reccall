@@ -58,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
   const recordCommand = vscode.commands.registerCommand('reccall.record', async () => {
     const shortcut = await vscode.window.showInputBox({
       prompt: 'Enter shortcut name',
-      placeHolder: 'e.g., react-component, api-test'
+      placeHolder: 'e.g., react-component, api-test',
     });
 
     if (!shortcut) {
@@ -67,7 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const context = await vscode.window.showInputBox({
       prompt: 'Enter context/instructions',
-      placeHolder: 'e.g., Create React components with TypeScript...'
+      placeHolder: 'e.g., Create React components with TypeScript...',
     });
 
     if (!context) {
@@ -79,7 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (shortcuts[shortcut]) {
       const overwrite = await vscode.window.showWarningMessage(
         `Shortcut '${shortcut}' already exists. Overwrite?`,
-        'Yes', 'No'
+        'Yes', 'No',
       );
       
       if (overwrite !== 'Yes') {
@@ -104,7 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     const selectedShortcut = await vscode.window.showQuickPick(shortcutList, {
-      placeHolder: 'Select a shortcut to call'
+      placeHolder: 'Select a shortcut to call',
     });
 
     if (!selectedShortcut) {
@@ -116,7 +116,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Show the context in a new document
     const doc = await vscode.workspace.openTextDocument({
       content: `# ${selectedShortcut}\n\n${context}`,
-      language: 'markdown'
+      language: 'markdown',
     });
     
     await vscode.window.showTextDocument(doc);
@@ -129,7 +129,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (editor && autoInsert) {
       const insert = await vscode.window.showInformationMessage(
         `Shortcut '${selectedShortcut}' loaded. Insert into current editor?`,
-        'Yes', 'No'
+        'Yes', 'No',
       );
       
       if (insert === 'Yes') {
@@ -159,7 +159,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const doc = await vscode.workspace.openTextDocument({
       content: `# RecCall Shortcuts (${shortcutList.length})\n\n${content}`,
-      language: 'markdown'
+      language: 'markdown',
     });
     
     await vscode.window.showTextDocument(doc);
@@ -169,7 +169,7 @@ export function activate(context: vscode.ExtensionContext) {
   const searchCommand = vscode.commands.registerCommand('reccall.search', async () => {
     const query = await vscode.window.showInputBox({
       prompt: 'Search shortcuts',
-      placeHolder: 'Enter search term'
+      placeHolder: 'Enter search term',
     });
 
     if (!query) {
@@ -182,7 +182,7 @@ export function activate(context: vscode.ExtensionContext) {
     Object.entries(shortcuts).forEach(([key, context]) => {
       if (key.toLowerCase().includes(query.toLowerCase()) || 
           context.toLowerCase().includes(query.toLowerCase())) {
-        results.push({key, context});
+        results.push({ key, context });
       }
     });
     
@@ -191,7 +191,7 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
 
-    const content = results.map(({key, context}) => {
+    const content = results.map(({ key, context }) => {
       const preview = context.substring(0, 100);
       const truncated = context.length > 100 ? '...' : '';
       return `## ${key}\n${preview}${truncated}\n`;
@@ -199,7 +199,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const doc = await vscode.workspace.openTextDocument({
       content: `# Search Results for "${query}" (${results.length} found)\n\n${content}`,
-      language: 'markdown'
+      language: 'markdown',
     });
     
     await vscode.window.showTextDocument(doc);
@@ -216,7 +216,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     const selectedShortcut = await vscode.window.showQuickPick(shortcutList, {
-      placeHolder: 'Select a shortcut to update'
+      placeHolder: 'Select a shortcut to update',
     });
 
     if (!selectedShortcut) {
@@ -226,7 +226,7 @@ export function activate(context: vscode.ExtensionContext) {
     const newContext = await vscode.window.showInputBox({
       prompt: 'Enter new context/instructions',
       value: shortcuts[selectedShortcut],
-      placeHolder: 'Enter new context...'
+      placeHolder: 'Enter new context...',
     });
 
     if (!newContext) {
@@ -250,7 +250,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     const selectedShortcut = await vscode.window.showQuickPick(shortcutList, {
-      placeHolder: 'Select a shortcut to delete'
+      placeHolder: 'Select a shortcut to delete',
     });
 
     if (!selectedShortcut) {
@@ -259,7 +259,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const confirm = await vscode.window.showWarningMessage(
       `Are you sure you want to delete shortcut '${selectedShortcut}'?`,
-      'Yes', 'No'
+      'Yes', 'No',
     );
 
     if (confirm === 'Yes') {
@@ -277,7 +277,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (count > 0) {
       const confirm = await vscode.window.showWarningMessage(
         `This will overwrite ALL ${count} existing shortcuts with starter pack recipes. Continue?`,
-        'Yes', 'No'
+        'Yes', 'No',
       );
       
       if (confirm !== 'Yes') {
@@ -289,7 +289,7 @@ export function activate(context: vscode.ExtensionContext) {
     await saveShortcuts(starterPack);
     
     vscode.window.showInformationMessage(
-      `✅ Starter pack loaded successfully! ${Object.keys(starterPack).length} recipes loaded.`
+      `✅ Starter pack loaded successfully! ${Object.keys(starterPack).length} recipes loaded.`,
     );
   });
 
@@ -301,7 +301,7 @@ export function activate(context: vscode.ExtensionContext) {
     searchCommand,
     updateCommand,
     deleteCommand,
-    reloadStarterPackCommand
+    reloadStarterPackCommand,
   );
 }
 
