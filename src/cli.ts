@@ -11,6 +11,14 @@ const __dirname = path.dirname(__filename);
 
 const STORAGE_FILE = path.join(os.homedir(), '.reccall.json');
 const STARTER_PACK_DIR = path.join(__dirname, '..', 'starter-pack');
+const REPO_CONFIG_FILE = path.join(os.homedir(), '.reccall-repo.json');
+
+// Default repository configuration
+const DEFAULT_REPO_CONFIG = {
+  defaultRepo: 'https://reccaller-recipes.io',
+  cacheDir: path.join(os.homedir(), '.reccall-cache'),
+  enabled: true
+};
 
 // Load shortcuts from storage
 async function loadShortcuts(): Promise<Record<string, string>> {
@@ -25,6 +33,154 @@ async function loadShortcuts(): Promise<Record<string, string>> {
 // Save shortcuts to storage
 async function saveShortcuts(shortcuts: Record<string, string>): Promise<void> {
   await fs.writeFile(STORAGE_FILE, JSON.stringify(shortcuts, null, 2));
+}
+
+// Load repository configuration
+async function loadRepoConfig(): Promise<typeof DEFAULT_REPO_CONFIG> {
+  try {
+    const data = await fs.readFile(REPO_CONFIG_FILE, 'utf-8');
+    return { ...DEFAULT_REPO_CONFIG, ...JSON.parse(data) };
+  } catch (error) {
+    return DEFAULT_REPO_CONFIG;
+  }
+}
+
+// Save repository configuration
+async function saveRepoConfig(config: typeof DEFAULT_REPO_CONFIG): Promise<void> {
+  await fs.writeFile(REPO_CONFIG_FILE, JSON.stringify(config, null, 2));
+}
+
+// Repository API client
+async function fetchFromRepo(url: string): Promise<any> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    throw new Error(`Failed to fetch from repository: ${error}`);
+  }
+}
+
+// Get available recipes from repository
+async function getRepoRecipes(repoUrl: string): Promise<Array<{name: string, description: string, shortcut: string, context: string}>> {
+  const manifestUrl = `${repoUrl}/manifest.json`;
+  const manifest = await fetchFromRepo(manifestUrl);
+  
+  const recipes = [];
+  for (const recipe of manifest.recipes || []) {
+    try {
+      const recipeUrl = `${repoUrl}/${recipe.file}`;
+      const recipeData = await fetchFromRepo(recipeUrl);
+      recipes.push({
+        name: recipe.name || recipe.shortcut,
+        description: recipe.description || '',
+        shortcut: recipeData.shortcut,
+        context: recipeData.context
+      });
+    } catch (error) {
+      console.warn(`Failed to load recipe ${recipe.file}:`, error);
+    }
+  }
+  
+  return recipes;
+}
+
+// Install recipe from repository
+async function installRepoRecipe(shortcut: string, repoUrl: string): Promise<void> {
+  const recipes = await getRepoRecipes(repoUrl);
+  const recipe = recipes.find(r => r.shortcut === shortcut);
+  
+  if (!recipe) {
+    throw new Error(`Recipe '${shortcut}' not found in repository`);
+  }
+  
+  const shortcuts = await loadShortcuts();
+  shortcuts[shortcut] = recipe.context;
+  await saveShortcuts(shortcuts);
+}
+
+// Cache management
+async function ensureCacheDir(): Promise<void> {
+  const config = await loadRepoConfig();
+  try {
+    await fs.mkdir(config.cacheDir, { recursive: true });
+  } catch (error) {
+    // Directory might already exist, ignore error
+  }
+}
+
+async function getCachedRecipes(repoUrl: string): Promise<Array<{name: string, description: string, shortcut: string, context: string}> | null> {
+  const config = await loadRepoConfig();
+  const cacheFile = path.join(config.cacheDir, `${Buffer.from(repoUrl).toString('base64')}.json`);
+  
+  try {
+    const data = await fs.readFile(cacheFile, 'utf-8');
+    const cached = JSON.parse(data);
+    
+    // Check if cache is less than 1 hour old
+    const oneHour = 60 * 60 * 1000;
+    if (Date.now() - cached.timestamp < oneHour) {
+      return cached.recipes;
+    }
+  } catch (error) {
+    // Cache doesn't exist or is invalid
+  }
+  
+  return null;
+}
+
+async function setCachedRecipes(repoUrl: string, recipes: Array<{name: string, description: string, shortcut: string, context: string}>): Promise<void> {
+  const config = await loadRepoConfig();
+  await ensureCacheDir();
+  
+  const cacheFile = path.join(config.cacheDir, `${Buffer.from(repoUrl).toString('base64')}.json`);
+  const cacheData = {
+    timestamp: Date.now(),
+    recipes: recipes
+  };
+  
+  await fs.writeFile(cacheFile, JSON.stringify(cacheData, null, 2));
+}
+
+// Enhanced getRepoRecipes with caching
+async function getRepoRecipesCached(repoUrl: string): Promise<Array<{name: string, description: string, shortcut: string, context: string}>> {
+  // Try to get from cache first
+  const cached = await getCachedRecipes(repoUrl);
+  if (cached) {
+    return cached;
+  }
+  
+  // Fetch from repository
+  const recipes = await getRepoRecipes(repoUrl);
+  
+  // Cache the results
+  await setCachedRecipes(repoUrl, recipes);
+  
+  return recipes;
+}
+
+// Recipe validation
+function validateRecipe(recipe: any): { valid: boolean, errors: string[] } {
+  const errors: string[] = [];
+  
+  if (!recipe.shortcut || typeof recipe.shortcut !== 'string') {
+    errors.push('Recipe must have a valid shortcut');
+  }
+  
+  if (!recipe.context || typeof recipe.context !== 'string') {
+    errors.push('Recipe must have context content');
+  }
+  
+  if (recipe.shortcut && !/^[a-zA-Z0-9-_]+$/.test(recipe.shortcut)) {
+    errors.push('Recipe shortcut must contain only alphanumeric characters, hyphens, and underscores');
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors
+  };
 }
 
 // Load starter pack recipes
@@ -216,10 +372,10 @@ program
     console.log(`✅ Starter pack loaded successfully! ${Object.keys(starterPack).length} recipes loaded.`);
   });
 
-// Search shortcuts
+// Search local shortcuts
 program
-  .command('search')
-  .description('Search shortcuts by name or content')
+  .command('search-local')
+  .description('Search local shortcuts by name or content')
   .argument('<query>', 'Search query')
   .action(async (query: string) => {
     const shortcuts = await loadShortcuts();
@@ -312,6 +468,198 @@ program
         const catCount = Object.keys(shortcuts).filter(k => k.startsWith(cat)).length;
         console.log(`  • ${cat}: ${catCount} shortcuts`);
       });
+    }
+  });
+
+// Simplified repository commands
+program
+  .command('search')
+  .description('Search for recipes in the configured repository')
+  .argument('<query>', 'Search query')
+  .action(async (query: string) => {
+    try {
+      const config = await loadRepoConfig();
+      if (!config.enabled) {
+        console.log('❌ Repository features are disabled. Use "reccall repo-config --enable" to enable.');
+        process.exit(1);
+      }
+      
+      console.log(`🔍 Searching for "${query}" in ${config.defaultRepo}...`);
+      const recipes = await getRepoRecipesCached(config.defaultRepo);
+      
+      const results = recipes.filter(recipe => 
+        recipe.name.toLowerCase().includes(query.toLowerCase()) ||
+        recipe.description.toLowerCase().includes(query.toLowerCase()) ||
+        recipe.shortcut.toLowerCase().includes(query.toLowerCase())
+      );
+      
+      if (results.length === 0) {
+        console.log(`No recipes found matching "${query}".`);
+        return;
+      }
+      
+      console.log(`📋 Found ${results.length} recipe(s) matching "${query}":`);
+      console.log();
+      
+      results.forEach(recipe => {
+        console.log(`• ${recipe.shortcut}: ${recipe.name}`);
+        if (recipe.description) {
+          console.log(`  ${recipe.description}`);
+        }
+        console.log();
+      });
+    } catch (error) {
+      console.error(`❌ Failed to search recipes: ${error}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('install')
+  .description('Install a recipe from the configured repository')
+  .argument('<shortcut>', 'Recipe shortcut to install')
+  .action(async (shortcut: string) => {
+    try {
+      const config = await loadRepoConfig();
+      if (!config.enabled) {
+        console.log('❌ Repository features are disabled. Use "reccall repo-config --enable" to enable.');
+        process.exit(1);
+      }
+      
+      console.log(`📥 Installing recipe '${shortcut}' from ${config.defaultRepo}...`);
+      
+      // Get recipe with validation
+      const recipes = await getRepoRecipesCached(config.defaultRepo);
+      const recipe = recipes.find(r => r.shortcut === shortcut);
+      
+      if (!recipe) {
+        throw new Error(`Recipe '${shortcut}' not found in repository`);
+      }
+      
+      // Validate recipe
+      const validation = validateRecipe(recipe);
+      if (!validation.valid) {
+        throw new Error(`Recipe validation failed: ${validation.errors.join(', ')}`);
+      }
+      
+      // Install the recipe
+      const shortcuts = await loadShortcuts();
+      shortcuts[shortcut] = recipe.context;
+      await saveShortcuts(shortcuts);
+      
+      console.log(`✅ Recipe '${shortcut}' installed successfully!`);
+    } catch (error) {
+      console.error(`❌ Failed to install recipe: ${error}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('remove')
+  .description('Remove a recipe (same as delete command)')
+  .argument('<shortcut>', 'Recipe shortcut to remove')
+  .action(async (shortcut: string) => {
+    const shortcuts = await loadShortcuts();
+    
+    if (!shortcuts[shortcut]) {
+      console.log(`⚠️  Recipe '${shortcut}' not found. Nothing to remove.`);
+      return;
+    }
+    
+    delete shortcuts[shortcut];
+    await saveShortcuts(shortcuts);
+    
+    console.log(`✅ Recipe '${shortcut}' has been removed successfully!`);
+  });
+
+program
+  .command('list-repo')
+  .description('List available recipes from the configured repository')
+  .action(async () => {
+    try {
+      const config = await loadRepoConfig();
+      if (!config.enabled) {
+        console.log('❌ Repository features are disabled. Use "reccall repo-config --enable" to enable.');
+        process.exit(1);
+      }
+      
+      console.log(`🔍 Fetching recipes from ${config.defaultRepo}...`);
+      const recipes = await getRepoRecipesCached(config.defaultRepo);
+      
+      if (recipes.length === 0) {
+        console.log('No recipes found in repository.');
+        return;
+      }
+      
+      console.log(`📋 Available recipes (${recipes.length}):`);
+      console.log();
+      
+      recipes.forEach(recipe => {
+        console.log(`• ${recipe.shortcut}: ${recipe.name}`);
+        if (recipe.description) {
+          console.log(`  ${recipe.description}`);
+        }
+        console.log();
+      });
+    } catch (error) {
+      console.error(`❌ Failed to fetch recipes: ${error}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('repo-config')
+  .description('Configure repository settings')
+  .option('-s, --set-repo <url>', 'Set default repository URL')
+  .option('-d, --disable', 'Disable repository features')
+  .option('-e, --enable', 'Enable repository features')
+  .action(async (options) => {
+    const config = await loadRepoConfig();
+    
+    if (options.setRepo) {
+      config.defaultRepo = options.setRepo;
+      console.log(`✅ Default repository set to: ${config.defaultRepo}`);
+    }
+    
+    if (options.disable) {
+      config.enabled = false;
+      console.log('✅ Repository features disabled');
+    }
+    
+    if (options.enable) {
+      config.enabled = true;
+      console.log('✅ Repository features enabled');
+    }
+    
+    await saveRepoConfig(config);
+    
+    console.log('\n📊 Current repository configuration:');
+    console.log(`  Default repository: ${config.defaultRepo}`);
+    console.log(`  Cache directory: ${config.cacheDir}`);
+    console.log(`  Repository enabled: ${config.enabled}`);
+  });
+
+program
+  .command('repo-cache-clear')
+  .description('Clear repository cache')
+  .action(async () => {
+    try {
+      const config = await loadRepoConfig();
+      const cacheFiles = await fs.readdir(config.cacheDir).catch(() => []);
+      
+      if (cacheFiles.length === 0) {
+        console.log('Cache is already empty.');
+        return;
+      }
+      
+      for (const file of cacheFiles) {
+        await fs.unlink(path.join(config.cacheDir, file));
+      }
+      
+      console.log(`✅ Cleared ${cacheFiles.length} cached repository file(s).`);
+    } catch (error) {
+      console.error(`❌ Failed to clear cache: ${error}`);
+      process.exit(1);
     }
   });
 
