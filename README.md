@@ -35,7 +35,7 @@ A universal context shortcut system that works with Cursor IDE (MCP), VSCode (ex
 - **Smart Duplicate Detection**: Warns when creating duplicate shortcuts
 - **Enhanced Error Handling**: Clear feedback for non-existent shortcuts
 - **🚀 Starter Pack**: 29 pre-loaded common development recipes
-- **📦 Repository System**: Install recipes from remote repositories (default: reccaller.repo.ai)
+- **📦 Repository System**: Install recipes from remote repositories (default: reccaller-recipes.io)
 - **🔍 Smart Caching**: Automatic caching with 1-hour TTL for better performance
 - **✅ Recipe Validation**: Ensures only valid recipes are installed
 
@@ -225,7 +225,7 @@ RecCall comes with a **starter pack** of 29 generic development recipes that are
 
 ## 📦 Repository System
 
-RecCall supports installing recipes from remote repositories, with the default repository at `https://reccaller.repo.ai`.
+RecCall supports installing recipes from remote repositories, with the default repository at `https://reccaller-recipes.io`.
 
 ### Repository Commands
 
@@ -251,7 +251,7 @@ reccall repo-cache-clear
 
 ### Repository Features
 
-- **Default Repository**: `https://reccaller.repo.ai` (configurable)
+- **Default Repository**: `https://reccaller-recipes.io` (configurable)
 - **Smart Caching**: 1-hour cache TTL for better performance
 - **Recipe Validation**: Ensures only valid recipes are installed
 - **Custom Repositories**: Support for private/company repositories

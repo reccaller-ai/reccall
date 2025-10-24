@@ -15,7 +15,7 @@ const REPO_CONFIG_FILE = path.join(os.homedir(), '.reccall-repo.json');
 
 // Default repository configuration
 const DEFAULT_REPO_CONFIG = {
-  defaultRepo: 'https://reccaller.repo.ai',
+  defaultRepo: 'https://reccaller-recipes.io',
   cacheDir: path.join(os.homedir(), '.reccall-cache'),
   enabled: true
 };
