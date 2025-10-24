@@ -16,9 +16,10 @@ A universal context shortcut system that works with Cursor IDE (MCP), VSCode (ex
 - **rec_reload_starter_pack**: Reload starter pack recipes
 
 ### Repository Commands
-- **repo-list**: List available recipes from remote repository
-- **repo-install**: Install a recipe from the repository
-- **repo-search**: Search for recipes in the repository
+- **search**: Search for recipes in the configured repository
+- **install**: Install a recipe from the repository
+- **remove**: Remove a recipe (same as delete)
+- **list-repo**: List available recipes from the repository
 - **repo-config**: Configure repository settings
 - **repo-cache-clear**: Clear repository cache
 
@@ -230,13 +231,16 @@ RecCall supports installing recipes from remote repositories, with the default r
 
 ```bash
 # List available recipes from the repository
-reccall repo-list
+reccall list-repo
 
 # Install a specific recipe
-reccall repo-install sync-main
+reccall install sync-main
 
 # Search for recipes
-reccall repo-search git
+reccall search git
+
+# Remove a recipe
+reccall remove old-recipe
 
 # Configure repository settings
 reccall repo-config --set-repo https://my-company.repo.ai

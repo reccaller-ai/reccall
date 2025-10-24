@@ -8,41 +8,39 @@ RecCall now supports installing and managing recipes from remote repositories. T
 
 ## Repository Commands
 
-### `reccall repo-list`
+### `reccall list-repo`
 
 List all available recipes from the configured repository.
 
 ```bash
-reccall repo-list
-reccall repo-list -r https://custom-repo.example.com
+reccall list-repo
 ```
 
-**Options:**
-- `-r, --repo <url>`: Override the default repository URL
-
-### `reccall repo-install <shortcut>`
+### `reccall install <shortcut>`
 
 Install a specific recipe from the repository.
 
 ```bash
-reccall repo-install sync-main
-reccall repo-install create-feature-branch -r https://custom-repo.example.com
+reccall install sync-main
+reccall install create-feature-branch
 ```
 
-**Options:**
-- `-r, --repo <url>`: Override the default repository URL
-
-### `reccall repo-search <query>`
+### `reccall search <query>`
 
 Search for recipes in the repository by name, description, or shortcut.
 
 ```bash
-reccall repo-search git
-reccall repo-search "feature branch" -r https://custom-repo.example.com
+reccall search git
+reccall search "feature branch"
 ```
 
-**Options:**
-- `-r, --repo <url>`: Override the default repository URL
+### `reccall remove <shortcut>`
+
+Remove a recipe (same as the delete command).
+
+```bash
+reccall remove old-recipe
+```
 
 ### `reccall repo-config`
 
@@ -104,13 +102,16 @@ Repositories should follow the schema defined in `REPOSITORY_SCHEMA.md`. The rep
 
 ```bash
 # List available recipes
-reccall repo-list
+reccall list-repo
 
 # Install a recipe
-reccall repo-install sync-main
+reccall install sync-main
 
 # Search for recipes
-reccall repo-search git
+reccall search git
+
+# Remove a recipe
+reccall remove old-recipe
 
 # Clear cache
 reccall repo-cache-clear
@@ -123,10 +124,10 @@ reccall repo-cache-clear
 reccall repo-config --set-repo https://my-company.repo.ai
 
 # List recipes from custom repository
-reccall repo-list -r https://my-company.repo.ai
+reccall list-repo
 
 # Install from custom repository
-reccall repo-install company-workflow -r https://my-company.repo.ai
+reccall install company-workflow
 ```
 
 ## Error Handling

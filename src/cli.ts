@@ -372,10 +372,10 @@ program
     console.log(`✅ Starter pack loaded successfully! ${Object.keys(starterPack).length} recipes loaded.`);
   });
 
-// Search shortcuts
+// Search local shortcuts
 program
-  .command('search')
-  .description('Search shortcuts by name or content')
+  .command('search-local')
+  .description('Search local shortcuts by name or content')
   .argument('<query>', 'Search query')
   .action(async (query: string) => {
     const shortcuts = await loadShortcuts();
@@ -471,28 +471,37 @@ program
     }
   });
 
-// Repository commands
+// Simplified repository commands
 program
-  .command('repo-list')
-  .description('List available recipes from the configured repository')
-  .option('-r, --repo <url>', 'Repository URL (overrides default)')
-  .action(async (options) => {
+  .command('search')
+  .description('Search for recipes in the configured repository')
+  .argument('<query>', 'Search query')
+  .action(async (query: string) => {
     try {
       const config = await loadRepoConfig();
-      const repoUrl = options.repo || config.defaultRepo;
+      if (!config.enabled) {
+        console.log('❌ Repository features are disabled. Use "reccall repo-config --enable" to enable.');
+        process.exit(1);
+      }
       
-      console.log(`🔍 Fetching recipes from ${repoUrl}...`);
-      const recipes = await getRepoRecipesCached(repoUrl);
+      console.log(`🔍 Searching for "${query}" in ${config.defaultRepo}...`);
+      const recipes = await getRepoRecipesCached(config.defaultRepo);
       
-      if (recipes.length === 0) {
-        console.log('No recipes found in repository.');
+      const results = recipes.filter(recipe => 
+        recipe.name.toLowerCase().includes(query.toLowerCase()) ||
+        recipe.description.toLowerCase().includes(query.toLowerCase()) ||
+        recipe.shortcut.toLowerCase().includes(query.toLowerCase())
+      );
+      
+      if (results.length === 0) {
+        console.log(`No recipes found matching "${query}".`);
         return;
       }
       
-      console.log(`📋 Available recipes (${recipes.length}):`);
+      console.log(`📋 Found ${results.length} recipe(s) matching "${query}":`);
       console.log();
       
-      recipes.forEach(recipe => {
+      results.forEach(recipe => {
         console.log(`• ${recipe.shortcut}: ${recipe.name}`);
         if (recipe.description) {
           console.log(`  ${recipe.description}`);
@@ -500,25 +509,27 @@ program
         console.log();
       });
     } catch (error) {
-      console.error(`❌ Failed to fetch recipes: ${error}`);
+      console.error(`❌ Failed to search recipes: ${error}`);
       process.exit(1);
     }
   });
 
 program
-  .command('repo-install')
-  .description('Install a recipe from the repository')
+  .command('install')
+  .description('Install a recipe from the configured repository')
   .argument('<shortcut>', 'Recipe shortcut to install')
-  .option('-r, --repo <url>', 'Repository URL (overrides default)')
-  .action(async (shortcut: string, options) => {
+  .action(async (shortcut: string) => {
     try {
       const config = await loadRepoConfig();
-      const repoUrl = options.repo || config.defaultRepo;
+      if (!config.enabled) {
+        console.log('❌ Repository features are disabled. Use "reccall repo-config --enable" to enable.');
+        process.exit(1);
+      }
       
-      console.log(`📥 Installing recipe '${shortcut}' from ${repoUrl}...`);
+      console.log(`📥 Installing recipe '${shortcut}' from ${config.defaultRepo}...`);
       
       // Get recipe with validation
-      const recipes = await getRepoRecipesCached(repoUrl);
+      const recipes = await getRepoRecipesCached(config.defaultRepo);
       const recipe = recipes.find(r => r.shortcut === shortcut);
       
       if (!recipe) {
@@ -544,33 +555,46 @@ program
   });
 
 program
-  .command('repo-search')
-  .description('Search for recipes in the repository')
-  .argument('<query>', 'Search query')
-  .option('-r, --repo <url>', 'Repository URL (overrides default)')
-  .action(async (query: string, options) => {
+  .command('remove')
+  .description('Remove a recipe (same as delete command)')
+  .argument('<shortcut>', 'Recipe shortcut to remove')
+  .action(async (shortcut: string) => {
+    const shortcuts = await loadShortcuts();
+    
+    if (!shortcuts[shortcut]) {
+      console.log(`⚠️  Recipe '${shortcut}' not found. Nothing to remove.`);
+      return;
+    }
+    
+    delete shortcuts[shortcut];
+    await saveShortcuts(shortcuts);
+    
+    console.log(`✅ Recipe '${shortcut}' has been removed successfully!`);
+  });
+
+program
+  .command('list-repo')
+  .description('List available recipes from the configured repository')
+  .action(async () => {
     try {
       const config = await loadRepoConfig();
-      const repoUrl = options.repo || config.defaultRepo;
+      if (!config.enabled) {
+        console.log('❌ Repository features are disabled. Use "reccall repo-config --enable" to enable.');
+        process.exit(1);
+      }
       
-      console.log(`🔍 Searching for "${query}" in ${repoUrl}...`);
-      const recipes = await getRepoRecipesCached(repoUrl);
+      console.log(`🔍 Fetching recipes from ${config.defaultRepo}...`);
+      const recipes = await getRepoRecipesCached(config.defaultRepo);
       
-      const results = recipes.filter(recipe => 
-        recipe.name.toLowerCase().includes(query.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(query.toLowerCase()) ||
-        recipe.shortcut.toLowerCase().includes(query.toLowerCase())
-      );
-      
-      if (results.length === 0) {
-        console.log(`No recipes found matching "${query}".`);
+      if (recipes.length === 0) {
+        console.log('No recipes found in repository.');
         return;
       }
       
-      console.log(`📋 Found ${results.length} recipe(s) matching "${query}":`);
+      console.log(`📋 Available recipes (${recipes.length}):`);
       console.log();
       
-      results.forEach(recipe => {
+      recipes.forEach(recipe => {
         console.log(`• ${recipe.shortcut}: ${recipe.name}`);
         if (recipe.description) {
           console.log(`  ${recipe.description}`);
@@ -578,7 +602,7 @@ program
         console.log();
       });
     } catch (error) {
-      console.error(`❌ Failed to search recipes: ${error}`);
+      console.error(`❌ Failed to fetch recipes: ${error}`);
       process.exit(1);
     }
   });
