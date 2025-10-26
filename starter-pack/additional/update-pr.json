@@ -1,0 +1,12 @@
+{
+  "shortcut": "update-pr",
+  "context": "Update existing PR with latest changes. Add commit messages, update description, mention new features, ensure all tests pass, and follow PR best practices.",
+  "name": "Update Pull Request",
+  "description": "Guidelines for updating existing pull requests",
+  "category": "additional",
+  "tags": ["pr", "pull-request", "update", "git"],
+  "version": "1.0.0",
+  "author": "RecCall",
+  "created": "2024-01-01T00:00:00Z",
+  "updated": "2024-01-01T00:00:00Z"
+}

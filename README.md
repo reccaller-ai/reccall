@@ -15,6 +15,14 @@ A universal context shortcut system that works with Cursor IDE (MCP), VSCode (ex
 - **call**: Call (retrieve) stored context by shortcut name
 - **rec_reload_starter_pack**: Reload starter pack recipes
 
+### Repository Commands
+- **search**: Search for recipes in the configured repository
+- **install**: Install a recipe from the repository
+- **remove**: Remove a recipe (same as delete)
+- **list-repo**: List available recipes from the repository
+- **repo-config**: Configure repository settings
+- **repo-cache-clear**: Clear repository cache
+
 ### Multi-Platform Support
 - **🖥️ Cursor IDE**: MCP server integration
 - **💻 VSCode**: Native extension with Command Palette
@@ -27,6 +35,9 @@ A universal context shortcut system that works with Cursor IDE (MCP), VSCode (ex
 - **Smart Duplicate Detection**: Warns when creating duplicate shortcuts
 - **Enhanced Error Handling**: Clear feedback for non-existent shortcuts
 - **🚀 Starter Pack**: 29 pre-loaded common development recipes
+- **📦 Repository System**: Install recipes from remote repositories (default: reccaller-recipes.io)
+- **🔍 Smart Caching**: Automatic caching with 1-hour TTL for better performance
+- **✅ Recipe Validation**: Ensures only valid recipes are installed
 
 ## 📦 Installation
 
@@ -211,6 +222,48 @@ RecCall comes with a **starter pack** of 29 generic development recipes that are
 - **Reload**: Use `rec_reload_starter_pack` to reload all starter pack recipes (overwrites existing shortcuts)
 - **Customize**: You can modify, update, or delete any starter pack recipe like any other shortcut
 - **Extensible**: Add platform-specific recipes later under appropriate categories
+
+## 📦 Repository System
+
+RecCall supports installing recipes from remote repositories, with the default repository at `https://reccaller-recipes.io`.
+
+### Repository Commands
+
+```bash
+# List available recipes from the repository
+reccall list-repo
+
+# Install a specific recipe
+reccall install sync-main
+
+# Search for recipes
+reccall search git
+
+# Remove a recipe
+reccall remove old-recipe
+
+# Configure repository settings
+reccall repo-config --set-repo https://my-company.repo.ai
+
+# Clear repository cache
+reccall repo-cache-clear
+```
+
+### Repository Features
+
+- **Default Repository**: `https://reccaller-recipes.io` (configurable)
+- **Smart Caching**: 1-hour cache TTL for better performance
+- **Recipe Validation**: Ensures only valid recipes are installed
+- **Custom Repositories**: Support for private/company repositories
+- **Search & Discovery**: Find recipes by name, description, or tags
+
+### Repository Format
+
+Repositories should follow the schema defined in `docs/REPOSITORY_SCHEMA.md`:
+
+- `manifest.json` - Repository metadata and recipe list
+- Individual recipe files in JSON format
+- Support for categories, tags, and versioning
 
 ## 🚀 Usage
 
@@ -409,6 +462,8 @@ reccall/
 
 ### Quick Reference
 - **[Multi-Platform Guide](docs/README-MULTIPLATFORM.md)** - Comprehensive usage guide for all platforms
+- **[Repository Commands](docs/REPOSITORY_COMMANDS.md)** - Repository system usage guide
+- **[Repository Schema](docs/REPOSITORY_SCHEMA.md)** - Repository format and schema definition
 - **[Development Workflow](docs/development/DEV_WORKFLOW.md)** - Development setup and processes
 - **[Contributing Guide](docs/contributing/BRANCH_NAMING.md)** - Branch naming and contribution guidelines
 
