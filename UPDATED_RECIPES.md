@@ -84,5 +84,5 @@ These recipes are automatically loaded with RecCall and can be used across all p
 
 ## 📁 Files
 
-- `updated-recipes.json`: Complete export of all 33 recipes
 - This document: Overview of recipe updates and repository integration
+- `starter-pack/`: Complete recipe collection with all 33 recipes
