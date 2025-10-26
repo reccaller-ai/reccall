@@ -1,0 +1,12 @@
+{
+  "shortcut": "testing-global-storage",
+  "context": "this context now should be available in all the ai enabled agents/ids - cursor,vscode and warp",
+  "name": "Testing Global Storage",
+  "description": "Test global storage availability across AI IDEs",
+  "category": "additional",
+  "tags": ["testing", "global-storage", "ai-ide", "cursor", "vscode", "warp"],
+  "version": "1.0.0",
+  "author": "RecCall",
+  "created": "2024-01-01T00:00:00Z",
+  "updated": "2024-01-01T00:00:00Z"
+}

@@ -14,7 +14,8 @@
     "devops",
     "frontend",
     "backend",
-    "project-management"
+    "project-management",
+    "additional"
   ],
   "recipes": [
     {
@@ -132,6 +133,22 @@
     {
       "file": "project-management/communication.json",
       "category": "project-management"
+    },
+    {
+      "file": "additional/create-pr.json",
+      "category": "additional"
+    },
+    {
+      "file": "additional/update-landing.json",
+      "category": "additional"
+    },
+    {
+      "file": "additional/testing-global-storage.json",
+      "category": "additional"
+    },
+    {
+      "file": "additional/update-pr.json",
+      "category": "additional"
     }
   ]
 }

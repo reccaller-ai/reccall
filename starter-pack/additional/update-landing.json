@@ -1,0 +1,12 @@
+{
+  "shortcut": "update-landing",
+  "context": "Update the landing page with repository system features. Add hero section with \"RecCall: Universal Context Shortcuts + Recipe Repository\", include new features section highlighting recipe installation, search, and caching capabilities, update command examples to show reccall search/install/list-repo commands, add SEO keywords for recipe repository, and ensure mobile responsiveness. Focus on conversion optimization and clear value proposition for the new repository system.",
+  "name": "Update Landing Page",
+  "description": "Guidelines for updating landing pages with repository system features",
+  "category": "additional",
+  "tags": ["landing-page", "marketing", "seo", "repository"],
+  "version": "1.0.0",
+  "author": "RecCall",
+  "created": "2024-01-01T00:00:00Z",
+  "updated": "2024-01-01T00:00:00Z"
+}
