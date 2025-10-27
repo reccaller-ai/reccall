@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RecCall - Universal Context Shortcuts & Recipe Repository Platform</title>
-    <meta name="description" content="Universal context shortcut management with global/local repository support. Install custom recipes from reccaller-recipes.io. Works with Cursor, VSCode, Warp Terminal. Scale your development workflow with smart context management.">
-    <meta name="keywords" content="reccall, context shortcuts, AI IDE, cursor, vscode, warp, recipe repository, reccaller-recipes.io, custom recipes, development, global repository, local repository">
+    <meta name="description" content="Universal context shortcut management with global/local repository support. Install custom recipes from contexts.reccaller.ai. Works with Cursor, VSCode, Warp Terminal. Scale your development workflow with smart context management.">
+    <meta name="keywords" content="reccall, context shortcuts, AI IDE, cursor, vscode, warp, recipe repository, contexts.reccaller.ai, custom recipes, development, global repository, local repository">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -506,7 +506,7 @@
 curl -sfL https://reccaller.ai/install.sh | sh -
 
 <span class="comment"># Configure Repository</span>
-reccall repo-config --set-repo https://reccaller-recipes.io
+reccall repo-config --set-repo https://contexts.reccaller.ai/
 
 <span class="comment"># Install Recipes</span>
 reccall install sync-main
@@ -568,7 +568,7 @@ reccall install create-pr
             
             <div class="code-block">
 <span class="comment"># Global Repository</span>
-reccall repo-config --set-repo https://reccaller-recipes.io
+reccall repo-config --set-repo https://contexts.reccaller.ai/
 
 <span class="comment"># Search Recipes</span>
 reccall search "security"
@@ -580,7 +580,7 @@ reccall install create-feature-branch
 reccall install create-pr
 
 <span class="comment"># Local Team Repository</span>
-reccall repo-config --set-repo https://team.reccaller-recipes.io
+reccall repo-config --set-repo https://team.contexts.reccaller.ai
 
 <span class="comment"># Install Team-Specific Recipes</span>
 reccall install team-workflow
@@ -748,7 +748,7 @@ repository-root/
   "description": "Repository description",
   "version": "1.0.0",
   "author": "Repository author",
-  "url": "https://reccaller-recipes.io",
+  "url": "https://contexts.reccaller.ai/",
   "recipes": [
     {
       "name": "Recipe Display Name",
@@ -920,7 +920,7 @@ reccall search-local <query>       # Search local recipes
                 </div>
                 <div>
                     <h4>Repository</h4>
-                    <p><a href="https://reccaller-recipes.io">reccaller-recipes.io</a></p>
+                    <p><a href="https://contexts.reccaller.ai/">contexts.reccaller.ai</a></p>
                     <p><a href="https://github.com/reccaller-ai/reccall">GitHub Repository</a></p>
                     <p><a href="https://github.com/reccaller-ai/reccall/blob/main/README.md">Documentation</a></p>
                     <p><a href="https://github.com/reccaller-ai/reccall/issues">Issues & Support</a></p>

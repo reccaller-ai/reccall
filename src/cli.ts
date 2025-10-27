@@ -34,7 +34,7 @@ function endTimer(startTime: number, operation: string): number {
 
 // Default repository configuration
 const DEFAULT_REPO_CONFIG = {
-  defaultRepo: 'https://reccaller-recipes.io',
+  defaultRepo: 'https://contexts.reccaller.ai/',
   cacheDir: path.join(os.homedir(), '.reccall-cache'),
   enabled: true
 };
