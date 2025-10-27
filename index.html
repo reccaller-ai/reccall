@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RecCall Enterprise - Universal Context Shortcuts & Recipe Repository Platform</title>
-    <meta name="description" content="Enterprise-grade context shortcut management with global/local repository support. Install custom recipes from reccaller-recipes.io. Works with Cursor, VSCode, Warp Terminal. Scale your development workflow with smart context management.">
-    <meta name="keywords" content="reccall enterprise, context shortcuts, AI IDE, cursor, vscode, warp, recipe repository, reccaller-recipes.io, custom recipes, enterprise development, global repository, local repository">
+    <title>RecCall - Universal Context Shortcuts & Recipe Repository Platform</title>
+    <meta name="description" content="Universal context shortcut management with global/local repository support. Install custom recipes from reccaller-recipes.io. Works with Cursor, VSCode, Warp Terminal. Scale your development workflow with smart context management.">
+    <meta name="keywords" content="reccall, context shortcuts, AI IDE, cursor, vscode, warp, recipe repository, reccaller-recipes.io, custom recipes, development, global repository, local repository">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -292,6 +292,12 @@
             margin: 1rem 0;
             border: 1px solid var(--gray-700);
             overflow-x: auto;
+            white-space: pre;
+            line-height: 1.5;
+            user-select: all;
+            -webkit-user-select: all;
+            -moz-user-select: all;
+            -ms-user-select: all;
         }
         
         .code-block .comment {
@@ -459,7 +465,7 @@
     <!-- Enterprise Header -->
     <header class="header">
         <nav class="nav container">
-            <a href="#" class="logo">RecCall Enterprise</a>
+            <a href="#" class="logo">RecCall</a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#architecture">Architecture</a></li>
@@ -473,15 +479,15 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h1>RecCall Enterprise</h1>
+                <h1>RecCall</h1>
                 <div class="hero-subtitle">Universal Context Shortcuts & Recipe Repository Platform</div>
                 <p class="hero-description">
-                    Enterprise-grade context shortcut management with global/local repository support. 
+                    Universal context shortcut management with global/local repository support. 
                     Scale your development workflow with smart context management, custom recipe deployment, 
                     and seamless integration across AI IDEs and development environments.
                 </p>
                 <div class="cta-buttons">
-                    <a href="#install" class="btn btn-primary">🚀 Deploy Enterprise</a>
+                    <a href="#install" class="btn btn-primary">🚀 Get Started</a>
                     <a href="#architecture" class="btn btn-secondary">📋 View Architecture</a>
                 </div>
             </div>
@@ -491,37 +497,37 @@
     <div class="container">
         <!-- Enterprise Installation -->
         <section id="install" class="section">
-            <h2>🚀 Enterprise Deployment</h2>
-            <p>Deploy RecCall Enterprise across your organization with a single command. Automatic configuration, enterprise security, and scalable architecture.</p>
+            <h2>🚀 Quick Start</h2>
+            <p>Deploy RecCall across your organization with a single command. Automatic configuration, security features, and scalable architecture.</p>
             
             <div class="code-block">
-<span class="comment"># Enterprise Installation</span>
+<span class="comment"># Installation</span>
 curl -sfL https://reccaller.ai/install.sh | sh -
 
-<span class="comment"># Configure Enterprise Repository</span>
-reccall repo-config --set-repo https://your-company.reccaller-recipes.io
+<span class="comment"># Configure Repository</span>
+reccall repo-config --set-repo https://reccaller-recipes.io
 
-<span class="comment"># Deploy Custom Recipes</span>
-reccall install company-workflow
-reccall install security-policies
-reccall install deployment-procedures
+<span class="comment"># Install Recipes</span>
+reccall install sync-main
+reccall install create-feature-branch
+reccall install create-pr
             </div>
             
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🔒</div>
-                    <h4>Enterprise Security</h4>
-                    <p>Role-based access control, audit logging, and secure recipe validation</p>
+                    <h4>Security Features</h4>
+                    <p>Secure recipe validation, audit logging, and access control</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📈</div>
                     <h4>Scalable Architecture</h4>
-                    <p>Multi-tenant support, load balancing, and horizontal scaling</p>
+                    <p>Multi-environment support, caching, and performance optimization</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🔄</div>
-                    <h4>CI/CD Integration</h4>
-                    <p>Automated recipe deployment and version management</p>
+                    <h4>Version Control</h4>
+                    <p>Recipe versioning, updates, and maintenance</p>
                 </div>
             </div>
         </section>
@@ -529,17 +535,17 @@ reccall install deployment-procedures
         <!-- Repository Architecture -->
         <section id="architecture" class="section">
             <h2>🏗️ Repository Architecture</h2>
-            <p>RecCall Enterprise supports both global and local repository configurations, enabling flexible recipe management across organizations.</p>
+            <p>RecCall supports both global and local repository configurations, enabling flexible recipe management across teams and organizations.</p>
             
             <div class="architecture-grid">
                 <div class="architecture-card">
                     <h4>🌐 Global Repository</h4>
-                    <p>Centralized recipe management for enterprise-wide standardization</p>
+                    <p>Centralized recipe management for organization-wide standardization</p>
                     <ul>
-                        <li>Company-wide recipe standards</li>
+                        <li>Organization-wide recipe standards</li>
                         <li>Centralized updates and maintenance</li>
-                        <li>Role-based access control</li>
-                        <li>Audit trails and compliance</li>
+                        <li>Access control and permissions</li>
+                        <li>Audit trails and logging</li>
                         <li>Multi-environment support</li>
                     </ul>
                 </div>
@@ -560,25 +566,25 @@ reccall install deployment-procedures
             <h3>Repository Configuration Examples</h3>
             
             <div class="code-block">
-<span class="comment"># Global Enterprise Repository</span>
-reccall repo-config --set-repo https://enterprise.reccaller-recipes.io
+<span class="comment"># Global Repository</span>
+reccall repo-config --set-repo https://reccaller-recipes.io
 
-<span class="comment"># Search Global Recipes</span>
-reccall search "security compliance"
-reccall search "deployment pipeline"
+<span class="comment"># Search Recipes</span>
+reccall search "security"
+reccall search "deployment"
 
-<span class="comment"># Install Enterprise Standards</span>
-reccall install enterprise-security-audit
-reccall install production-deployment-checklist
-reccall install code-review-standards
+<span class="comment"># Install Standard Recipes</span>
+reccall install sync-main
+reccall install create-feature-branch
+reccall install create-pr
 
 <span class="comment"># Local Team Repository</span>
-reccall repo-config --set-repo https://team-alpha.reccaller-recipes.io
+reccall repo-config --set-repo https://team.reccaller-recipes.io
 
 <span class="comment"># Install Team-Specific Recipes</span>
-reccall install frontend-component-patterns
-reccall install api-testing-framework
-reccall install team-code-style
+reccall install team-workflow
+reccall install testing-patterns
+reccall install code-style
             </div>
         </section>
 
@@ -650,27 +656,27 @@ reccall install team-code-style
 
         <!-- Platform Integration -->
         <section class="section">
-            <h2>🌐 Enterprise Platform Integration</h2>
-            <p>Seamless integration with enterprise development tools and AI-powered IDEs.</p>
+            <h2>🌐 Platform Integration</h2>
+            <p>Seamless integration with development tools and AI-powered IDEs.</p>
             
             <div class="architecture-grid">
                 <div class="architecture-card">
                     <h4>🖥️ AI IDE Integration</h4>
                     <ul>
                         <li>Cursor IDE MCP server integration</li>
-                        <li>VSCode extension with enterprise features</li>
+                        <li>VSCode extension with full features</li>
                         <li>Warp Terminal shell integration</li>
-                        <li>CLI with enterprise authentication</li>
+                        <li>CLI with authentication support</li>
                     </ul>
                 </div>
                 
                 <div class="architecture-card">
-                    <h4>🔗 Enterprise Tools</h4>
+                    <h4>🔗 Development Tools</h4>
                     <ul>
-                        <li>GitHub Enterprise integration</li>
-                        <li>Jira/Confluence recipe sync</li>
-                        <li>Slack/Teams notifications</li>
-                        <li>LDAP/SSO authentication</li>
+                        <li>GitHub integration</li>
+                        <li>Git workflow automation</li>
+                        <li>Terminal integration</li>
+                        <li>Custom recipe development</li>
                     </ul>
                 </div>
             </div>
@@ -682,8 +688,8 @@ reccall install team-code-style
         <div class="container">
             <div class="footer-content">
                 <div>
-                    <h4>RecCall Enterprise</h4>
-                    <p>Universal context shortcuts and recipe repository platform for enterprise development teams.</p>
+                    <h4>RecCall</h4>
+                    <p>Universal context shortcuts and recipe repository platform for development teams.</p>
                 </div>
                 <div>
                     <h4>Platform</h4>
@@ -696,15 +702,15 @@ reccall install team-code-style
                     <h4>Repository</h4>
                     <p><a href="https://reccaller-recipes.io">reccaller-recipes.io</a></p>
                     <p><a href="https://github.com/reccaller-ai/reccall">GitHub Repository</a></p>
-                    <p><a href="#api">API Documentation</a></p>
-                    <p><a href="#support">Enterprise Support</a></p>
+                    <p><a href="https://github.com/reccaller-ai/reccall/blob/main/README.md">Documentation</a></p>
+                    <p><a href="https://github.com/reccaller-ai/reccall/issues">Issues & Support</a></p>
                 </div>
                 <div>
-                    <h4>Enterprise</h4>
-                    <p><a href="#security">Security</a></p>
-                    <p><a href="#compliance">Compliance</a></p>
-                    <p><a href="#support">24/7 Support</a></p>
-                    <p><a href="#contact">Contact Sales</a></p>
+                    <h4>Community</h4>
+                    <p><a href="https://github.com/reccaller-ai/reccall">Open Source</a></p>
+                    <p><a href="https://github.com/reccaller-ai/reccall/blob/main/LICENSE">License</a></p>
+                    <p><a href="https://github.com/reccaller-ai/reccall/issues">Support</a></p>
+                    <p><a href="https://github.com/reccaller-ai/reccall/discussions">Discussions</a></p>
                 </div>
             </div>
         </div>
