@@ -467,10 +467,11 @@
         <nav class="nav container">
             <a href="#" class="logo">RecCall</a>
             <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
+                <li><a href="#install">Quick Start</a></li>
                 <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#system-architecture">System Architecture</a></li>
+                <li><a href="#repository-schema">Repository Schema</a></li>
                 <li><a href="#custom-recipes">Custom Recipes</a></li>
-                <li><a href="#documentation">Documentation</a></li>
             </ul>
         </nav>
     </header>
@@ -654,6 +655,225 @@ reccall install code-style
             </div>
         </section>
 
+        <!-- RecCall System Architecture -->
+        <section id="system-architecture" class="section">
+            <h2>🏗️ RecCall System Architecture</h2>
+            <p>RecCall is built with a modular, extensible architecture that supports both local and remote recipe management with seamless IDE integration.</p>
+            
+            <div class="architecture-grid">
+                <div class="architecture-card">
+                    <h4>🖥️ Client Layer</h4>
+                    <p>Multi-platform client implementations for different development environments</p>
+                    <ul>
+                        <li>CLI Tool (Node.js/TypeScript)</li>
+                        <li>Cursor IDE MCP Server</li>
+                        <li>VSCode Extension</li>
+                        <li>Warp Terminal Integration</li>
+                        <li>Shell Script Integration</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>📦 Core Engine</h4>
+                    <p>Central recipe management and execution engine</p>
+                    <ul>
+                        <li>Recipe Storage & Retrieval</li>
+                        <li>Context Processing</li>
+                        <li>Command Execution</li>
+                        <li>Cache Management</li>
+                        <li>Validation & Security</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>🌐 Repository Layer</h4>
+                    <p>Remote and local repository management system</p>
+                    <ul>
+                        <li>HTTP/HTTPS Repository Client</li>
+                        <li>Local File System Storage</li>
+                        <li>Recipe Caching & TTL</li>
+                        <li>Manifest Processing</li>
+                        <li>Version Management</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>🔧 Integration Layer</h4>
+                    <p>Platform-specific integrations and adapters</p>
+                    <ul>
+                        <li>Git Workflow Integration</li>
+                        <li>IDE Communication Protocols</li>
+                        <li>Terminal Shell Integration</li>
+                        <li>File System Operations</li>
+                        <li>Network Operations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Data Flow Architecture</h3>
+            <div class="code-block">
+<span class="comment"># RecCall Data Flow</span>
+User Command → CLI Parser → Recipe Resolver → Context Processor → Command Executor
+
+<span class="comment"># Repository Flow</span>
+Repository URL → HTTP Client → Manifest Fetch → Recipe Download → Local Cache → Recipe Execution
+
+<span class="comment"># IDE Integration Flow</span>
+IDE Request → MCP Server → Recipe Lookup → Context Processing → Response → IDE Display
+            </div>
+        </section>
+
+        <!-- Repository Schema & Structure -->
+        <section id="repository-schema" class="section">
+            <h2>📋 Repository Schema & Structure</h2>
+            <p>RecCall repositories follow a standardized schema for consistent recipe management and discovery across different hosting platforms.</p>
+            
+            <h3>Repository Structure</h3>
+            <div class="code-block">
+<span class="comment"># Standard Repository Layout</span>
+repository-root/
+├── manifest.json          # Repository metadata and recipe index
+├── recipes/               # Individual recipe files
+│   ├── git-workflow.json
+│   ├── deployment.json
+│   └── testing.json
+└── README.md              # Repository documentation
+            </div>
+            
+            <h3>Manifest Schema</h3>
+            <div class="code-block">
+<span class="comment"># manifest.json Structure</span>
+{
+  "name": "Repository Name",
+  "description": "Repository description",
+  "version": "1.0.0",
+  "author": "Repository author",
+  "url": "https://reccaller-recipes.io",
+  "recipes": [
+    {
+      "name": "Recipe Display Name",
+      "shortcut": "recipe-shortcut",
+      "description": "Recipe description",
+      "file": "recipes/recipe1.json",
+      "category": "development",
+      "tags": ["git", "branch", "feature"],
+      "version": "1.0.0"
+    }
+  ]
+}
+            </div>
+            
+            <h3>Recipe Schema</h3>
+            <div class="code-block">
+<span class="comment"># Individual Recipe File Structure</span>
+{
+  "shortcut": "recipe-shortcut",
+  "context": "The actual context/instruction content",
+  "name": "Recipe Display Name",
+  "description": "Recipe description",
+  "category": "development",
+  "tags": ["git", "branch", "feature"],
+  "version": "1.0.0",
+  "author": "Recipe author",
+  "created": "2024-01-01T00:00:00Z",
+  "updated": "2024-01-01T00:00:00Z"
+}
+            </div>
+            
+            <h3>Schema Fields & Categories</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h4>Core Fields</h4>
+                    <p>shortcut, context, name, description, version</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏷️</div>
+                    <h4>Metadata</h4>
+                    <p>category, tags, author, created, updated</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📂</div>
+                    <h4>Categories</h4>
+                    <p>development, git, deployment, testing, security</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h4>Search & Discovery</h4>
+                    <p>tags, categories, versioning, indexing</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Specifications -->
+        <section id="technical-specs" class="section">
+            <h2>⚙️ Technical Specifications</h2>
+            <p>Detailed technical specifications for RecCall's implementation and integration capabilities.</p>
+            
+            <div class="architecture-grid">
+                <div class="architecture-card">
+                    <h4>🔧 CLI Specifications</h4>
+                    <ul>
+                        <li>Node.js/TypeScript implementation</li>
+                        <li>Commander.js for command parsing</li>
+                        <li>Cross-platform compatibility</li>
+                        <li>Configurable repository URLs</li>
+                        <li>Local caching with TTL support</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>🌐 Repository Protocol</h4>
+                    <ul>
+                        <li>HTTP/HTTPS repository access</li>
+                        <li>JSON manifest format</li>
+                        <li>Static file hosting support</li>
+                        <li>Cache-first strategy</li>
+                        <li>Version-based updates</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>🔌 IDE Integration</h4>
+                    <ul>
+                        <li>MCP (Model Context Protocol) server</li>
+                        <li>VSCode extension API</li>
+                        <li>Terminal shell integration</li>
+                        <li>Real-time context processing</li>
+                        <li>Cross-platform compatibility</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>💾 Storage & Caching</h4>
+                    <ul>
+                        <li>Local file system storage</li>
+                        <li>JSON-based recipe format</li>
+                        <li>Configurable cache TTL</li>
+                        <li>Incremental updates</li>
+                        <li>Offline capability</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>API Endpoints & Commands</h3>
+            <div class="code-block">
+<span class="comment"># Repository Commands</span>
+reccall search <query>              # Search recipes in repository
+reccall install <shortcut>          # Install recipe from repository
+reccall remove <shortcut>           # Remove installed recipe
+reccall list-repo                  # List available repository recipes
+reccall repo-config                # Configure repository settings
+reccall repo-cache-clear           # Clear repository cache
+
+<span class="comment"># Local Commands</span>
+reccall list                       # List installed recipes
+reccall call <shortcut>            # Execute recipe
+reccall delete <shortcut>          # Delete recipe
+reccall search-local <query>       # Search local recipes
+            </div>
+        </section>
+
         <!-- Platform Integration -->
         <section class="section">
             <h2>🌐 Platform Integration</h2>
@@ -693,10 +913,10 @@ reccall install code-style
                 </div>
                 <div>
                     <h4>Platform</h4>
-                    <p><a href="#features">Features</a></p>
+                    <p><a href="#install">Quick Start</a></p>
                     <p><a href="#architecture">Architecture</a></p>
-                    <p><a href="#custom-recipes">Custom Recipes</a></p>
-                    <p><a href="#documentation">Documentation</a></p>
+                    <p><a href="#system-architecture">System Architecture</a></p>
+                    <p><a href="#repository-schema">Repository Schema</a></p>
                 </div>
                 <div>
                     <h4>Repository</h4>
