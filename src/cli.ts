@@ -13,6 +13,25 @@ const STORAGE_FILE = path.join(os.homedir(), '.reccall.json');
 const STARTER_PACK_DIR = path.join(__dirname, '..', 'starter-pack');
 const REPO_CONFIG_FILE = path.join(os.homedir(), '.reccall-repo.json');
 
+// Performance optimization: In-memory caching
+let shortcutsCache: Record<string, string> | null = null;
+let cacheTimestamp: number = 0;
+const CACHE_TTL = 5000; // 5 seconds cache TTL
+let isInitialized = false;
+
+// Performance monitoring utilities
+function startTimer(): number {
+  return performance.now();
+}
+
+function endTimer(startTime: number, operation: string): number {
+  const duration = performance.now() - startTime;
+  if (duration > 10) { // Log operations > 10ms
+    console.warn(`Slow operation: ${operation} took ${duration.toFixed(2)}ms`);
+  }
+  return duration;
+}
+
 // Default repository configuration
 const DEFAULT_REPO_CONFIG = {
   defaultRepo: 'https://reccaller-recipes.io',
@@ -22,17 +41,47 @@ const DEFAULT_REPO_CONFIG = {
 
 // Load shortcuts from storage
 async function loadShortcuts(): Promise<Record<string, string>> {
+  const startTime = startTimer();
   try {
     const data = await fs.readFile(STORAGE_FILE, 'utf-8');
-    return JSON.parse(data);
+    const result = JSON.parse(data);
+    endTimer(startTime, 'loadShortcuts');
+    return result;
   } catch (error) {
+    endTimer(startTime, 'loadShortcuts');
     return {};
   }
 }
 
-// Save shortcuts to storage
+// Optimized shortcuts loading with caching
+async function loadShortcutsCached(): Promise<Record<string, string>> {
+  const now = Date.now();
+  
+  // Return cached data if still valid
+  if (shortcutsCache && (now - cacheTimestamp) < CACHE_TTL) {
+    return shortcutsCache;
+  }
+  
+  // Load from file and cache
+  shortcutsCache = await loadShortcuts();
+  cacheTimestamp = now;
+  return shortcutsCache;
+}
+
+// Save shortcuts to storage with optimization
 async function saveShortcuts(shortcuts: Record<string, string>): Promise<void> {
-  await fs.writeFile(STORAGE_FILE, JSON.stringify(shortcuts, null, 2));
+  const startTime = startTimer();
+  
+  // Use atomic write to prevent corruption
+  const tempFile = STORAGE_FILE + '.tmp';
+  await fs.writeFile(tempFile, JSON.stringify(shortcuts, null, 2));
+  await fs.rename(tempFile, STORAGE_FILE);
+  
+  // Update cache
+  shortcutsCache = shortcuts;
+  cacheTimestamp = Date.now();
+  
+  endTimer(startTime, 'saveShortcuts');
 }
 
 // Load repository configuration
@@ -183,8 +232,29 @@ function validateRecipe(recipe: any): { valid: boolean, errors: string[] } {
   };
 }
 
+// Initialize RecCall with performance optimizations
+async function initializeRecCall(): Promise<void> {
+  if (isInitialized) return;
+  
+  const startTime = startTimer();
+  
+  // Pre-load shortcuts into cache
+  await loadShortcutsCached();
+  
+  // Pre-load starter pack if needed
+  const shortcuts = await loadShortcutsCached();
+  if (Object.keys(shortcuts).length === 0) {
+    const starterPack = await loadStarterPack();
+    await saveShortcuts(starterPack);
+  }
+  
+  isInitialized = true;
+  endTimer(startTime, 'initializeRecCall');
+}
+
 // Load starter pack recipes
 async function loadStarterPack(): Promise<Record<string, string>> {
+  const startTime = startTimer();
   const shortcuts: Record<string, string> = {};
   
   try {
@@ -206,6 +276,7 @@ async function loadStarterPack(): Promise<Record<string, string>> {
     console.error('Failed to load starter pack:', error);
   }
   
+  endTimer(startTime, 'loadStarterPack');
   return shortcuts;
 }
 
@@ -224,7 +295,10 @@ program
   .argument('<shortcut>', 'The shortcut name/alias')
   .argument('<context>', 'The context or instruction to store')
   .action(async (shortcut: string, context: string) => {
-    const shortcuts = await loadShortcuts();
+    const startTime = startTimer();
+    await initializeRecCall();
+    
+    const shortcuts = await loadShortcutsCached();
     
     if (shortcuts[shortcut]) {
       console.log(`⚠️  Warning: Shortcut '${shortcut}' already exists!`);
@@ -238,6 +312,7 @@ program
     
     console.log(`✅ Shortcut '${shortcut}' has been recorded successfully!`);
     console.log(`Stored context: ${context}`);
+    endTimer(startTime, 'rec command');
   });
 
 // List all shortcuts
@@ -246,7 +321,9 @@ program
   .alias('ls')
   .description('List all stored shortcuts')
   .action(async () => {
-    const shortcuts = await loadShortcuts();
+    const startTime = startTimer();
+    await initializeRecCall();
+    const shortcuts = await loadShortcutsCached();
     const shortcutList = Object.keys(shortcuts);
     
     if (shortcutList.length === 0) {
@@ -262,6 +339,7 @@ program
       const truncated = shortcuts[key].length > 100 ? '...' : '';
       console.log(`• ${key}: ${preview}${truncated}`);
     });
+    endTimer(startTime, 'list command');
   });
 
 // Call/retrieve a shortcut
@@ -270,7 +348,10 @@ program
   .description('Call (retrieve) a stored shortcut')
   .argument('<shortcut>', 'The shortcut name to retrieve')
   .action(async (shortcut: string) => {
-    const shortcuts = await loadShortcuts();
+    const startTime = startTimer();
+    await initializeRecCall();
+    
+    const shortcuts = await loadShortcutsCached();
     
     if (!shortcuts[shortcut]) {
       console.log(`❌ Shortcut '${shortcut}' not found.`);
@@ -281,6 +362,7 @@ program
     console.log(`📋 Context for '${shortcut}':`);
     console.log();
     console.log(shortcuts[shortcut]);
+    endTimer(startTime, 'call command');
   });
 
 // Update an existing shortcut
