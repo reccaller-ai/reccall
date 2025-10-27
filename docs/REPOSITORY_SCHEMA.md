@@ -26,7 +26,7 @@ The `manifest.json` file defines the repository metadata and lists all available
   "description": "Repository description",
   "version": "1.0.0",
   "author": "Repository author",
-  "url": "https://reccaller.repo.ai",
+  "url": "https://contexts.reccaller.ai/",
   "recipes": [
     {
       "name": "Recipe Display Name",

@@ -4,7 +4,7 @@ This document describes the new repository commands added to RecCall for managin
 
 ## Overview
 
-RecCall now supports installing and managing recipes from remote repositories. The default repository is `https://reccaller-recipes.io`, but you can configure custom repositories.
+RecCall now supports installing and managing recipes from remote repositories. The default repository is `https://contexts.reccaller.ai/`, but you can configure custom repositories.
 
 ## Repository Commands
 
@@ -79,7 +79,7 @@ Repository configuration is stored in `~/.reccall-repo.json`:
 
 ```json
 {
-  "defaultRepo": "https://reccaller.repo.ai",
+  "defaultRepo": "https://contexts.reccaller.ai/",
   "cacheDir": "/Users/username/.reccall-cache",
   "enabled": true
 }
