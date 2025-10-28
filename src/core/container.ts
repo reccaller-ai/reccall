@@ -55,8 +55,16 @@ export class DIContainer {
     container.registerSingleton<ICacheManager>(TOKENS.CACHE_MANAGER, MultiLayerCacheManager);
     container.registerSingleton<IRecipeValidator>(TOKENS.RECIPE_VALIDATOR, RecipeValidator);
 
-    // Register core engine with dependencies
-    container.registerSingleton<ICoreEngine>(TOKENS.CORE_ENGINE, CoreEngine);
+    // Register core engine with manual instantiation
+    container.registerSingleton<ICoreEngine>(TOKENS.CORE_ENGINE, {
+      useFactory: (dependencyContainer) => {
+        const storage = dependencyContainer.resolve<IContextStorage>(TOKENS.CONTEXT_STORAGE);
+        const repository = dependencyContainer.resolve<IRepositoryClient>(TOKENS.REPOSITORY_CLIENT);
+        const cache = dependencyContainer.resolve<ICacheManager>(TOKENS.CACHE_MANAGER);
+        const validator = dependencyContainer.resolve<IRecipeValidator>(TOKENS.RECIPE_VALIDATOR);
+        return new CoreEngine(storage, repository, cache, validator);
+      }
+    });
 
     // Initialize configuration
     await configManager.initialize();

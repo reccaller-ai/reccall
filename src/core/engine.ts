@@ -26,16 +26,15 @@ import { telemetryManager, Performance, LogErrors } from './telemetry.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-@Injectable()
 export class CoreEngine implements ICoreEngine {
   private initialized = false;
   private starterPackDir: string;
 
   constructor(
-    @Inject(TOKENS.CONTEXT_STORAGE) private storage: IContextStorage,
-    @Inject(TOKENS.REPOSITORY_CLIENT) private repository: IRepositoryClient,
-    @Inject(TOKENS.CACHE_MANAGER) private cache: ICacheManager,
-    @Inject(TOKENS.RECIPE_VALIDATOR) private validator: IRecipeValidator
+    private storage: IContextStorage,
+    private repository: IRepositoryClient,
+    private cache: ICacheManager,
+    private validator: IRecipeValidator
   ) {
     this.starterPackDir = path.join(__dirname, '..', '..', 'starter-pack');
   }
