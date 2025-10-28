@@ -4,6 +4,12 @@
   "description": "RecCall: Record and call context shortcuts across AI IDEs and environments (Cursor, VSCode, Warp, CLI)",
   "type": "module",
   "main": "index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./core": "./dist/src/core/engine.js",
+    "./types": "./dist/src/types.js",
+    "./interfaces": "./dist/src/core/interfaces.js"
+  },
   "bin": {
     "reccall": "./dist/src/cli.js",
     "reccall-mcp": "./index.js"
@@ -12,12 +18,13 @@
     "build": "tsc && cp -r starter-pack dist/",
     "prepare": "npm run build",
     "dev": "tsc --watch",
-    "test": "echo \"No tests specified\" && exit 0",
-    "lint": "eslint . --ext .ts,.js --ignore-pattern 'index.js'",
-    "lint:fix": "eslint . --ext .ts,.js --fix --ignore-pattern 'index.js'",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
     "type-check": "tsc --noEmit",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "biome format --write .",
+    "format:check": "biome format ."
   },
   "keywords": [
     "mcp",
@@ -28,25 +35,33 @@
     "context",
     "shortcuts",
     "reccall",
-    "ai-ide"
+    "ai-ide",
+    "enterprise",
+    "plugin-architecture"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "commander": "^12.0.0"
+    "commander": "^12.0.0",
+    "zod": "^3.22.4",
+    "lru-cache": "^10.1.0",
+    "pino": "^8.16.2"
   },
   "devDependencies": {
-    "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
-    "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "@biomejs/biome": "^1.4.1",
     "eslint": "^8.0.0",
-    "jest": "^30.2.0",
     "prettier": "^3.0.0",
-    "supertest": "^7.1.4",
-    "ts-jest": "^29.4.5",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "vitest": "^1.0.4",
+    "tsx": "^4.6.2"
+  },
+  "optionalDependencies": {
+    "ioredis": "^5.3.2",
+    "bull": "^4.12.2",
+    "passport": "^0.7.0"
   }
 }
