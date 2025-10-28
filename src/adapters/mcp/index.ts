@@ -9,7 +9,6 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { ICoreEngine } from '../../core/interfaces.js';
-import { CoreEngine } from '../../core/engine.js';
 import { RecCallError } from '../../types.js';
 import type { ShortcutId } from '../../types.js';
 
@@ -17,8 +16,8 @@ export class MCPAdapter {
   private engine: ICoreEngine;
   private server: Server;
 
-  constructor(engine?: ICoreEngine) {
-    this.engine = engine || new CoreEngine();
+  constructor(engine: ICoreEngine) {
+    this.engine = engine;
     this.server = new Server(
       {
         name: 'reccall',

@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * RecCall MCP Server - Refactored to use core engine
+ * RecCall MCP Server - Refactored to use core engine with DI
  */
 
-import { MCPAdapter } from './src/adapters/mcp/index.js';
+import { createMCPAdapter } from './src/core/container.js';
 
 async function main() {
-  const adapter = new MCPAdapter();
+  const adapter = await createMCPAdapter();
   await adapter.initialize();
   await adapter.start();
 }

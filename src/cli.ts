@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * RecCall CLI - Refactored to use core engine
+ * RecCall CLI - Refactored to use core engine with DI
  */
 
-import { CLIAdapter } from './adapters/cli/index.js';
+import { createCLIAdapter } from './core/container.js';
 
 async function main() {
-  const adapter = new CLIAdapter();
+  const adapter = await createCLIAdapter();
   await adapter.initialize();
   
   const program = adapter.createProgram();
@@ -16,5 +16,5 @@ async function main() {
 
 main().catch((error) => {
   console.error('❌ Fatal error:', error);
-      process.exit(1);
-  });
+  process.exit(1);
+});

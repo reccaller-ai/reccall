@@ -18,31 +18,30 @@ import type {
 } from './interfaces.js';
 import { RecCallError } from '../types.js';
 import type { ShortcutId } from '../types.js';
-import { FileSystemStorage } from '../storage-backends/filesystem.js';
-import { HttpRepositoryClient } from './repository.js';
-import { MultiLayerCacheManager } from './cache.js';
-import { RecipeValidator } from './validator.js';
+import { Injectable, Inject } from './container.js';
+import { TOKENS } from './container.js';
 import { configManager } from './config.js';
+import { telemetryManager, Performance, LogErrors } from './telemetry.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+@Injectable()
 export class CoreEngine implements ICoreEngine {
-  private storage: IContextStorage;
-  private repository: IRepositoryClient;
-  private cache: ICacheManager;
-  private validator: IRecipeValidator;
   private initialized = false;
   private starterPackDir: string;
 
-  constructor() {
-    this.storage = new FileSystemStorage();
-    this.repository = new HttpRepositoryClient();
-    this.cache = new MultiLayerCacheManager();
-    this.validator = new RecipeValidator();
+  constructor(
+    @Inject(TOKENS.CONTEXT_STORAGE) private storage: IContextStorage,
+    @Inject(TOKENS.REPOSITORY_CLIENT) private repository: IRepositoryClient,
+    @Inject(TOKENS.CACHE_MANAGER) private cache: ICacheManager,
+    @Inject(TOKENS.RECIPE_VALIDATOR) private validator: IRecipeValidator
+  ) {
     this.starterPackDir = path.join(__dirname, '..', '..', 'starter-pack');
   }
 
+  @Performance('engine.initialize')
+  @LogErrors({ operation: 'initialize' })
   async initialize(config?: Partial<CoreConfig>): Promise<void> {
     if (this.initialized) return;
 
@@ -55,9 +54,23 @@ export class CoreEngine implements ICoreEngine {
       await this.loadStarterPack();
     }
 
+    // Update metrics
+    telemetryManager.updateMetrics({
+      shortcutsCount: shortcuts.length,
+      repositoryEnabled: configManager.isRepositoryEnabled(),
+    });
+
     this.initialized = true;
+    
+    telemetryManager.logEvent({
+      event: 'engine.initialized',
+      timestamp: Date.now(),
+      properties: { shortcutsCount: shortcuts.length },
+    });
   }
 
+  @Performance('engine.record')
+  @LogErrors({ operation: 'record' })
   async record(shortcut: ShortcutId, context: string): Promise<void> {
     this.ensureInitialized();
 
@@ -89,6 +102,16 @@ export class CoreEngine implements ICoreEngine {
     }
 
     await this.storage.record(shortcut, context);
+    
+    // Update metrics
+    const shortcuts = await this.storage.list();
+    telemetryManager.updateMetrics({ shortcutsCount: shortcuts.length });
+    
+    telemetryManager.logEvent({
+      event: 'shortcut.recorded',
+      timestamp: Date.now(),
+      properties: { shortcut },
+    });
   }
 
   async call(shortcut: ShortcutId): Promise<string> {

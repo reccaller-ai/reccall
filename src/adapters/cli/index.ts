@@ -4,14 +4,13 @@
 
 import { Command } from 'commander';
 import type { ICoreEngine, ShortcutId, RepositoryUrl } from '../../core/interfaces.js';
-import { CoreEngine } from '../../core/engine.js';
 import { RecCallError } from '../../types.js';
 
 export class CLIAdapter {
   private engine: ICoreEngine;
 
-  constructor(engine?: ICoreEngine) {
-    this.engine = engine || new CoreEngine();
+  constructor(engine: ICoreEngine) {
+    this.engine = engine;
   }
 
   async initialize(): Promise<void> {
