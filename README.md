@@ -310,27 +310,62 @@ export class MyPlatformAdapter implements IPlatformAdapter {
 ### Prerequisites
 - Node.js 18+
 - TypeScript 5.6+
-- npm or yarn
+- npm, yarn, or pnpm
+- Make (optional, but recommended for convenient commands)
 
 ### Setup
 ```bash
 git clone https://github.com/reccaller-ai/reccall.git
 cd reccall
-npm install
-npm run build
+make install    # or: npm install
+make build      # or: npm run build
+```
+
+### Quick Commands (Makefile)
+```bash
+make help       # Show all available commands
+make test       # Run tests
+make lint       # Check code style
+make lint-fix   # Auto-fix linting
+make format     # Format code
+make validate   # Run all validation checks
+make pre-commit # Run pre-commit checks
+make ci-all     # Run full CI pipeline locally
 ```
 
 ### Testing
 ```bash
+make test              # Run all tests
+make test-watch        # Run tests in watch mode
+make test-coverage     # Generate coverage report
+# Or use npm directly:
 npm test
 npm run test:watch
 ```
 
-### Linting
+### Linting and Formatting
 ```bash
+make lint          # Check code style
+make lint-fix       # Auto-fix linting issues
+make format         # Format code
+make format-check   # Check formatting
+# Or use npm directly:
 npm run lint
 npm run lint:fix
 ```
+
+### CI/CD Commands
+```bash
+make ci-all         # Run complete CI pipeline (recommended)
+make ci-deps        # Install dependencies
+make ci-type-check  # Type checking
+make ci-lint        # Linting
+make ci-test        # Tests with coverage
+make ci-security    # Security audit
+make ci-build       # Build
+```
+
+See [Makefile Documentation](./docs/MAKEFILE.md) for complete usage guide.
 
 ## 📚 Documentation
 
