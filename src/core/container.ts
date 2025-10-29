@@ -158,3 +158,12 @@ export async function createMCPAdapter() {
   const engine = await createCoreEngine();
   return new MCPAdapter(engine);
 }
+
+/**
+ * Factory function to create VSCode adapter with DI
+ */
+export async function createVSCodeAdapter() {
+  const { VSCodeAdapter } = await import('../adapters/vscode/index.js');
+  const engine = await createCoreEngine();
+  return new VSCodeAdapter(engine);
+}

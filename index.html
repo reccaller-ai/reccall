@@ -484,7 +484,7 @@
                 <div class="hero-subtitle">Universal AI Context Engine with Plugin Architecture</div>
                 <p class="hero-description">
                     Universal AI context engine with enterprise-grade plugin architecture. 
-                    Works seamlessly with Cursor, VSCode, Warp, Perplexity, Sora, and more. 
+                    Works seamlessly with Cursor, VSCode, Warp, Perplexity, Sora, and more. All platforms now powered by a unified core engine for consistent behavior, caching, and telemetry. 
                     Built with dependency injection, telemetry, and browser extensions for maximum flexibility.
                 </p>
                 <div class="cta-buttons">
@@ -558,9 +558,10 @@ reccall search-repo "git"
                     <ul>
                         <li>CLI Adapter - Command-line interface</li>
                         <li>MCP Adapter - Model Context Protocol server</li>
-                        <li>VSCode Extension - Native IDE integration</li>
-                        <li>Warp Integration - Terminal shell integration</li>
+                        <li>VSCodeAdapter - VSCode extension with core engine</li>
+                        <li>Warp Integration - Terminal shell via CLI (uses core engine)</li>
                         <li>Browser Extensions - Web platform support</li>
+                        <li><strong>All platforms use unified core engine</strong> - Consistent features across all integrations</li>
                     </ul>
                 </div>
             </div>
@@ -1250,8 +1251,9 @@ reccall search-local <query>       # Search local recipes
                     <h4>🖥️ AI IDE Integration</h4>
                     <ul>
                         <li>Cursor IDE MCP server integration</li>
-                        <li>VSCode extension with full features</li>
-                        <li>Warp Terminal shell integration</li>
+                        <li>VSCode extension with VSCodeAdapter (uses core engine)</li>
+                        <li>Warp Terminal shell integration via CLI (uses core engine)</li>
+                        <li>Unified core engine ensures consistency across all platforms</li>
                         <li>CLI with authentication support</li>
                     </ul>
                 </div>

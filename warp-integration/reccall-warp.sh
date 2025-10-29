@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # RecCall Warp Integration Script
-# This script provides RecCall functionality within Warp terminal
-
-RECCALL_STORAGE="$HOME/.reccall.json"
-RECCALL_STARTER_PACK="$(dirname "$0")/../starter-pack"
+# Refactored to use CLI commands which leverage the core engine
+# Provides RecCall functionality within Warp terminal
 
 # Colors for output
 RED='\033[0;31m'
@@ -13,8 +11,40 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Load shortcuts from storage
-load_shortcuts() {
+# Find reccall CLI command
+# Try multiple locations:
+# 1. Global npm installation (reccall command)
+# 2. Local installation in parent directory
+# 3. Direct node execution of CLI
+find_reccall_cli() {
+    # Try global reccall command first
+    if command -v reccall &> /dev/null; then
+        echo "reccall"
+        return 0
+    fi
+
+    # Try local node execution
+    local script_dir
+    script_dir="$(dirname "$0")"
+    local parent_dir
+    parent_dir="$(cd "$script_dir/.." && pwd)"
+    local cli_path="$parent_dir/dist/src/cli.js"
+
+    if [ -f "$cli_path" ]; then
+        echo "node $cli_path"
+        return 0
+    fi
+
+    # Fallback to JSON manipulation if CLI not available
+    echo ""
+    return 1
+}
+
+RECCALL_CMD=$(find_reccall_cli)
+RECCALL_STORAGE="$HOME/.reccall.json"
+
+# Fallback functions (used if CLI not available)
+load_shortcuts_fallback() {
     if [ -f "$RECCALL_STORAGE" ]; then
         cat "$RECCALL_STORAGE"
     else
@@ -22,42 +52,66 @@ load_shortcuts() {
     fi
 }
 
-# Save shortcuts to storage
-save_shortcuts() {
+save_shortcuts_fallback() {
     echo "$1" > "$RECCALL_STORAGE"
 }
 
-# Get shortcut value by key
-get_shortcut() {
+get_shortcut_fallback() {
     local key="$1"
-    load_shortcuts | jq -r --arg key "$key" '.[$key] // empty'
+    if ! command -v jq &> /dev/null; then
+        echo -e "${RED}❌ jq is required for fallback mode. Please install: brew install jq${NC}" >&2
+        return 1
+    fi
+    load_shortcuts_fallback | jq -r --arg key "$key" '.[$key] // empty'
 }
 
-# Set shortcut key-value pair
-set_shortcut() {
+set_shortcut_fallback() {
     local key="$1"
     local value="$2"
+    if ! command -v jq &> /dev/null; then
+        echo -e "${RED}❌ jq is required for fallback mode. Please install: brew install jq${NC}" >&2
+        return 1
+    fi
     local shortcuts
-    shortcuts=$(load_shortcuts)
+    shortcuts=$(load_shortcuts_fallback)
     local updated
     updated=$(echo "$shortcuts" | jq --arg key "$key" --arg value "$value" '. + {($key): $value}')
-    save_shortcuts "$updated"
+    save_shortcuts_fallback "$updated"
 }
 
-# Delete shortcut by key
-delete_shortcut() {
+delete_shortcut_fallback() {
     local key="$1"
+    if ! command -v jq &> /dev/null; then
+        echo -e "${RED}❌ jq is required for fallback mode. Please install: brew install jq${NC}" >&2
+        return 1
+    fi
     local shortcuts
-    shortcuts=$(load_shortcuts)
+    shortcuts=$(load_shortcuts_fallback)
     local updated
     updated=$(echo "$shortcuts" | jq --arg key "$key" 'del(.[$key])')
-    save_shortcuts "$updated"
+    save_shortcuts_fallback "$updated"
 }
 
 # List all shortcuts
 list_shortcuts() {
+    if [ -n "$RECCALL_CMD" ]; then
+        # Use CLI command
+        local output
+        output=$($RECCALL_CMD list 2>&1)
+        if [ $? -eq 0 ]; then
+            echo "$output"
+            return 0
+        fi
+    fi
+    
+    # Fallback to JSON manipulation
+    if ! command -v jq &> /dev/null; then
+        echo -e "${RED}❌ jq is required. Please install: brew install jq${NC}" >&2
+        return 1
+    fi
+    
     local shortcuts
-    shortcuts=$(load_shortcuts)
+    shortcuts=$(load_shortcuts_fallback)
     local count
     count=$(echo "$shortcuts" | jq 'length')
     
@@ -76,8 +130,25 @@ list_shortcuts() {
 # Search shortcuts
 search_shortcuts() {
     local query="$1"
+    
+    if [ -n "$RECCALL_CMD" ]; then
+        # Use CLI command
+        local output
+        output=$($RECCALL_CMD search "$query" 2>&1)
+        if [ $? -eq 0 ]; then
+            echo "$output"
+            return 0
+        fi
+    fi
+    
+    # Fallback to JSON manipulation
+    if ! command -v jq &> /dev/null; then
+        echo -e "${RED}❌ jq is required. Please install: brew install jq${NC}" >&2
+        return 1
+    fi
+    
     local shortcuts
-    shortcuts=$(load_shortcuts)
+    shortcuts=$(load_shortcuts_fallback)
     local results
     results=$(echo "$shortcuts" | jq --arg query "$query" 'to_entries[] | select(.key | test($query; "i")) or select(.value | test($query; "i"))')
     
@@ -94,21 +165,42 @@ search_shortcuts() {
 
 # Load starter pack
 load_starter_pack() {
-    if [ ! -d "$RECCALL_STARTER_PACK" ]; then
-        echo -e "${RED}❌ Starter pack directory not found: $RECCALL_STARTER_PACK${NC}"
+    if [ -n "$RECCALL_CMD" ]; then
+        # Use CLI command
+        local output
+        output=$($RECCALL_CMD reload-starter-pack 2>&1)
+        if [ $? -eq 0 ]; then
+            echo -e "${GREEN}✅ Starter pack reloaded successfully!${NC}"
+            echo "$output"
+            return 0
+        fi
+    fi
+    
+    # Fallback to JSON manipulation
+    local script_dir
+    script_dir="$(dirname "$0")"
+    local starter_pack_dir="$script_dir/../starter-pack"
+    
+    if [ ! -d "$starter_pack_dir" ]; then
+        echo -e "${RED}❌ Starter pack directory not found: $starter_pack_dir${NC}"
         return 1
     fi
     
-    local manifest_file="$RECCALL_STARTER_PACK/manifest.json"
+    local manifest_file="$starter_pack_dir/manifest.json"
     if [ ! -f "$manifest_file" ]; then
         echo -e "${RED}❌ Starter pack manifest not found: $manifest_file${NC}"
+        return 1
+    fi
+    
+    if ! command -v jq &> /dev/null; then
+        echo -e "${RED}❌ jq is required for fallback mode. Please install: brew install jq${NC}" >&2
         return 1
     fi
     
     local shortcuts="{}"
     
     while IFS= read -r recipe_file; do
-        local recipe_path="$RECCALL_STARTER_PACK/$recipe_file"
+        local recipe_path="$starter_pack_dir/$recipe_file"
         if [ -f "$recipe_path" ]; then
             local shortcut_name
             shortcut_name=$(jq -r '.shortcut' "$recipe_path")
@@ -118,7 +210,7 @@ load_starter_pack() {
         fi
     done < <(jq -r '.recipes[].file' "$manifest_file")
     
-    save_shortcuts "$shortcuts"
+    save_shortcuts_fallback "$shortcuts"
     local count
     count=$(echo "$shortcuts" | jq 'length')
     echo -e "${GREEN}✅ Starter pack loaded successfully! $count recipes loaded.${NC}"
@@ -136,9 +228,30 @@ reccall() {
             local shortcut="$2"
             local context="$3"
             
-            # Check if shortcut already exists
+            if [ -n "$RECCALL_CMD" ]; then
+                # Use CLI command
+                local output
+                output=$($RECCALL_CMD rec "$shortcut" "$context" 2>&1)
+                local exit_code=$?
+                if [ $exit_code -eq 0 ]; then
+                    echo -e "${GREEN}✅ Shortcut '$shortcut' has been recorded successfully!${NC}"
+                    return 0
+                else
+                    # Handle duplicate error
+                    if echo "$output" | grep -q "already exists\|DUPLICATE"; then
+                        echo -e "${YELLOW}⚠️  Warning: Shortcut '$shortcut' already exists!${NC}"
+                        echo "To update it, use: reccall update $shortcut <new_context>"
+                        return 1
+                    else
+                        echo -e "${RED}❌ Error: $output${NC}"
+                        return 1
+                    fi
+                fi
+            fi
+            
+            # Fallback to JSON manipulation
             local existing
-            existing=$(get_shortcut "$shortcut")
+            existing=$(get_shortcut_fallback "$shortcut")
             if [ -n "$existing" ]; then
                 echo -e "${YELLOW}⚠️  Warning: Shortcut '$shortcut' already exists!${NC}"
                 echo "Current context: $existing"
@@ -146,7 +259,7 @@ reccall() {
                 return 1
             fi
             
-            set_shortcut "$shortcut" "$context"
+            set_shortcut_fallback "$shortcut" "$context"
             echo -e "${GREEN}✅ Shortcut '$shortcut' has been recorded successfully!${NC}"
             echo "Stored context: $context"
             ;;
@@ -158,12 +271,31 @@ reccall() {
             fi
             
             local shortcut="$2"
+            
+            if [ -n "$RECCALL_CMD" ]; then
+                # Use CLI command
+                local output
+                output=$($RECCALL_CMD call "$shortcut" 2>&1)
+                if [ $? -eq 0 ]; then
+                    echo -e "${BLUE}📋 Context for '$shortcut':${NC}"
+                    echo
+                    echo "$output"
+                    return 0
+                else
+                    echo -e "${RED}❌ Shortcut '$shortcut' not found.${NC}"
+                    return 1
+                fi
+            fi
+            
+            # Fallback to JSON manipulation
             local context
-            context=$(get_shortcut "$shortcut")
+            context=$(get_shortcut_fallback "$shortcut")
             
             if [ -z "$context" ]; then
                 echo -e "${RED}❌ Shortcut '$shortcut' not found.${NC}"
-                echo "Available shortcuts: $(load_shortcuts | jq -r 'keys[]' | tr '\n' ' ')"
+                if command -v jq &> /dev/null; then
+                    echo "Available shortcuts: $(load_shortcuts_fallback | jq -r 'keys[]' | tr '\n' ' ')"
+                fi
                 return 1
             fi
             
@@ -193,16 +325,33 @@ reccall() {
             
             local shortcut="$2"
             local new_context="$3"
+            
+            if [ -n "$RECCALL_CMD" ]; then
+                # Use CLI command
+                local output
+                output=$($RECCALL_CMD update "$shortcut" "$new_context" 2>&1)
+                if [ $? -eq 0 ]; then
+                    echo -e "${GREEN}✅ Shortcut '$shortcut' has been updated successfully!${NC}"
+                    return 0
+                else
+                    echo -e "${RED}❌ Error: $output${NC}"
+                    return 1
+                fi
+            fi
+            
+            # Fallback to JSON manipulation
             local existing
-            existing=$(get_shortcut "$shortcut")
+            existing=$(get_shortcut_fallback "$shortcut")
             
             if [ -z "$existing" ]; then
                 echo -e "${RED}❌ Shortcut '$shortcut' not found.${NC}"
-                echo "Available shortcuts: $(load_shortcuts | jq -r 'keys[]' | tr '\n' ' ')"
+                if command -v jq &> /dev/null; then
+                    echo "Available shortcuts: $(load_shortcuts_fallback | jq -r 'keys[]' | tr '\n' ' ')"
+                fi
                 return 1
             fi
             
-            set_shortcut "$shortcut" "$new_context"
+            set_shortcut_fallback "$shortcut" "$new_context"
             echo -e "${GREEN}✅ Shortcut '$shortcut' has been updated successfully!${NC}"
             echo "Previous context: $existing"
             echo "New context: $new_context"
@@ -215,15 +364,36 @@ reccall() {
             fi
             
             local shortcut="$2"
+            
+            if [ -n "$RECCALL_CMD" ]; then
+                # Use CLI command
+                local output
+                output=$($RECCALL_CMD delete "$shortcut" 2>&1)
+                if [ $? -eq 0 ]; then
+                    echo -e "${GREEN}✅ Shortcut '$shortcut' has been deleted successfully!${NC}"
+                    return 0
+                else
+                    # Handle not found (idempotent operation)
+                    if echo "$output" | grep -q "not found\|NOT_FOUND"; then
+                        echo -e "${YELLOW}⚠️  Shortcut '$shortcut' not found. Nothing to delete.${NC}"
+                        return 0
+                    else
+                        echo -e "${RED}❌ Error: $output${NC}"
+                        return 1
+                    fi
+                fi
+            fi
+            
+            # Fallback to JSON manipulation
             local existing
-            existing=$(get_shortcut "$shortcut")
+            existing=$(get_shortcut_fallback "$shortcut")
             
             if [ -z "$existing" ]; then
                 echo -e "${YELLOW}⚠️  Shortcut '$shortcut' not found. Nothing to delete.${NC}"
                 return 0
             fi
             
-            delete_shortcut "$shortcut"
+            delete_shortcut_fallback "$shortcut"
             echo -e "${GREEN}✅ Shortcut '$shortcut' has been deleted successfully!${NC}"
             ;;
             
@@ -232,8 +402,27 @@ reccall() {
             ;;
             
         "info")
+            if [ -n "$RECCALL_CMD" ]; then
+                # Use CLI command if available
+                $RECCALL_CMD stats 2>/dev/null || {
+                    # Fallback to basic info
+                    echo -e "${BLUE}📊 RecCall Information${NC}"
+                    echo "===================="
+                    echo "Version: 1.0.0"
+                    echo "Storage file: $RECCALL_STORAGE"
+                    echo "CLI: Available"
+                }
+                return 0
+            fi
+            
+            # Fallback to JSON manipulation
+            if ! command -v jq &> /dev/null; then
+                echo -e "${YELLOW}⚠️  jq is required for info command in fallback mode.${NC}"
+                return 1
+            fi
+            
             local shortcuts
-            shortcuts=$(load_shortcuts)
+            shortcuts=$(load_shortcuts_fallback)
             local count
             count=$(echo "$shortcuts" | jq 'length')
             
@@ -242,6 +431,7 @@ reccall() {
             echo "Version: 1.0.0"
             echo "Storage file: $RECCALL_STORAGE"
             echo "Total shortcuts: $count"
+            echo "Mode: Fallback (CLI not available)"
             echo
             
             if [ "$count" -gt 0 ]; then
