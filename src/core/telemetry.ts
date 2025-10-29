@@ -39,7 +39,7 @@ export class TelemetryManager {
   constructor() {
     this.enabled = configManager.isTelemetryEnabled();
     
-    this.logger = pino.default({
+    this.logger = pino({
       level: this.enabled ? 'info' : 'silent',
       formatters: {
         level: (label: string) => ({ level: label }),
