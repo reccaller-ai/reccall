@@ -3,7 +3,7 @@
  */
 
 import 'reflect-metadata';
-import { container, injectable, inject } from 'tsyringe';
+import { container, injectable, inject, DependencyContainer } from 'tsyringe';
 import type { 
   ICoreEngine,
   IContextStorage, 
@@ -57,14 +57,14 @@ export class DIContainer {
 
     // Register core engine with manual instantiation
     container.registerSingleton<ICoreEngine>(TOKENS.CORE_ENGINE, {
-      useFactory: (dependencyContainer) => {
+      useFactory: (dependencyContainer: DependencyContainer) => {
         const storage = dependencyContainer.resolve<IContextStorage>(TOKENS.CONTEXT_STORAGE);
         const repository = dependencyContainer.resolve<IRepositoryClient>(TOKENS.REPOSITORY_CLIENT);
         const cache = dependencyContainer.resolve<ICacheManager>(TOKENS.CACHE_MANAGER);
         const validator = dependencyContainer.resolve<IRecipeValidator>(TOKENS.RECIPE_VALIDATOR);
         return new CoreEngine(storage, repository, cache, validator);
       }
-    });
+    } as any);
 
     // Initialize configuration
     await configManager.initialize();
