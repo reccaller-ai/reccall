@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RecCall - Universal Context Shortcuts & Recipe Repository Platform</title>
-    <meta name="description" content="Universal context shortcut management with global/local repository support. Install custom recipes from contexts.reccaller.ai. Works with Cursor, VSCode, Warp Terminal. Scale your development workflow with smart context management.">
-    <meta name="keywords" content="reccall, context shortcuts, AI IDE, cursor, vscode, warp, recipe repository, contexts.reccaller.ai, custom recipes, development, global repository, local repository">
+    <title>RecCall - Universal AI Context Engine with Plugin Architecture</title>
+    <meta name="description" content="Universal AI context engine with plugin architecture. Works with Cursor, VSCode, Warp, Perplexity, Sora, and more. Enterprise-ready with dependency injection, telemetry, and browser extensions.">
+    <meta name="keywords" content="reccall, ai context engine, plugin architecture, cursor, vscode, warp, perplexity, sora, browser extension, enterprise, dependency injection, telemetry, universal ai tools">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -468,10 +468,10 @@
             <a href="#" class="logo">RecCall</a>
             <ul class="nav-links">
                 <li><a href="#install">Quick Start</a></li>
-                <li><a href="#architecture">Architecture</a></li>
-                <li><a href="#system-architecture">System Architecture</a></li>
-                <li><a href="#repository-schema">Repository Schema</a></li>
-                <li><a href="#custom-recipes">Custom Recipes</a></li>
+                <li><a href="#plugin-architecture">Plugin Architecture</a></li>
+                <li><a href="#browser-extensions">Browser Extensions</a></li>
+                <li><a href="#enterprise">Enterprise Features</a></li>
+                <li><a href="#documentation">Documentation</a></li>
             </ul>
         </nav>
     </header>
@@ -481,15 +481,15 @@
         <div class="container">
             <div class="hero-content">
                 <h1>RecCall</h1>
-                <div class="hero-subtitle">Universal Context Shortcuts & Recipe Repository Platform</div>
+                <div class="hero-subtitle">Universal AI Context Engine with Plugin Architecture</div>
                 <p class="hero-description">
-                    Universal context shortcut management with global/local repository support. 
-                    Scale your development workflow with smart context management, custom recipe deployment, 
-                    and seamless integration across AI IDEs and development environments.
+                    Universal AI context engine with enterprise-grade plugin architecture. 
+                    Works seamlessly with Cursor, VSCode, Warp, Perplexity, Sora, and more. 
+                    Built with dependency injection, telemetry, and browser extensions for maximum flexibility.
                 </p>
                 <div class="cta-buttons">
                     <a href="#install" class="btn btn-primary">🚀 Get Started</a>
-                    <a href="#architecture" class="btn btn-secondary">📋 View Architecture</a>
+                    <a href="#plugin-architecture" class="btn btn-secondary">🔌 Plugin Architecture</a>
                 </div>
             </div>
         </div>
@@ -499,36 +499,260 @@
         <!-- Enterprise Installation -->
         <section id="install" class="section">
             <h2>🚀 Quick Start</h2>
-            <p>Deploy RecCall across your organization with a single command. Automatic configuration, security features, and scalable architecture.</p>
+            <p>Deploy RecCall's universal AI context engine with enterprise-grade plugin architecture. Works with Cursor, VSCode, Warp, Perplexity, Sora, and more.</p>
             
             <div class="code-block">
 <span class="comment"># Installation</span>
 curl -sfL https://reccaller.ai/install.sh | sh -
 
-<span class="comment"># Configure Repository</span>
-reccall repo-config --set-repo https://contexts.reccaller.ai/
+<span class="comment"># Core Engine Usage</span>
+reccall rec react-component "Create React components with TypeScript"
+reccall call react-component
 
-<span class="comment"># Install Recipes</span>
+<span class="comment"># Repository Integration</span>
 reccall install sync-main
-reccall install create-feature-branch
-reccall install create-pr
+reccall list-repo
+reccall search-repo "git"
             </div>
             
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h4>Security Features</h4>
-                    <p>Secure recipe validation, audit logging, and access control</p>
+                    <div class="feature-icon">🔌</div>
+                    <h4>Plugin Architecture</h4>
+                    <p>Modular design with dependency injection and telemetry</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <h4>Scalable Architecture</h4>
-                    <p>Multi-environment support, caching, and performance optimization</p>
+                    <div class="feature-icon">🌐</div>
+                    <h4>Browser Extensions</h4>
+                    <p>Perplexity and Sora integrations with modern UI</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <h4>Enterprise Ready</h4>
+                    <p>Security, monitoring, and scalable deployment</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plugin Architecture -->
+        <section id="plugin-architecture" class="section">
+            <h2>🔌 Plugin Architecture</h2>
+            <p>RecCall's universal AI context engine uses a modular plugin architecture with dependency injection, making it easy to extend and integrate with any AI tool or platform.</p>
+            
+            <div class="architecture-grid">
+                <div class="architecture-card">
+                    <h4>🏗️ Core Engine</h4>
+                    <p>Centralized business logic with dependency injection</p>
+                    <ul>
+                        <li>IContextStorage - CRUD operations</li>
+                        <li>IRepositoryClient - Remote repository management</li>
+                        <li>ICacheManager - Multi-layer caching</li>
+                        <li>IRecipeValidator - Security validation</li>
+                        <li>TelemetryManager - Performance monitoring</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>🔌 Platform Adapters</h4>
+                    <p>Thin wrappers around core engine for different platforms</p>
+                    <ul>
+                        <li>CLI Adapter - Command-line interface</li>
+                        <li>MCP Adapter - Model Context Protocol server</li>
+                        <li>VSCode Extension - Native IDE integration</li>
+                        <li>Warp Integration - Terminal shell integration</li>
+                        <li>Browser Extensions - Web platform support</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Dependency Injection Example</h3>
+            <div class="code-block">
+<span class="comment"># Core Engine with DI</span>
+import { createCoreEngine } from 'reccall/core';
+
+const engine = await createCoreEngine();
+await engine.initialize();
+
+<span class="comment"># Custom Storage Backend</span>
+import { IContextStorage } from 'reccall/core';
+
+class RedisStorage implements IContextStorage {
+  async record(shortcut: ShortcutId, context: string): Promise<void> {
+    // Redis implementation
+  }
+  // ... other methods
+}
+
+<span class="comment"># Register Custom Backend</span>
+diContainer.register(TOKENS.CONTEXT_STORAGE, RedisStorage);
+            </div>
+        </section>
+
+        <!-- Browser Extensions -->
+        <section id="browser-extensions" class="section">
+            <h2>🌐 Browser Extensions</h2>
+            <p>Extend RecCall's capabilities to web-based AI tools with modern browser extensions for Perplexity and Sora.</p>
+            
+            <div class="architecture-grid">
+                <div class="architecture-card">
+                    <h4>🔍 Perplexity Extension</h4>
+                    <p>Inject context shortcuts into AI search queries</p>
+                    <ul>
+                        <li>Chrome/Firefox extension support</li>
+                        <li>Popup interface for management</li>
+                        <li>Cross-platform storage sync</li>
+                        <li>Context injection into search</li>
+                        <li>Modern UI with dark mode</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>🎬 Sora Extension</h4>
+                    <p>Video generation prompt shortcuts with clipboard monitoring</p>
+                    <ul>
+                        <li>Video context templates</li>
+                        <li>Clipboard monitoring</li>
+                        <li>Auto-suggestion system</li>
+                        <li>Context copying to clipboard</li>
+                        <li>Multi-step generation workflows</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Extension Features</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h4>Context Injection</h4>
+                    <p>Seamlessly inject context into AI tool inputs</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h4>Clipboard Integration</h4>
+                    <p>Monitor and suggest context from clipboard</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🔄</div>
-                    <h4>Version Control</h4>
-                    <p>Recipe versioning, updates, and maintenance</p>
+                    <h4>Cross-Platform Sync</h4>
+                    <p>Synchronize shortcuts across all platforms</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h4>Modern UI</h4>
+                    <p>Beautiful interface with dark mode support</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enterprise Features -->
+        <section id="enterprise" class="section">
+            <h2>🏢 Enterprise Features</h2>
+            <p>Production-ready features for enterprise deployment with comprehensive security, monitoring, and scalability.</p>
+            
+            <div class="architecture-grid">
+                <div class="architecture-card">
+                    <h4>🔒 Security & Compliance</h4>
+                    <ul>
+                        <li>Input validation and sanitization</li>
+                        <li>Data encryption at rest and in transit</li>
+                        <li>SSO/OAuth integration</li>
+                        <li>Audit logging and compliance</li>
+                        <li>Role-based access control</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>📊 Monitoring & Telemetry</h4>
+                    <ul>
+                        <li>Structured logging with pino</li>
+                        <li>Performance monitoring</li>
+                        <li>Error tracking and alerting</li>
+                        <li>Metrics collection and export</li>
+                        <li>Health checks and diagnostics</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>🚀 Scalability & Performance</h4>
+                    <ul>
+                        <li>Multi-layer caching (memory + disk)</li>
+                        <li>Atomic file operations</li>
+                        <li>Sub-millisecond operations</li>
+                        <li>Horizontal scaling support</li>
+                        <li>Load balancing ready</li>
+                    </ul>
+                </div>
+                
+                <div class="architecture-card">
+                    <h4>🔧 Enterprise Storage</h4>
+                    <ul>
+                        <li>PostgreSQL storage backend</li>
+                        <li>Redis caching layer</li>
+                        <li>S3 asset storage</li>
+                        <li>Custom storage backends</li>
+                        <li>Data retention policies</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Deployment Options</h3>
+            <div class="code-block">
+<span class="comment"># Docker Deployment</span>
+docker run -d reccall:latest
+
+<span class="comment"># Kubernetes Deployment</span>
+helm install reccall reccall/reccall
+
+<span class="comment"># Enterprise Configuration</span>
+NODE_ENV=production
+POSTGRES_URL=postgresql://...
+REDIS_URL=redis://...
+S3_BUCKET=reccall-assets
+JWT_SECRET=your-secret
+            </div>
+        </section>
+
+        <!-- Documentation -->
+        <section id="documentation" class="section">
+            <h2>📚 Documentation</h2>
+            <p>Comprehensive documentation for developers, enterprise users, and plugin developers.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h4>Plugin Development</h4>
+                    <p>Complete guide to creating custom platform adapters</p>
+                    <div class="badge badge-success">Available</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h4>API Reference</h4>
+                    <p>Comprehensive API documentation with examples</p>
+                    <div class="badge badge-success">Available</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <h4>Enterprise Deployment</h4>
+                    <p>Docker, Kubernetes, and cloud deployment guides</p>
+                    <div class="badge badge-success">Available</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h4>Security Best Practices</h4>
+                    <p>Security guidelines and compliance documentation</p>
+                    <div class="badge badge-success">Available</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h4>Migration Guide</h4>
+                    <p>Step-by-step migration from previous versions</p>
+                    <div class="badge badge-success">Available</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧪</div>
+                    <h4>Test Report</h4>
+                    <p>Comprehensive test coverage and validation report</p>
+                    <div class="badge badge-success">Available</div>
                 </div>
             </div>
         </section>
@@ -909,14 +1133,15 @@ reccall search-local <query>       # Search local recipes
             <div class="footer-content">
                 <div>
                     <h4>RecCall</h4>
-                    <p>Universal context shortcuts and recipe repository platform for development teams.</p>
+                    <p>Universal AI context engine with plugin architecture for development teams.</p>
                 </div>
                 <div>
                     <h4>Platform</h4>
                     <p><a href="#install">Quick Start</a></p>
-                    <p><a href="#architecture">Architecture</a></p>
-                    <p><a href="#system-architecture">System Architecture</a></p>
-                    <p><a href="#repository-schema">Repository Schema</a></p>
+                    <p><a href="#plugin-architecture">Plugin Architecture</a></p>
+                    <p><a href="#browser-extensions">Browser Extensions</a></p>
+                    <p><a href="#enterprise">Enterprise Features</a></p>
+                    <p><a href="#documentation">Documentation</a></p>
                 </div>
                 <div>
                     <h4>Repository</h4>
