@@ -13,6 +13,9 @@ export class FileSystemStorage implements IContextStorage {
   private shortcutsCache: Record<string, Shortcut> | null = null;
   private cacheTimestamp: number = 0;
   private readonly memoryTtl: number;
+  private writeQueue: Array<() => Promise<void>> = [];
+  private isWriting = false;
+  private pendingWrite: NodeJS.Timeout | null = null;
 
   constructor() {
     this.memoryTtl = configManager.getMemoryTtl();
@@ -138,22 +141,79 @@ export class FileSystemStorage implements IContextStorage {
   }
 
   /**
-   * Save shortcuts to storage with atomic write
+   * Save shortcuts to storage with atomic write and batching
+   * Batches multiple writes within a short time window to reduce I/O
    */
   private async saveShortcuts(shortcuts: Record<string, Shortcut>): Promise<void> {
+    // Update cache immediately
+    this.shortcutsCache = shortcuts;
+    this.cacheTimestamp = Date.now();
+
+    // Queue the write operation for batching
+    return new Promise((resolve, reject) => {
+      this.writeQueue.push(async () => {
+        try {
+          const storagePath = configManager.getStoragePath();
+          const tempFile = storagePath + '.tmp';
+          
+          // Use atomic write to prevent corruption
+          await fs.writeFile(tempFile, JSON.stringify(shortcuts, null, 2), 'utf8');
+          await fs.rename(tempFile, storagePath);
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+
+      // Batch writes: if no write is pending, schedule one
+      if (!this.isWriting && !this.pendingWrite) {
+        this.pendingWrite = setTimeout(() => {
+          this.flushWriteQueue().catch(reject);
+        }, 50); // Batch writes within 50ms window
+      }
+    });
+  }
+
+  /**
+   * Flush all pending writes in the queue
+   */
+  private async flushWriteQueue(): Promise<void> {
+    if (this.isWriting || this.writeQueue.length === 0) {
+      return;
+    }
+
+    this.isWriting = true;
+    if (this.pendingWrite) {
+      clearTimeout(this.pendingWrite);
+      this.pendingWrite = null;
+    }
+
+    // Get the latest write (most recent shortcuts data)
+    const latestWrite = this.writeQueue[this.writeQueue.length - 1];
+    if (!latestWrite) {
+      this.isWriting = false;
+      return;
+    }
+    
+    this.writeQueue = [];
+
     try {
-      const storagePath = configManager.getStoragePath();
-      const tempFile = storagePath + '.tmp';
-      
-      // Use atomic write to prevent corruption
-      await fs.writeFile(tempFile, JSON.stringify(shortcuts, null, 2));
-      await fs.rename(tempFile, storagePath);
-      
-      // Update cache
-      this.shortcutsCache = shortcuts;
-      this.cacheTimestamp = Date.now();
+      await latestWrite();
     } catch (error) {
       throw new StorageError(`Failed to save shortcuts: ${error}`, error as Error);
+    } finally {
+      this.isWriting = false;
     }
+  }
+
+  /**
+   * Ensure all writes are flushed before shutdown
+   */
+  async flush(): Promise<void> {
+    if (this.pendingWrite) {
+      clearTimeout(this.pendingWrite);
+      this.pendingWrite = null;
+    }
+    await this.flushWriteQueue();
   }
 }

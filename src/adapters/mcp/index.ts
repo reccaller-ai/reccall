@@ -15,6 +15,9 @@ import type { ShortcutId } from '../../types.js';
 export class MCPAdapter {
   private engine: ICoreEngine;
   private server: Server;
+  private toolsCache: any = null;
+  private cacheTimestamp: number = 0;
+  private readonly CACHE_TTL = 60000; // 1 minute cache for tools list
 
   constructor(engine: ICoreEngine) {
     this.engine = engine;
@@ -37,9 +40,15 @@ export class MCPAdapter {
   }
 
   private setupHandlers(): void {
-    // List available tools
+    // List available tools (cached for performance)
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
-      return {
+      // Cache tools list to reduce overhead
+      const now = Date.now();
+      if (this.toolsCache && (now - this.cacheTimestamp) < this.CACHE_TTL) {
+        return this.toolsCache;
+      }
+
+      const toolsResponse = {
         tools: [
           {
             name: 'rec',
@@ -199,6 +208,12 @@ export class MCPAdapter {
           },
         ],
       };
+      
+      // Cache the response
+      this.toolsCache = toolsResponse;
+      this.cacheTimestamp = now;
+      
+      return toolsResponse;
     });
 
     // Handle tool calls

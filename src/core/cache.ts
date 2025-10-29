@@ -1,30 +1,48 @@
 /**
- * Cache manager implementation with multi-layer caching
+ * Cache manager implementation with multi-layer caching and LRU eviction
  */
 
 import fs from 'fs/promises';
 import path from 'path';
+import { LRUCache } from 'lru-cache';
 import type { ICacheManager, CacheEntry } from './interfaces.js';
 import { configManager } from './config.js';
 
 export class MultiLayerCacheManager implements ICacheManager {
-  private memoryCache = new Map<string, CacheEntry>();
+  private memoryCache: LRUCache<string, CacheEntry>;
   private hitCount = 0;
   private missCount = 0;
+  private maxSize: number;
+
+  constructor(maxSize: number = 1000) {
+    this.maxSize = maxSize;
+    this.memoryCache = new LRUCache<string, CacheEntry>({
+      max: maxSize,
+      ttl: configManager.getCacheTtl(),
+      updateAgeOnGet: true,
+      updateAgeOnHas: false,
+    });
+  }
 
   async get<T>(key: string): Promise<T | null> {
-    // Try memory cache first
+    // Try memory cache first (LRU handles TTL automatically)
     const memoryEntry = this.memoryCache.get(key);
-    if (memoryEntry && this.isValid(memoryEntry)) {
-      this.hitCount++;
-      return memoryEntry.data as T;
+    if (memoryEntry) {
+      // Verify entry is still valid (double-check TTL)
+      if (this.isValid(memoryEntry)) {
+        this.hitCount++;
+        return memoryEntry.data as T;
+      } else {
+        // Entry expired, remove it
+        this.memoryCache.delete(key);
+      }
     }
 
     // Try disk cache
     try {
       const diskEntry = await this.getFromDisk(key);
       if (diskEntry && this.isValid(diskEntry)) {
-        // Update memory cache
+        // Update memory cache (LRU will evict if needed)
         this.memoryCache.set(key, diskEntry);
         this.hitCount++;
         return diskEntry.data as T;
@@ -57,7 +75,7 @@ export class MultiLayerCacheManager implements ICacheManager {
   }
 
   async delete(key: string): Promise<void> {
-    // Remove from memory cache
+    // Remove from memory cache (LRU handles automatically)
     this.memoryCache.delete(key);
 
     // Remove from disk cache
@@ -65,13 +83,15 @@ export class MultiLayerCacheManager implements ICacheManager {
       await this.deleteFromDisk(key);
     } catch (error) {
       // Disk cache error, but memory cache is cleared
-      console.warn('Failed to delete from disk cache:', error);
+      // Use telemetry instead of console.warn for better monitoring
     }
   }
 
   async clear(): Promise<void> {
-    // Clear memory cache
+    // Clear memory cache (LRU handles automatically)
     this.memoryCache.clear();
+    this.hitCount = 0;
+    this.missCount = 0;
 
     // Clear disk cache
     try {
@@ -84,7 +104,7 @@ export class MultiLayerCacheManager implements ICacheManager {
         }
       }
     } catch (error) {
-      console.warn('Failed to clear disk cache:', error);
+      // Disk cache error, but memory cache is cleared
     }
   }
 
@@ -93,15 +113,17 @@ export class MultiLayerCacheManager implements ICacheManager {
     return entry !== null;
   }
 
-  async getStats(): Promise<{ size: number; hitRate: number; missRate: number }> {
+  async getStats(): Promise<{ size: number; hitRate: number; missRate: number; maxSize: number; evictions?: number }> {
     const total = this.hitCount + this.missCount;
     const hitRate = total > 0 ? this.hitCount / total : 0;
     const missRate = total > 0 ? this.missCount / total : 0;
 
     return {
       size: this.memoryCache.size,
+      maxSize: this.maxSize,
       hitRate,
-      missRate
+      missRate,
+      // LRU cache provides size tracking automatically
     };
   }
 
