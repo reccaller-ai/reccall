@@ -5,6 +5,7 @@
 import pino from 'pino';
 import type { CoreConfig } from './interfaces.js';
 import { configManager } from './config.js';
+import { RecCallError } from '../types.js';
 
 export interface TelemetryEvent {
   event: string;
@@ -24,6 +25,10 @@ export interface Metrics {
   cacheSize: number;
   repositoryEnabled: boolean;
   lastActivity: number;
+  averageResponseTime?: number;
+  operationCounts?: Record<string, number>;
+  errorCounts?: Record<string, number>;
+  fileIOOperations?: number;
 }
 
 export class TelemetryManager {
@@ -48,6 +53,10 @@ export class TelemetryManager {
       cacheSize: 0,
       repositoryEnabled: false,
       lastActivity: Date.now(),
+      averageResponseTime: 0,
+      operationCounts: {},
+      errorCounts: {},
+      fileIOOperations: 0,
     };
   }
 
@@ -107,6 +116,45 @@ export class TelemetryManager {
   updateMetrics(metrics: Partial<Metrics>): void {
     this.metrics = { ...this.metrics, ...metrics };
     this.metrics.lastActivity = Date.now();
+  }
+
+  /**
+   * Increment operation count
+   */
+  incrementOperation(operation: string): void {
+    if (!this.metrics.operationCounts) {
+      this.metrics.operationCounts = {};
+    }
+    this.metrics.operationCounts[operation] = (this.metrics.operationCounts[operation] || 0) + 1;
+  }
+
+  /**
+   * Increment error count
+   */
+  incrementError(errorCode: string): void {
+    if (!this.metrics.errorCounts) {
+      this.metrics.errorCounts = {};
+    }
+    this.metrics.errorCounts[errorCode] = (this.metrics.errorCounts[errorCode] || 0) + 1;
+  }
+
+  /**
+   * Record response time for an operation
+   */
+  recordResponseTime(duration: number): void {
+    if (!this.metrics.averageResponseTime) {
+      this.metrics.averageResponseTime = duration;
+    } else {
+      // Exponential moving average
+      this.metrics.averageResponseTime = this.metrics.averageResponseTime * 0.9 + duration * 0.1;
+    }
+  }
+
+  /**
+   * Increment file I/O operation count
+   */
+  incrementFileIO(): void {
+    this.metrics.fileIOOperations = (this.metrics.fileIOOperations || 0) + 1;
   }
 
   /**
@@ -188,11 +236,13 @@ export function Performance(operation: string) {
 
     descriptor.value = async function (...args: any[]) {
       const startTime = performance.now();
+      telemetryManager.incrementOperation(operation);
       
       try {
         const result = await originalMethod.apply(this, args);
         const duration = performance.now() - startTime;
         
+        telemetryManager.recordResponseTime(duration);
         telemetryManager.logPerformance(operation, duration, {
           method: propertyKey,
           success: true,
@@ -202,10 +252,14 @@ export function Performance(operation: string) {
       } catch (error) {
         const duration = performance.now() - startTime;
         
+        const errorCode = error instanceof RecCallError ? error.code : 'UNKNOWN_ERROR';
+        telemetryManager.incrementError(errorCode);
+        
         telemetryManager.logPerformance(operation, duration, {
           method: propertyKey,
           success: false,
           error: error instanceof Error ? error.message : 'Unknown error',
+          errorCode,
         });
         
         throw error;
