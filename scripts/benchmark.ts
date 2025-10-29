@@ -17,7 +17,7 @@ class RecCallBenchmark {
     const startTime = performance.now();
     
     return new Promise((resolve) => {
-      const child = spawn('node', ['dist/cli.js', command, ...args], {
+      const child = spawn('node', ['dist/src/cli.js', command, ...args], {
         stdio: 'pipe'
       });
 
