@@ -29,10 +29,19 @@ RecCall uses a plugin-based architecture where platform-specific integrations ar
                     ┌───────────┼───────────┐
                     │           │           │
             ┌───────▼──────┐ ┌──▼──┐ ┌─────▼─────┐
-            │ CLI Adapter  │ │ MCP │ │ Platform  │
-            │              │ │     │ │ Adapters  │
+            │ CLI Adapter  │ │ MCP │ │ VSCode    │
+            │              │ │     │ │ Warp      │
             └──────────────┘ └─────┘ └───────────┘
 ```
+
+### Available Platform Adapters
+
+RecCall includes several built-in platform adapters:
+
+- **CLIAdapter**: Command-line interface adapter
+- **MCPAdapter**: Model Context Protocol server for Cursor IDE
+- **VSCodeAdapter**: VSCode extension integration with core engine
+- **Warp Integration**: Shell script integration via CLI commands
 
 ## Creating a Platform Adapter
 
@@ -511,7 +520,35 @@ npm publish
 
 - **CLI Adapter**: See `src/adapters/cli/index.ts`
 - **MCP Adapter**: See `src/adapters/mcp/index.ts`
+- **VSCode Adapter**: See `src/adapters/vscode/index.ts`
 - **Perplexity Extension**: See `src/adapters/perplexity/extension/`
+
+### VSCode Adapter Example
+
+The VSCode adapter demonstrates how to create a platform-specific adapter that wraps the core engine:
+
+```typescript
+import type { ICoreEngine, Shortcut, ShortcutId } from '../../core/interfaces.js';
+import { createCoreEngine } from '../../core/container.js';
+import { VSCodeAdapter } from '../../adapters/vscode/index.js';
+
+// In VSCode extension
+export async function activate(context: vscode.ExtensionContext) {
+  // Initialize core engine
+  const engine = await createCoreEngine();
+  
+  // Create VSCode adapter
+  const adapter = new VSCodeAdapter(engine);
+  await adapter.initialize();
+  
+  // Use adapter methods
+  const shortcuts = await adapter.list();
+  const context = await adapter.call('my-shortcut' as ShortcutId);
+  await adapter.record('new-shortcut' as ShortcutId, 'Context here');
+}
+```
+
+The VSCode extension uses this adapter pattern to leverage all core engine features while maintaining platform-specific UI.
 - **Sora Extension**: See `src/adapters/sora/extension/`
 
 ## Support

@@ -29,12 +29,14 @@ RecCall has been refactored into a modular plugin-based architecture:
 - **reload-starter-pack**: Reload starter pack recipes
 
 ### Multi-Platform Support
-- **🖥️ Cursor IDE**: MCP server integration
-- **💻 VSCode**: Native extension with Command Palette
-- **⚡ Warp Terminal**: Shell integration with colored output
+- **🖥️ Cursor IDE**: MCP server integration with core engine
+- **💻 VSCode**: Native extension with Command Palette, powered by VSCodeAdapter
+- **⚡ Warp Terminal**: Shell integration via CLI commands (uses core engine)
 - **🔧 CLI**: Command-line interface for any terminal
 - **🌐 Perplexity**: Browser extension for AI search
 - **🎬 Sora**: Browser extension for video generation
+
+**All platforms now use the unified core engine**, ensuring consistent behavior, caching, validation, and telemetry across all integrations.
 
 ### Enterprise Features
 - **Type Safety**: Strict TypeScript with branded types
