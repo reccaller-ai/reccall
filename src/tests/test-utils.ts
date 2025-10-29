@@ -84,8 +84,11 @@ export class MockCacheManager implements ICacheManager {
   }
 
   async set<T>(key: string, data: T, ttl?: number): Promise<void> {
-    const expires = ttl ? Date.now() + ttl * 1000 : undefined;
-    this.cache.set(key, { data, expires });
+    const entry: { data: T; expires?: number } = { data };
+    if (ttl !== undefined) {
+      entry.expires = Date.now() + ttl * 1000;
+    }
+    this.cache.set(key, entry);
   }
 
   async delete(key: string): Promise<void> {
@@ -119,34 +122,46 @@ export class MockCacheManager implements ICacheManager {
  * Mock validator implementation
  */
 export class MockValidator implements IRecipeValidator {
-  validate(recipe: any): { valid: boolean; errors?: string[] } {
+  validate(recipe: any): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
     if (!recipe.shortcut || recipe.shortcut.length < 1) {
-      return { valid: false, errors: ['Shortcut ID is required'] };
+      errors.push('Shortcut ID is required');
     }
     if (!recipe.context || recipe.context.length < 5) {
-      return { valid: false, errors: ['Context must be at least 5 characters'] };
+      errors.push('Context must be at least 5 characters');
     }
-    return { valid: true };
+    return {
+      valid: errors.length === 0,
+      errors,
+    };
   }
 
-  validateShortcutId(shortcut: string): { valid: boolean; errors?: string[] } {
+  validateShortcutId(shortcut: string): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
     if (!shortcut || shortcut.length < 1) {
-      return { valid: false, errors: ['Shortcut ID cannot be empty'] };
+      errors.push('Shortcut ID cannot be empty');
     }
     if (shortcut.length > 100) {
-      return { valid: false, errors: ['Shortcut ID too long'] };
+      errors.push('Shortcut ID too long');
     }
-    return { valid: true };
+    return {
+      valid: errors.length === 0,
+      errors,
+    };
   }
 
-  validateContext(context: string): { valid: boolean; errors?: string[] } {
+  validateContext(context: string): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
     if (!context || context.length < 5) {
-      return { valid: false, errors: ['Context must be at least 5 characters'] };
+      errors.push('Context must be at least 5 characters');
     }
     if (context.length > 10000) {
-      return { valid: false, errors: ['Context too long'] };
+      errors.push('Context too long');
     }
-    return { valid: true };
+    return {
+      valid: errors.length === 0,
+      errors,
+    };
   }
 
   sanitize(recipe: any): any {
