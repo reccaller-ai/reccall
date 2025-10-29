@@ -39,10 +39,13 @@ RecCall has been refactored into a modular plugin-based architecture:
 ### Enterprise Features
 - **Type Safety**: Strict TypeScript with branded types
 - **Dependency Injection**: IoC container with tsyringe
-- **Telemetry**: Structured logging with pino
+- **Telemetry**: Structured logging with pino + Prometheus metrics
 - **Performance**: Multi-layer caching with TTL
 - **Validation**: Recipe validation with security checks
 - **Error Handling**: Comprehensive error classes
+- **Storage Backends**: Redis and PostgreSQL support for scalable deployments
+- **API Servers**: Express.js and Fastify middleware for team API servers
+- **Webhooks**: Event-driven integrations for external monitoring systems
 
 ## 📦 Installation
 
@@ -52,7 +55,7 @@ curl -sfL https://reccaller.ai/install.sh | sh -
 ```
 
 ### Manual Installation
-```bash
+   ```bash
 npm install -g reccall
 ```
 
@@ -141,14 +144,108 @@ async myOperation() {
 }
 ```
 
-### Custom Storage Backends
+### Storage Backends
+
+#### Redis Storage
 ```typescript
-export class RedisStorage implements IContextStorage {
-  async record(shortcut: ShortcutId, context: string): Promise<void> {
-    // Redis implementation
+import { RedisStorage } from 'reccall/storage-backends/redis';
+
+const storage = new RedisStorage({
+  url: 'redis://localhost:6379',
+  keyPrefix: 'reccall:shortcuts:',
+  ttl: 3600 // Optional TTL in seconds
+});
+
+const engine = await createCoreEngine({ storage });
+await engine.initialize();
+```
+
+#### PostgreSQL Storage
+```typescript
+import { PostgresStorage } from 'reccall/storage-backends/postgres';
+
+const storage = new PostgresStorage({
+  connectionString: 'postgresql://user:pass@localhost/reccall'
+});
+
+await storage.initialize(); // Creates schema
+const engine = await createCoreEngine({ storage });
+await engine.initialize();
+```
+
+### API Servers
+
+#### Express.js Middleware
+```typescript
+import express from 'express';
+import { createReccallMiddleware } from 'reccall/adapters/api/express';
+
+const app = express();
+app.use(express.json());
+
+const middleware = await createReccallMiddleware({
+  engine,
+  basePath: '/api/reccall',
+  authenticate: async (req) => {
+    // Your authentication logic
+    return await validateToken(req.headers.authorization);
   }
-  // ... other methods
-}
+});
+
+app.use(middleware);
+app.listen(3000);
+```
+
+#### Fastify Plugin
+```typescript
+import Fastify from 'fastify';
+import reccallFastifyPlugin from 'reccall/adapters/api/fastify';
+
+const fastify = Fastify({ logger: true });
+
+await fastify.register(reccallFastifyPlugin, {
+  engine,
+  basePath: '/api/reccall',
+  authenticate: async (request) => {
+    return await validateToken(request.headers.authorization);
+  }
+});
+
+await fastify.listen({ port: 3000 });
+```
+
+### Webhooks
+```typescript
+import { WebhookManager } from 'reccall/core/webhooks';
+
+const webhookManager = new WebhookManager(true);
+
+// Register webhook
+webhookManager.register('slack-notifications', {
+  url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL',
+  secret: process.env.WEBHOOK_SECRET,
+  events: ['shortcut.recorded', 'shortcut.deleted'],
+  retries: 3,
+  timeout: 5000
+});
+
+// Trigger webhook (automatically called by engine)
+await engine.record('my-shortcut' as ShortcutId, 'Context');
+// Webhook fires automatically: shortcut.recorded event
+```
+
+### Prometheus Metrics
+```typescript
+import { telemetryManager } from 'reccall/core/telemetry';
+import express from 'express';
+
+const app = express();
+
+// Export Prometheus metrics
+app.get('/metrics', (req, res) => {
+  res.set('Content-Type', 'text/plain');
+  res.send(telemetryManager.exportPrometheusMetrics());
+});
 ```
 
 ## 🔌 Plugin Development
@@ -213,34 +310,71 @@ export class MyPlatformAdapter implements IPlatformAdapter {
 ### Prerequisites
 - Node.js 18+
 - TypeScript 5.6+
-- npm or yarn
+- npm, yarn, or pnpm
+- Make (optional, but recommended for convenient commands)
 
 ### Setup
 ```bash
 git clone https://github.com/reccaller-ai/reccall.git
 cd reccall
-npm install
-npm run build
+make install    # or: npm install
+make build      # or: npm run build
+```
+
+### Quick Commands (Makefile)
+```bash
+make help       # Show all available commands
+make test       # Run tests
+make lint       # Check code style
+make lint-fix   # Auto-fix linting
+make format     # Format code
+make validate   # Run all validation checks
+make pre-commit # Run pre-commit checks
+make ci-all     # Run full CI pipeline locally
 ```
 
 ### Testing
 ```bash
+make test              # Run all tests
+make test-watch        # Run tests in watch mode
+make test-coverage     # Generate coverage report
+# Or use npm directly:
 npm test
 npm run test:watch
 ```
 
-### Linting
+### Linting and Formatting
 ```bash
+make lint          # Check code style
+make lint-fix       # Auto-fix linting issues
+make format         # Format code
+make format-check   # Check formatting
+# Or use npm directly:
 npm run lint
 npm run lint:fix
 ```
+
+### CI/CD Commands
+```bash
+make ci-all         # Run complete CI pipeline (recommended)
+make ci-deps        # Install dependencies
+make ci-type-check  # Type checking
+make ci-lint        # Linting
+make ci-test        # Tests with coverage
+make ci-security    # Security audit
+make ci-build       # Build
+```
+
+See [Makefile Documentation](./docs/MAKEFILE.md) for complete usage guide.
 
 ## 📚 Documentation
 
 - [Plugin Development Guide](./docs/PLUGIN_DEVELOPMENT.md)
 - [API Reference](./docs/API_REFERENCE.md)
 - [Enterprise Deployment](./docs/ENTERPRISE_DEPLOYMENT.md)
+- [Enterprise API Server Guide](./docs/ENTERPRISE_API_SERVER.md)
 - [Security Best Practices](./docs/SECURITY.md)
+- [Migration Guide](./docs/MIGRATION_GUIDE.md)
 
 ## 🤝 Contributing
 

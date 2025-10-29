@@ -145,6 +145,35 @@ export class TelemetryManager {
   isEnabled(): boolean {
     return this.enabled;
   }
+
+  /**
+   * Export metrics in Prometheus format
+   */
+  exportPrometheusMetrics(): string {
+    const metrics = this.getMetrics();
+    const timestamp = Date.now();
+
+    return `# HELP reccall_shortcuts_count Total number of shortcuts
+# TYPE reccall_shortcuts_count gauge
+reccall_shortcuts_count ${metrics.shortcutsCount} ${timestamp}
+
+# HELP reccall_cache_hit_rate Cache hit rate (0-1)
+# TYPE reccall_cache_hit_rate gauge
+reccall_cache_hit_rate ${metrics.cacheHitRate} ${timestamp}
+
+# HELP reccall_cache_size Current cache size
+# TYPE reccall_cache_size gauge
+reccall_cache_size ${metrics.cacheSize} ${timestamp}
+
+# HELP reccall_repository_enabled Whether repository is enabled
+# TYPE reccall_repository_enabled gauge
+reccall_repository_enabled ${metrics.repositoryEnabled ? 1 : 0} ${timestamp}
+
+# HELP reccall_last_activity_timestamp Last activity timestamp in milliseconds
+# TYPE reccall_last_activity_timestamp gauge
+reccall_last_activity_timestamp ${metrics.lastActivity} ${timestamp}
+`;
+  }
 }
 
 // Singleton instance

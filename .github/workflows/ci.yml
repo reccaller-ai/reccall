@@ -59,21 +59,31 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
+    - name: Install Make (if not available)
+      run: |
+        if ! command -v make &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y make
+        fi
+    
     - name: Install dependencies
-      run: npm ci
+      run: make ci-deps || npm ci
       
     - name: Type check
-      run: npm run type-check
+      run: make ci-type-check || npm run type-check
       
     - name: Build project
-      run: npm run build
+      run: make ci-build || npm run build
       
     - name: Run tests
-      run: npm test
+      run: make ci-test || npm test
       continue-on-error: true
       
     - name: Run linting
-      run: npm run lint
+      run: make ci-lint || npm run lint
+      continue-on-error: true
+      
+    - name: Security audit
+      run: make ci-security || npm audit --audit-level moderate
       continue-on-error: true
       
     - name: Upload build artifacts
@@ -109,11 +119,17 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
+    - name: Install Make (if not available)
+      run: |
+        if ! command -v make &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y make
+        fi
+    
     - name: Install dependencies
-      run: npm ci
+      run: make ci-deps || npm ci
       
     - name: Build project
-      run: npm run build
+      run: make ci-build || npm run build
       
     - name: Setup Pages
       uses: actions/configure-pages@v4

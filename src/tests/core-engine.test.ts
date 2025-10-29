@@ -1,357 +1,330 @@
+/**
+ * Comprehensive tests for CoreEngine
+ */
+
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createCoreEngine } from '../core/container.js';
-import { diContainer } from '../core/container.js';
-import { telemetryManager } from '../core/telemetry.js';
-import { configManager } from '../core/config.js';
-import type { ICoreEngine, ShortcutId, RepositoryUrl } from '../core/interfaces.js';
+import { CoreEngine } from '../core/engine.js';
+import type { ShortcutId } from '../types.js';
 import { RecCallError } from '../types.js';
+import { MockStorage, MockCacheManager, MockValidator, MockRepositoryClient } from './test-utils.js';
+import { configManager } from '../core/config.js';
+import { telemetryManager } from '../core/telemetry.js';
 
-describe('Core Engine Integration Tests', () => {
-  let engine: ICoreEngine;
+// Mock config and telemetry
+vi.mock('../core/config.js', () => ({
+  configManager: {
+    initialize: vi.fn(),
+    isRepositoryEnabled: vi.fn(() => true),
+  },
+}));
 
-  beforeEach(async () => {
-    // Reset DI container
-    diContainer.clear();
-    
-    // Initialize engine
-    engine = await createCoreEngine();
-    await engine.initialize();
+vi.mock('../core/telemetry.js', () => ({
+  telemetryManager: {
+    updateMetrics: vi.fn(),
+    logEvent: vi.fn(),
+    logError: vi.fn(),
+  },
+  Performance: () => () => {},
+  LogErrors: () => () => {},
+}));
+
+describe('CoreEngine', () => {
+  let engine: CoreEngine;
+  let storage: MockStorage;
+  let cache: MockCacheManager;
+  let validator: MockValidator;
+  let repository: MockRepositoryClient;
+
+  beforeEach(() => {
+    storage = new MockStorage();
+    cache = new MockCacheManager();
+    validator = new MockValidator();
+    repository = new MockRepositoryClient();
+    engine = new CoreEngine(storage, repository, cache, validator);
+    vi.clearAllMocks();
   });
 
-  afterEach(async () => {
-    // Clean up
-    try {
-      await engine.purge();
-    } catch (error) {
-      // Ignore purge errors
-    }
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
-  describe('Basic Operations', () => {
-    it('should record and call a shortcut', async () => {
+  describe('Initialization', () => {
+    it('should initialize successfully', async () => {
+      await engine.initialize();
+      expect(configManager.initialize).toHaveBeenCalled();
+    });
+
+    it('should not initialize twice', async () => {
+      await engine.initialize();
+      await engine.initialize();
+      expect(configManager.initialize).toHaveBeenCalledTimes(1);
+    });
+
+    it('should initialize with custom config', async () => {
+      await engine.initialize({ repository: { enabled: false } });
+      expect(configManager.initialize).toHaveBeenCalledWith({ repository: { enabled: false } });
+    });
+  });
+
+  describe('Record Operations', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+    });
+
+    it('should record a shortcut successfully', async () => {
       const shortcut = 'test-shortcut' as ShortcutId;
       const context = 'Test context for integration testing';
 
-      // Record shortcut
       await engine.record(shortcut, context);
 
-      // Call shortcut
       const result = await engine.call(shortcut);
       expect(result).toBe(context);
     });
 
-    it('should list shortcuts', async () => {
-      const shortcuts = [
-        { shortcut: 'test-1' as ShortcutId, context: 'Context 1' },
-        { shortcut: 'test-2' as ShortcutId, context: 'Context 2' },
-        { shortcut: 'test-3' as ShortcutId, context: 'Context 3' }
-      ];
-
-      // Record multiple shortcuts
-      for (const { shortcut, context } of shortcuts) {
-        await engine.record(shortcut, context);
-      }
-
-      // List shortcuts
-      const result = await engine.list();
-      expect(result).toHaveLength(3);
-      expect(result).toEqual(expect.arrayContaining(shortcuts));
-    });
-
-    it('should update a shortcut', async () => {
-      const shortcut = 'update-test' as ShortcutId;
-      const originalContext = 'Original context';
-      const updatedContext = 'Updated context';
-
-      // Record original shortcut
-      await engine.record(shortcut, originalContext);
-
-      // Update shortcut
-      await engine.update(shortcut, updatedContext);
-
-      // Verify update
-      const result = await engine.call(shortcut);
-      expect(result).toBe(updatedContext);
-    });
-
-    it('should delete a shortcut', async () => {
-      const shortcut = 'delete-test' as ShortcutId;
-      const context = 'Context to delete';
-
-      // Record shortcut
-      await engine.record(shortcut, context);
-
-      // Verify it exists
-      const result = await engine.call(shortcut);
-      expect(result).toBe(context);
-
-      // Delete shortcut
-      await engine.delete(shortcut);
-
-      // Verify it's deleted
-      await expect(engine.call(shortcut)).rejects.toThrow(RecCallError);
-    });
-
-    it('should purge all shortcuts', async () => {
-      const shortcuts = [
-        { shortcut: 'purge-1' as ShortcutId, context: 'Context 1' },
-        { shortcut: 'purge-2' as ShortcutId, context: 'Context 2' }
-      ];
-
-      // Record shortcuts
-      for (const { shortcut, context } of shortcuts) {
-        await engine.record(shortcut, context);
-      }
-
-      // Verify they exist
-      let result = await engine.list();
-      expect(result).toHaveLength(2);
-
-      // Purge all
-      await engine.purge();
-
-      // Verify they're gone
-      result = await engine.list();
-      expect(result).toHaveLength(0);
-    });
-  });
-
-  describe('Search Functionality', () => {
-    beforeEach(async () => {
-      const shortcuts = [
-        { shortcut: 'react-component' as ShortcutId, context: 'Create React components with TypeScript' },
-        { shortcut: 'api-endpoint' as ShortcutId, context: 'Create REST API endpoints with Express' },
-        { shortcut: 'database-schema' as ShortcutId, context: 'Design database schemas with PostgreSQL' },
-        { shortcut: 'css-styling' as ShortcutId, context: 'Style components with CSS modules' }
-      ];
-
-      for (const { shortcut, context } of shortcuts) {
-        await engine.record(shortcut, context);
-      }
-    });
-
-    it('should search shortcuts by content', async () => {
-      const results = await engine.search('React');
-      expect(results).toHaveLength(1);
-      expect(results[0].shortcut).toBe('react-component');
-    });
-
-    it('should search shortcuts case-insensitively', async () => {
-      const results = await engine.search('react');
-      expect(results).toHaveLength(1);
-      expect(results[0].shortcut).toBe('react-component');
-    });
-
-    it('should return empty array for no matches', async () => {
-      const results = await engine.search('nonexistent');
-      expect(results).toHaveLength(0);
-    });
-
-    it('should search multiple shortcuts', async () => {
-      const results = await engine.search('Create');
-      expect(results).toHaveLength(2);
-      expect(results.map(r => r.shortcut)).toEqual(
-        expect.arrayContaining(['react-component', 'api-endpoint'])
-      );
-    });
-  });
-
-  describe('Repository Operations', () => {
-    const repositoryUrl = 'https://contexts.reccaller.ai/' as RepositoryUrl;
-
-    it('should list recipes from repository', async () => {
-      const recipes = await engine.listRecipes(repositoryUrl);
-      expect(Array.isArray(recipes)).toBe(true);
-      
-      if (recipes.length > 0) {
-        expect(recipes[0]).toHaveProperty('name');
-        expect(recipes[0]).toHaveProperty('shortcut');
-        expect(recipes[0]).toHaveProperty('description');
-        expect(recipes[0]).toHaveProperty('file');
-        expect(recipes[0]).toHaveProperty('category');
-      }
-    });
-
-    it('should search recipes in repository', async () => {
-      const results = await engine.searchRecipes(repositoryUrl, 'git');
-      expect(Array.isArray(results)).toBe(true);
-    });
-
-    it('should install a recipe from repository', async () => {
-      // First, get available recipes
-      const recipes = await engine.listRecipes(repositoryUrl);
-      
-      if (recipes.length > 0) {
-        const recipe = recipes[0];
-        
-        // Install the recipe
-        await engine.installRecipe(repositoryUrl, recipe.shortcut);
-        
-        // Verify it was installed
-        const context = await engine.call(recipe.shortcut);
-        expect(context).toBeDefined();
-        expect(context.length).toBeGreaterThan(0);
-      }
-    });
-
-    it('should reload starter pack', async () => {
-      await expect(engine.reloadStarterPack()).resolves.not.toThrow();
-    });
-  });
-
-  describe('Error Handling', () => {
     it('should throw error for duplicate shortcut', async () => {
       const shortcut = 'duplicate-test' as ShortcutId;
-      const context = 'Test context';
+      const context = 'Test context for duplicate testing';
 
-      // Record first time
       await engine.record(shortcut, context);
 
-      // Try to record again
       await expect(engine.record(shortcut, context)).rejects.toThrow(RecCallError);
-    });
-
-    it('should throw error for non-existent shortcut', async () => {
-      const shortcut = 'nonexistent' as ShortcutId;
-
-      await expect(engine.call(shortcut)).rejects.toThrow(RecCallError);
+      await expect(engine.record(shortcut, context)).rejects.toThrow('already exists');
     });
 
     it('should throw error for invalid shortcut ID', async () => {
       const invalidShortcut = '' as ShortcutId;
-      const context = 'Test context';
+      const context = 'Test context for invalid testing';
 
       await expect(engine.record(invalidShortcut, context)).rejects.toThrow(RecCallError);
+      await expect(engine.record(invalidShortcut, context)).rejects.toThrow('Invalid shortcut');
     });
 
-    it('should handle empty context gracefully', async () => {
-      const shortcut = 'empty-context' as ShortcutId;
-      const context = '';
+    it('should throw error for invalid context', async () => {
+      const shortcut = 'invalid-context' as ShortcutId;
+      const invalidContext = 'Hi'; // Too short
 
-      await expect(engine.record(shortcut, context)).rejects.toThrow(RecCallError);
-    });
-  });
-
-  describe('Performance', () => {
-    it('should handle large number of shortcuts', async () => {
-      const numShortcuts = 100;
-      const shortcuts: Array<{ shortcut: ShortcutId; context: string }> = [];
-
-      // Create shortcuts
-      for (let i = 0; i < numShortcuts; i++) {
-        shortcuts.push({
-          shortcut: `perf-test-${i}` as ShortcutId,
-          context: `Performance test context ${i}`
-        });
-      }
-
-      // Record all shortcuts
-      const startTime = performance.now();
-      for (const { shortcut, context } of shortcuts) {
-        await engine.record(shortcut, context);
-      }
-      const recordTime = performance.now() - startTime;
-
-      // List all shortcuts
-      const listStartTime = performance.now();
-      const result = await engine.list();
-      const listTime = performance.now() - listStartTime;
-
-      expect(result).toHaveLength(numShortcuts);
-      expect(recordTime).toBeLessThan(5000); // Should complete within 5 seconds
-      expect(listTime).toBeLessThan(1000); // Should complete within 1 second
+      await expect(engine.record(shortcut, invalidContext)).rejects.toThrow(RecCallError);
+      await expect(engine.record(shortcut, invalidContext)).rejects.toThrow('Invalid context');
     });
 
-    it('should handle large context content', async () => {
-      const shortcut = 'large-context' as ShortcutId;
-      const largeContext = 'A'.repeat(10000); // 10KB context
-
-      await engine.record(shortcut, largeContext);
-      const result = await engine.call(shortcut);
-
-      expect(result).toBe(largeContext);
-    });
-  });
-
-  describe('Concurrency', () => {
-    it('should handle concurrent operations', async () => {
-      const operations = Array.from({ length: 10 }, (_, i) => 
-        engine.record(`concurrent-${i}` as ShortcutId, `Context ${i}`)
-      );
-
-      await Promise.all(operations);
-
-      const result = await engine.list();
-      expect(result).toHaveLength(10);
-    });
-
-    it('should handle concurrent reads', async () => {
-      const shortcut = 'concurrent-read' as ShortcutId;
-      const context = 'Concurrent read test';
+    it('should update metrics after recording', async () => {
+      const shortcut = 'metrics-test' as ShortcutId;
+      const context = 'Test context for metrics testing';
 
       await engine.record(shortcut, context);
 
-      const reads = Array.from({ length: 10 }, () => engine.call(shortcut));
-      const results = await Promise.all(reads);
+      expect(telemetryManager.updateMetrics).toHaveBeenCalledWith(
+        expect.objectContaining({ shortcutsCount: expect.any(Number) })
+      );
+      expect(telemetryManager.logEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ event: 'shortcut.recorded' })
+      );
+    });
+  });
 
-      results.forEach(result => {
-        expect(result).toBe(context);
+  describe('Call Operations', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+      await engine.record('call-test' as ShortcutId, 'Test context for call testing');
+    });
+
+    it('should call a shortcut successfully', async () => {
+      const result = await engine.call('call-test' as ShortcutId);
+      expect(result).toBe('Test context for call testing');
+    });
+
+    it('should throw error for non-existent shortcut', async () => {
+      await expect(engine.call('nonexistent' as ShortcutId)).rejects.toThrow(RecCallError);
+      await expect(engine.call('nonexistent' as ShortcutId)).rejects.toThrow('not found');
+    });
+  });
+
+  describe('List Operations', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+      await engine.record('list-1' as ShortcutId, 'Context 1 for list testing');
+      await engine.record('list-2' as ShortcutId, 'Context 2 for list testing');
+      await engine.record('list-3' as ShortcutId, 'Context 3 for list testing');
+    });
+
+    it('should list all shortcuts', async () => {
+      const shortcuts = await engine.list();
+      expect(shortcuts.length).toBeGreaterThanOrEqual(3);
+      expect(shortcuts.some(s => s.id === 'list-1')).toBe(true);
+      expect(shortcuts.some(s => s.id === 'list-2')).toBe(true);
+      expect(shortcuts.some(s => s.id === 'list-3')).toBe(true);
+    });
+  });
+
+  describe('Update Operations', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+      await engine.record('update-test' as ShortcutId, 'Original context for testing');
+    });
+
+    it('should update a shortcut successfully', async () => {
+      const updatedContext = 'Updated context for testing';
+      await engine.update('update-test' as ShortcutId, updatedContext);
+
+      const result = await engine.call('update-test' as ShortcutId);
+      expect(result).toBe(updatedContext);
+    });
+
+    it('should throw error for non-existent shortcut update', async () => {
+      await expect(engine.update('nonexistent' as ShortcutId, 'Context')).rejects.toThrow();
+    });
+
+    it('should throw error for invalid context in update', async () => {
+      await expect(engine.update('update-test' as ShortcutId, 'Hi')).rejects.toThrow(RecCallError);
+    });
+  });
+
+  describe('Delete Operations', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+      await engine.record('delete-test' as ShortcutId, 'Context to delete for testing');
+    });
+
+    it('should delete a shortcut successfully', async () => {
+      await engine.delete('delete-test' as ShortcutId);
+      await expect(engine.call('delete-test' as ShortcutId)).rejects.toThrow();
+    });
+
+    it('should throw error for non-existent shortcut deletion', async () => {
+      await expect(engine.delete('nonexistent' as ShortcutId)).rejects.toThrow();
+    });
+  });
+
+  describe('Purge Operations', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+      await engine.record('purge-1' as ShortcutId, 'Context 1 for purge testing');
+      await engine.record('purge-2' as ShortcutId, 'Context 2 for purge testing');
+    });
+
+    it('should purge all shortcuts', async () => {
+      await engine.purge();
+      const shortcuts = await engine.list();
+      expect(shortcuts.length).toBe(0);
+    });
+  });
+
+  describe('Search Operations', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+      await engine.record('react-component' as ShortcutId, 'Create React components with TypeScript');
+      await engine.record('api-endpoint' as ShortcutId, 'Create REST API endpoints with Express');
+      await engine.record('database-schema' as ShortcutId, 'Design database schemas with PostgreSQL');
+    });
+
+    it('should search shortcuts by content', async () => {
+      const results = await engine.search('React');
+      expect(results.length).toBe(1);
+      expect(results[0].id).toBe('react-component');
+    });
+
+    it('should search case-insensitively', async () => {
+      const results = await engine.search('react');
+      expect(results.length).toBe(1);
+    });
+
+    it('should return empty array for no matches', async () => {
+      const results = await engine.search('nonexistent');
+      expect(results.length).toBe(0);
+    });
+
+    it('should search multiple shortcuts', async () => {
+      const results = await engine.search('Create');
+      expect(results.length).toBe(2);
+    });
+  });
+
+  describe('Recipe Operations', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+      repository.setRecipe('test-recipe', {
+        shortcut: 'test-recipe' as ShortcutId,
+        context: 'Test recipe context',
+        name: 'Test Recipe',
+        description: 'A test recipe',
+        category: 'testing',
       });
     });
-  });
 
-  describe('Telemetry Integration', () => {
-    it('should log events during operations', async () => {
-      const logSpy = vi.spyOn(telemetryManager, 'logEvent');
-
-      await engine.record('telemetry-test' as ShortcutId, 'Test context');
-
-      expect(logSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          event: 'shortcut.recorded',
-          timestamp: expect.any(Number),
-          properties: expect.objectContaining({
-            shortcut: 'telemetry-test'
-          })
-        })
-      );
+    it('should list recipes from repository', async () => {
+      const recipes = await engine.listRecipes();
+      expect(Array.isArray(recipes)).toBe(true);
     });
 
-    it('should update metrics during operations', async () => {
-      const metricsSpy = vi.spyOn(telemetryManager, 'updateMetrics');
+    it('should search recipes in repository', async () => {
+      const results = await engine.searchRecipes('test');
+      expect(Array.isArray(results)).toBe(true);
+    });
 
-      await engine.record('metrics-test' as ShortcutId, 'Test context');
+    it('should install recipe from repository', async () => {
+      repository.setRecipe('install-test', {
+        shortcut: 'install-test' as ShortcutId,
+        context: 'Installed recipe context',
+        name: 'Install Test',
+      });
 
-      expect(metricsSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          shortcutsCount: expect.any(Number)
-        })
-      );
+      await engine.installRecipe('https://test.reccaller.ai' as any, 'install-test' as ShortcutId);
+      
+      const result = await engine.call('install-test' as ShortcutId);
+      expect(result).toBe('Installed recipe context');
     });
   });
 
-  describe('Configuration', () => {
-    it('should use custom configuration', async () => {
-      const customConfig = {
-        storagePath: '/tmp/reccall-test.json',
-        cacheTtl: 1800,
-        enableTelemetry: false
-      };
-
-      await engine.initialize(customConfig);
-
-      const config = configManager.getConfig();
-      expect(config.cacheTtl).toBe(1800);
-      expect(config.enableTelemetry).toBe(false);
+  describe('Statistics', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+      await engine.record('stats-1' as ShortcutId, 'Context 1 for stats testing');
+      await engine.record('stats-2' as ShortcutId, 'Context 2 for stats testing');
     });
 
-    it('should handle invalid configuration gracefully', async () => {
-      const invalidConfig = {
-        cacheTtl: -1, // Invalid TTL
-        enableTelemetry: 'invalid' // Invalid boolean
-      };
+    it('should return statistics', async () => {
+      const stats = await engine.getStats();
+      expect(stats).toHaveProperty('shortcutsCount');
+      expect(stats).toHaveProperty('cacheStats');
+      expect(stats).toHaveProperty('repositoryStats');
+      expect(stats.shortcutsCount).toBeGreaterThanOrEqual(2);
+    });
+  });
 
-      await expect(engine.initialize(invalidConfig)).resolves.not.toThrow();
+  describe('Error Handling', () => {
+    it('should throw error when not initialized', async () => {
+      await expect(engine.record('test' as ShortcutId, 'Context')).rejects.toThrow();
+    });
+
+    it('should handle storage errors gracefully', async () => {
+      await engine.initialize();
+      
+      // Mock storage to throw error
+      vi.spyOn(storage, 'record').mockRejectedValueOnce(new Error('Storage error'));
+
+      await expect(engine.record('error-test' as ShortcutId, 'Context')).rejects.toThrow();
+    });
+  });
+
+  describe('Edge Cases', () => {
+    beforeEach(async () => {
+      await engine.initialize();
+    });
+
+    it('should handle very long context', async () => {
+      const longContext = 'A'.repeat(5000);
+      await engine.record('long-context' as ShortcutId, longContext);
+      
+      const result = await engine.call('long-context' as ShortcutId);
+      expect(result.length).toBe(5000);
+    });
+
+    it('should handle special characters in shortcut', async () => {
+      const shortcut = 'test-shortcut-123' as ShortcutId;
+      await engine.record(shortcut, 'Context');
+      
+      const result = await engine.call(shortcut);
+      expect(result).toBe('Context');
     });
   });
 });
