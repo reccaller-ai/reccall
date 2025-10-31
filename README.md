@@ -1,6 +1,8 @@
-# RecCall: Universal AI Context Engine
+# RecCall: Universal Context Management System
 
-**Rec**ord and **Call** context shortcuts across AI IDEs and environments with enterprise-grade plugin architecture.
+**Rec**ord and **Call** context shortcuts across AI IDEs and environments. Now featuring **ML-powered context generation**, **semantic search**, and **unified context management**.
+
+> **🚀 New in v2.0**: Universal Context Management System with ML intelligence, hybrid search, and dynamic context generation from conversations.
 
 ## 🏗️ Architecture
 
@@ -13,6 +15,24 @@ RecCall has been refactored into a modular plugin-based architecture:
 
 ## 🚀 Features
 
+### Universal Context System (v2.0)
+
+**Three Context Types:**
+- **Static Contexts**: Pre-defined templates and guidelines
+- **Dynamic Contexts**: ML-generated from conversations (auto-summarization, topic extraction, code references)
+- **Hybrid Contexts**: Static templates enhanced with ML insights
+
+**ML-Powered Intelligence:**
+- Conversation summarization
+- Code reference extraction
+- Semantic embeddings for search
+- Topic/keyword extraction
+
+**Hybrid Search:**
+- Keyword search (fast, exact matches)
+- Semantic search (meaning-based similarity)
+- Combined results for comprehensive discovery
+
 ### Universal Commands
 - **rec**: Record a shortcut with context/instructions
 - **call**: Call (retrieve) stored context by shortcut name
@@ -21,6 +41,14 @@ RecCall has been refactored into a modular plugin-based architecture:
 - **delete**: Delete a shortcut (idempotent operation)
 - **purge**: Purge all shortcuts (with confirmation)
 - **search**: Search shortcuts by content
+
+### Context Commands (v2.0)
+- **context create**: Create static contexts
+- **context get**: Retrieve contexts by name or ID
+- **context search**: Hybrid search (keyword + semantic)
+- **context list**: List all contexts with filters
+- **context delete**: Remove contexts
+- **context stats**: View usage analytics
 
 ### Repository Commands
 - **install**: Install a recipe from the repository
@@ -63,7 +91,7 @@ npm install -g reccall
 
 ## 🎯 Usage
 
-### CLI
+### CLI - Shortcuts (v1.0)
 ```bash
 # Record a shortcut
 reccall rec react-component "Create React components with TypeScript, proper props, and hooks"
@@ -76,6 +104,31 @@ reccall list
 
 # Install from repository
 reccall install sync-main
+```
+
+### CLI - Universal Context System (v2.0)
+```bash
+# Create a static context
+reccall context create my-template \
+  --content "# My Template\n\nGuidelines..." \
+  --source global \
+  --tags development \
+  --category guides
+
+# List all contexts
+reccall context list
+
+# Search contexts (hybrid: keyword + semantic)
+reccall context search "API testing"
+
+# Get a context
+reccall context get my-template
+
+# View statistics
+reccall context stats
+
+# Create dynamic context from conversation (via API/MCP)
+# Automatically generates summary, topics, and embeddings
 ```
 
 ### MCP (Cursor IDE)
@@ -395,6 +448,7 @@ See [Makefile Documentation](./docs/MAKEFILE.md) for complete usage guide.
 
 ## 📚 Documentation
 
+- **[Universal Context System](./docs/UNIVERSAL_CONTEXT_SYSTEM.md)** ⭐ NEW - Complete guide to the context management system
 - [Plugin Development Guide](./docs/PLUGIN_DEVELOPMENT.md)
 - [API Reference](./docs/API_REFERENCE.md)
 - [Enterprise Deployment](./docs/ENTERPRISE_DEPLOYMENT.md)

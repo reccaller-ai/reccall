@@ -482,11 +482,13 @@
         <div class="container">
             <div class="hero-content">
                 <h1>RecCall</h1>
-                <div class="hero-subtitle">Universal AI Context Engine with Plugin Architecture</div>
+                <div class="hero-subtitle">Universal Context Management System with ML Intelligence</div>
                 <p class="hero-description">
-                    Universal AI context engine with enterprise-grade plugin architecture. 
-                    Works seamlessly with Cursor, VSCode, Warp, Perplexity, Sora, and more. All platforms now powered by a unified core engine for consistent behavior, caching, and telemetry. 
-                    Built with dependency injection, telemetry, and browser extensions for maximum flexibility.
+                    Universal Context Management System with ML-powered context generation, semantic search, and unified context management. 
+                    Create static templates, generate dynamic contexts from conversations, or enhance templates with AI insights. 
+                    Works seamlessly with Cursor, VSCode, Warp, and more.
+                    <br><br>
+                    <strong>🚀 New in v2.0:</strong> ML-powered dynamic contexts, hybrid search (keyword + semantic), and intelligent context enhancement.
                 </p>
                 <div class="cta-buttons">
                     <a href="#install" class="btn btn-primary">🚀 Get Started</a>
@@ -506,14 +508,20 @@
 <span class="comment"># Installation</span>
 curl -sfL https://reccaller.ai/install.sh | sh -
 
-<span class="comment"># Core Engine Usage</span>
+<span class="comment"># Universal Context System (v2.0)</span>
+reccall context create my-template \
+  --content "# Guidelines..." \
+  --source global \
+  --tags development
+
+reccall context search "API testing"  <span class="comment"># Hybrid search</span>
+reccall context list --type dynamic
+reccall context stats
+
+<span class="comment"># Traditional Shortcuts (v1.0)</span>
 reccall rec react-component "Create React components with TypeScript"
 reccall call react-component
-
-<span class="comment"># Repository Integration</span>
 reccall install sync-main
-reccall list-repo
-reccall search-repo "git"
             </div>
             
             <div class="features-grid">
