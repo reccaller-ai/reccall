@@ -816,22 +816,22 @@ diContainer.register(TOKENS.CONTEXT_STORAGE, RedisStorage);
                         <text x="800" y="805" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="12">Hybrid Search</text>
                     </g>
                     
-                    <!-- Data Flow Arrows - Perfectly Aligned to Centers -->
+                    <!-- Data Flow Arrows - Perfectly Aligned to Box Centers -->
                     <g stroke="#64748b" stroke-width="3" fill="none" opacity="0.7">
-                        <!-- Input (600, 140) to Engine (600, 180) - Vertical -->
+                        <!-- Input center (600, 90) to Engine center (600, 240) - Perfectly Vertical -->
                         <path d="M 600 140 L 600 180" marker-end="url(#arrowhead)"/>
                         
-                        <!-- Engine (600, 300) to ML Components - Diagonal -->
-                        <!-- Engine to Summarizer (180, 400) -->
-                        <path d="M 550 300 L 180 400" marker-end="url(#arrowhead)"/>
-                        <!-- Engine to Code Extractor (420, 400) -->
-                        <path d="M 580 300 L 420 400" marker-end="url(#arrowhead)"/>
-                        <!-- Engine to Embedder (660, 400) - Vertical -->
+                        <!-- Engine bottom (600, 300) to ML Components top centers -->
+                        <!-- Engine to Summarizer: (600,300) -> (180,400) -->
+                        <path d="M 600 300 L 180 400" marker-end="url(#arrowhead)"/>
+                        <!-- Engine to Code Extractor: (600,300) -> (420,400) -->
+                        <path d="M 600 300 L 420 400" marker-end="url(#arrowhead)"/>
+                        <!-- Engine to Embedder: (600,300) -> (660,400) -->
                         <path d="M 600 300 L 660 400" marker-end="url(#arrowhead)"/>
-                        <!-- Engine to Topic Extractor (900, 400) -->
-                        <path d="M 650 300 L 900 400" marker-end="url(#arrowhead)"/>
+                        <!-- Engine to Topic Extractor: (600,300) -> (900,400) -->
+                        <path d="M 600 300 L 900 400" marker-end="url(#arrowhead)"/>
                         
-                        <!-- ML Components (centers at y=470) to Artifacts (600, 600) -->
+                        <!-- ML Components bottom (y=540) to Artifacts top (y=600) -->
                         <!-- Summarizer (180, 540) to Artifacts -->
                         <path d="M 180 540 L 370 600" marker-end="url(#arrowhead)"/>
                         <!-- Code Extractor (420, 540) to Artifacts -->
@@ -841,10 +841,10 @@ diContainer.register(TOKENS.CONTEXT_STORAGE, RedisStorage);
                         <!-- Topic Extractor (900, 540) to Artifacts -->
                         <path d="M 900 540 L 670 600" marker-end="url(#arrowhead)"/>
                         
-                        <!-- Artifacts (600, 720) to Storage (500, 760) -->
+                        <!-- Artifacts bottom (y=720) to Storage top (y=760) -->
                         <path d="M 500 720 L 500 760" marker-end="url(#arrowhead)"/>
                         
-                        <!-- Artifacts (600, 720) to Search (800, 760) -->
+                        <!-- Artifacts bottom (y=720) to Search top (y=760) -->
                         <path d="M 800 720 L 800 760" marker-end="url(#arrowhead)"/>
                     </g>
                     
