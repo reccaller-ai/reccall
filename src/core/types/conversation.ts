@@ -39,10 +39,15 @@ export const ConversationMessagesSchema = z.array(ConversationMessageSchema);
  */
 export function validateConversationMessage(message: unknown): ConversationMessage {
   const parsed = ConversationMessageSchema.parse(message);
-  return {
-    ...parsed,
-    metadata: parsed.metadata ?? undefined,
+  const result: ConversationMessage = {
+    role: parsed.role,
+    content: parsed.content,
+    timestamp: parsed.timestamp,
   };
+  if (parsed.metadata !== undefined) {
+    result.metadata = parsed.metadata;
+  }
+  return result;
 }
 
 /**

@@ -249,15 +249,39 @@ export interface SystemStats {
  */
 export function validateContext(context: unknown): Context {
   const parsed = ContextSchema.parse(context);
-  return {
-    ...parsed,
-    description: parsed.description ?? undefined,
-    category: parsed.category ?? undefined,
-    repository: parsed.repository ?? undefined,
-    lastUsedAt: parsed.lastUsedAt ?? undefined,
-    ml: parsed.ml ?? undefined,
-    versionHistory: parsed.versionHistory ?? undefined,
+  const result: Context = {
+    id: parsed.id,
+    name: parsed.name,
+    content: parsed.content,
+    type: parsed.type,
+    source: parsed.source,
+    tags: parsed.tags,
+    version: parsed.version,
+    syncStatus: parsed.syncStatus,
+    createdAt: parsed.createdAt,
+    updatedAt: parsed.updatedAt,
+    usageCount: parsed.usageCount,
+    platforms: parsed.platforms,
   };
+  if (parsed.description !== undefined) {
+    result.description = parsed.description;
+  }
+  if (parsed.category !== undefined) {
+    result.category = parsed.category;
+  }
+  if (parsed.repository !== undefined) {
+    result.repository = parsed.repository;
+  }
+  if (parsed.lastUsedAt !== undefined) {
+    result.lastUsedAt = parsed.lastUsedAt;
+  }
+  if (parsed.ml !== undefined) {
+    result.ml = parsed.ml;
+  }
+  if (parsed.versionHistory !== undefined) {
+    result.versionHistory = parsed.versionHistory;
+  }
+  return result;
 }
 
 /**
@@ -265,13 +289,24 @@ export function validateContext(context: unknown): Context {
  */
 export function validateCreateStaticParams(params: unknown): CreateStaticContextParams {
   const parsed = CreateStaticContextParamsSchema.parse(params);
-  return {
-    ...parsed,
-    tags: parsed.tags ?? undefined,
-    category: parsed.category ?? undefined,
-    description: parsed.description ?? undefined,
-    repository: parsed.repository ?? undefined,
+  const result: CreateStaticContextParams = {
+    name: parsed.name,
+    content: parsed.content,
+    source: parsed.source,
   };
+  if (parsed.tags !== undefined) {
+    result.tags = parsed.tags;
+  }
+  if (parsed.category !== undefined) {
+    result.category = parsed.category;
+  }
+  if (parsed.description !== undefined) {
+    result.description = parsed.description;
+  }
+  if (parsed.repository !== undefined) {
+    result.repository = parsed.repository;
+  }
+  return result;
 }
 
 /**
@@ -279,13 +314,24 @@ export function validateCreateStaticParams(params: unknown): CreateStaticContext
  */
 export function validateCreateDynamicParams(params: unknown): CreateDynamicContextParams {
   const parsed = CreateDynamicContextParamsSchema.parse(params);
-  return {
-    ...parsed,
-    tags: parsed.tags ?? undefined,
-    category: parsed.category ?? undefined,
-    repository: parsed.repository ?? undefined,
-    mlOptions: parsed.mlOptions ?? undefined,
+  const result: CreateDynamicContextParams = {
+    name: parsed.name,
+    messages: parsed.messages,
+    source: parsed.source,
   };
+  if (parsed.tags !== undefined) {
+    result.tags = parsed.tags;
+  }
+  if (parsed.category !== undefined) {
+    result.category = parsed.category;
+  }
+  if (parsed.repository !== undefined) {
+    result.repository = parsed.repository;
+  }
+  if (parsed.mlOptions !== undefined) {
+    result.mlOptions = parsed.mlOptions;
+  }
+  return result;
 }
 
 /**
@@ -293,11 +339,20 @@ export function validateCreateDynamicParams(params: unknown): CreateDynamicConte
  */
 export function validateCreateHybridParams(params: unknown): CreateHybridContextParams {
   const parsed = CreateHybridContextParamsSchema.parse(params);
-  return {
-    ...parsed,
-    source: parsed.source ?? undefined,
-    tags: parsed.tags ?? undefined,
-    category: parsed.category ?? undefined,
+  const result: CreateHybridContextParams = {
+    templateName: parsed.templateName,
+    messages: parsed.messages,
+    name: parsed.name,
   };
+  if (parsed.source !== undefined) {
+    result.source = parsed.source;
+  }
+  if (parsed.tags !== undefined) {
+    result.tags = parsed.tags;
+  }
+  if (parsed.category !== undefined) {
+    result.category = parsed.category;
+  }
+  return result;
 }
 

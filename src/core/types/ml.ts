@@ -53,10 +53,17 @@ export const MLArtifactsSchema = z.object({
  */
 export function validateMLArtifacts(artifacts: unknown): MLArtifacts {
   const parsed = MLArtifactsSchema.parse(artifacts);
-  return {
-    ...parsed,
-    codeRefs: parsed.codeRefs ?? undefined,
-    originalMessages: parsed.originalMessages ?? undefined,
+  const result: MLArtifacts = {
+    embedding: parsed.embedding,
+    summary: parsed.summary,
+    topics: parsed.topics,
   };
+  if (parsed.codeRefs !== undefined) {
+    result.codeRefs = parsed.codeRefs;
+  }
+  if (parsed.originalMessages !== undefined) {
+    result.originalMessages = parsed.originalMessages;
+  }
+  return result;
 }
 
