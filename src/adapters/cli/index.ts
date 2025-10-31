@@ -4,17 +4,25 @@
 
 import { Command } from 'commander';
 import type { ICoreEngine, ShortcutId, RepositoryUrl } from '../../core/interfaces.js';
+import type { ContextEngine } from '../../core/context-engine.js';
 import { RecCallError } from '../../types.js';
 
 export class CLIAdapter {
   private engine: ICoreEngine;
+  private contextEngine?: ContextEngine;
 
-  constructor(engine: ICoreEngine) {
+  constructor(engine: ICoreEngine, contextEngine?: ContextEngine) {
     this.engine = engine;
+    if (contextEngine !== undefined) {
+      this.contextEngine = contextEngine;
+    }
   }
 
   async initialize(): Promise<void> {
     await this.engine.initialize();
+    if (this.contextEngine) {
+      await this.contextEngine.initialize();
+    }
   }
 
   createProgram(): Command {
@@ -271,6 +279,202 @@ export class CLIAdapter {
           this.handleError(error);
         }
       });
+
+    // Context commands (Universal Context System)
+    if (this.contextEngine) {
+      // Context create command
+      program
+        .command('context create <name>')
+        .description('Create a static context')
+        .option('-c, --content <content>', 'Context content')
+        .option('-f, --file <file>', 'Read content from file')
+        .option('-s, --source <source>', 'Source: local or global', 'global')
+        .option('-t, --tags <tags...>', 'Tags')
+        .option('--category <category>', 'Category')
+        .option('--description <description>', 'Description')
+        .option('--repository <repository>', 'Repository name')
+        .action(async (name: string, options) => {
+          try {
+            let content = options.content;
+
+            if (options.file) {
+              const fs = await import('fs/promises');
+              content = await fs.readFile(options.file, 'utf-8');
+            }
+
+            if (!content) {
+              console.error('❌ Error: Content or file required');
+              process.exit(1);
+            }
+
+            const context = await this.contextEngine!.createStatic({
+              name,
+              content,
+              source: options.source,
+              tags: options.tags,
+              category: options.category,
+              description: options.description,
+              repository: options.repository,
+            });
+
+            console.log(`✅ Context '${context.name}' created successfully (ID: ${context.id})`);
+          } catch (error) {
+            this.handleError(error);
+          }
+        });
+
+      // Context get command
+      program
+        .command('context get <identifier>')
+        .description('Get a context by name or ID')
+        .action(async (identifier: string) => {
+          try {
+            const context = await this.contextEngine!.use(identifier, 'cli');
+            if (!context) {
+              console.error(`❌ Context '${identifier}' not found`);
+              process.exit(1);
+            }
+            console.log(context.content);
+          } catch (error) {
+            this.handleError(error);
+          }
+        });
+
+      // Context search command
+      program
+        .command('context search <query>')
+        .description('Search contexts')
+        .option('-s, --source <source>', 'Filter by source')
+        .option('-t, --type <type>', 'Filter by type')
+        .action(async (query: string, options) => {
+          try {
+            const filters: any = {};
+            if (options.source) {
+              filters.source = options.source;
+            }
+            if (options.type) {
+              filters.type = options.type;
+            }
+            const results = await this.contextEngine!.search(query, filters);
+
+            if (results.length === 0) {
+              console.log('No contexts found');
+              return;
+            }
+
+            console.log(`Found ${results.length} context(s):\n`);
+            results.forEach(ctx => {
+              console.log(`  ${ctx.name} (${ctx.id})`);
+              console.log(`    Type: ${ctx.type}, Source: ${ctx.source}`);
+              if (ctx.description) {
+                console.log(`    ${ctx.description}`);
+              }
+              console.log();
+            });
+          } catch (error) {
+            this.handleError(error);
+          }
+        });
+
+      // Context list command
+      program
+        .command('context list')
+        .description('List all contexts')
+        .option('-s, --source <source>', 'Filter by source')
+        .option('-t, --type <type>', 'Filter by type')
+        .option('--json', 'Output as JSON')
+        .action(async (options) => {
+          try {
+            const filters: any = {};
+            if (options.source) {
+              filters.source = options.source;
+            }
+            if (options.type) {
+              filters.type = options.type;
+            }
+            const contexts = await this.contextEngine!.list(filters);
+
+            if (options.json) {
+              console.log(JSON.stringify(contexts, null, 2));
+              return;
+            }
+
+            console.log(`Total: ${contexts.length} context(s)\n`);
+            contexts.forEach(ctx => {
+              console.log(`  ${ctx.name} (${ctx.id})`);
+              console.log(`    Type: ${ctx.type}, Source: ${ctx.source}`);
+              console.log(`    Used: ${ctx.usageCount} times`);
+              if (ctx.tags.length > 0) {
+                console.log(`    Tags: ${ctx.tags.join(', ')}`);
+              }
+              console.log();
+            });
+          } catch (error) {
+            this.handleError(error);
+          }
+        });
+
+      // Context delete command
+      program
+        .command('context delete <id>')
+        .description('Delete a context')
+        .option('-f, --force', 'Skip confirmation')
+        .action(async (id: string, options) => {
+          try {
+            if (!options.force) {
+              const context = await this.contextEngine!.get(id);
+              if (!context) {
+                console.error(`❌ Context '${id}' not found`);
+                process.exit(1);
+              }
+              console.log(`Delete context '${context.name}' (${context.id})?`);
+              console.log('Use --force flag to confirm');
+              return;
+            }
+
+            await this.contextEngine!.delete(id);
+            console.log('✅ Context deleted successfully');
+          } catch (error) {
+            this.handleError(error);
+          }
+        });
+
+      // Context stats command
+      program
+        .command('context stats [id]')
+        .description('Show context statistics')
+        .action(async (id?: string) => {
+          try {
+            const stats = await this.contextEngine!.getStats(id);
+            if (id && 'id' in stats) {
+              // Context-specific stats
+              console.log(`Context: ${stats.name}`);
+              console.log(`  ID: ${stats.id}`);
+              console.log(`  Usage count: ${stats.usageCount}`);
+              if (stats.lastUsedAt) {
+                console.log(`  Last used: ${stats.lastUsedAt.toLocaleString()}`);
+              }
+              if (stats.platforms.length > 0) {
+                console.log(`  Platforms: ${stats.platforms.join(', ')}`);
+              }
+            } else if (!id && 'totalContexts' in stats) {
+              // System-wide stats
+              console.log('Overall Statistics:');
+              console.log(`  Total contexts: ${stats.totalContexts}`);
+              console.log(`  By type:`);
+              Object.entries(stats.byType).forEach(([type, count]) => {
+                console.log(`    ${type}: ${count}`);
+              });
+              console.log(`  By source:`);
+              Object.entries(stats.bySource).forEach(([source, count]) => {
+                console.log(`    ${source}: ${count}`);
+              });
+            }
+          } catch (error) {
+            this.handleError(error);
+          }
+        });
+    }
 
     return program;
   }
