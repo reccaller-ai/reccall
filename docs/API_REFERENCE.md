@@ -1,6 +1,8 @@
 # API Reference
 
-Complete API documentation for RecCall's universal AI context engine.
+Complete API documentation for RecCall's Universal Context Management System.
+
+> **🚀 New in v2.0**: Universal Context System with ML-powered context generation and semantic search. See [Universal Context System Guide](./UNIVERSAL_CONTEXT_SYSTEM.md) for complete documentation.
 
 ## Core Engine API
 
