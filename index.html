@@ -797,10 +797,10 @@ diContainer.register(TOKENS.CONTEXT_STORAGE, RedisStorage);
                     <g>
                         <rect x="280" y="600" width="640" height="120" rx="12" fill="url(#artifactsGrad)" filter="url(#shadow)" stroke="white" stroke-width="2"/>
                         <text x="600" y="635" text-anchor="middle" fill="white" font-size="20" font-weight="700">ML Artifacts</text>
-                        <text x="370" y="665" fill="rgba(255,255,255,0.95)" font-size="14">• embedding: number[384]</text>
-                        <text x="370" y="685" fill="rgba(255,255,255,0.95)" font-size="14">• summary: string</text>
-                        <text x="670" y="665" fill="rgba(255,255,255,0.95)" font-size="14">• topics: string[]</text>
-                        <text x="670" y="685" fill="rgba(255,255,255,0.95)" font-size="14">• codeRefs: CodeRef[]</text>
+                        <text x="360" y="665" fill="rgba(255,255,255,0.95)" font-size="14">• embedding: number[384]</text>
+                        <text x="360" y="685" fill="rgba(255,255,255,0.95)" font-size="14">• summary: string</text>
+                        <text x="660" y="665" fill="rgba(255,255,255,0.95)" font-size="14">• topics: string[]</text>
+                        <text x="660" y="685" fill="rgba(255,255,255,0.95)" font-size="14">• codeRefs: CodeRef[]</text>
                     </g>
                     
                     <!-- Layer 5: Storage & Search (Perfectly Aligned) -->
@@ -832,14 +832,14 @@ diContainer.register(TOKENS.CONTEXT_STORAGE, RedisStorage);
                         <path d="M 600 300 L 900 400" marker-end="url(#arrowhead)"/>
                         
                         <!-- ML Components bottom (y=540) to Artifacts top (y=600) -->
-                        <!-- Summarizer (180, 540) to Artifacts -->
-                        <path d="M 180 540 L 370 600" marker-end="url(#arrowhead)"/>
-                        <!-- Code Extractor (420, 540) to Artifacts -->
-                        <path d="M 420 540 L 450 600" marker-end="url(#arrowhead)"/>
-                        <!-- Embedder (660, 540) to Artifacts -->
+                        <!-- Summarizer (180, 540) to Artifacts left side (360, 600) -->
+                        <path d="M 180 540 L 360 600" marker-end="url(#arrowhead)"/>
+                        <!-- Code Extractor (420, 540) to Artifacts (440, 600) -->
+                        <path d="M 420 540 L 440 600" marker-end="url(#arrowhead)"/>
+                        <!-- Embedder (660, 540) to Artifacts center (600, 600) -->
                         <path d="M 660 540 L 600 600" marker-end="url(#arrowhead)"/>
-                        <!-- Topic Extractor (900, 540) to Artifacts -->
-                        <path d="M 900 540 L 670 600" marker-end="url(#arrowhead)"/>
+                        <!-- Topic Extractor (900, 540) to Artifacts right side (660, 600) -->
+                        <path d="M 900 540 L 660 600" marker-end="url(#arrowhead)"/>
                         
                         <!-- Artifacts bottom (y=720) to Storage top (y=760) -->
                         <path d="M 500 720 L 500 760" marker-end="url(#arrowhead)"/>
