@@ -53,14 +53,19 @@ export async function migrateShortcutsToContexts(
 
       if (!options.dryRun) {
         // Create context from shortcut
-        await contextEngine.createStatic({
+        const createParams: any = {
           name: shortcut.id,
           content: shortcut.context,
           source: defaultSource,
           tags: shortcut.category ? [shortcut.category] : [],
-          category: shortcut.category,
-          description: shortcut.description,
-        });
+        };
+        if (shortcut.category !== undefined) {
+          createParams.category = shortcut.category;
+        }
+        if (shortcut.description !== undefined) {
+          createParams.description = shortcut.description;
+        }
+        await contextEngine.createStatic(createParams);
       }
 
       result.migrated++;
@@ -104,14 +109,19 @@ export async function migrateShortcutToContext(
 
   if (!options.dryRun) {
     const defaultSource = options.source || 'local';
-    await contextEngine.createStatic({
+    const createParams: any = {
       name: shortcutId,
       content: shortcutData.context,
       source: defaultSource,
       tags: shortcutData.category ? [shortcutData.category] : [],
-      category: shortcutData.category,
-      description: shortcutData.description,
-    });
+    };
+    if (shortcutData.category !== undefined) {
+      createParams.category = shortcutData.category;
+    }
+    if (shortcutData.description !== undefined) {
+      createParams.description = shortcutData.description;
+    }
+    await contextEngine.createStatic(createParams);
   }
 
   return true;
