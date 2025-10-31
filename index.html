@@ -687,7 +687,7 @@ diContainer.register(TOKENS.CONTEXT_STORAGE, RedisStorage);
             <p>The ML Intelligence Layer processes conversations through multiple pipelines to generate rich context artifacts.</p>
             
             <div class="architecture-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 3rem; border-radius: 20px; margin: 2rem 0; border: 2px solid var(--gray-300); box-shadow: var(--shadow-lg);">
-                <svg viewBox="0 0 1200 800" style="width: 100%; height: auto; max-height: 800px; font-family: 'Inter', sans-serif;">
+                <svg viewBox="0 0 1200 850" style="width: 100%; height: auto; max-height: 850px; font-family: 'Inter', sans-serif;">
                     <defs>
                         <linearGradient id="inputGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                             <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
@@ -728,17 +728,25 @@ diContainer.register(TOKENS.CONTEXT_STORAGE, RedisStorage);
                         <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
                             <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.2"/>
                         </filter>
-                        <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
-                            <path d="M0,0 L0,6 L12,3 z" fill="#64748b" opacity="0.7"/>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L10,3 z" fill="#64748b" opacity="0.7"/>
                         </marker>
                     </defs>
                     
+                    <!-- Calculated Positions for Perfect Alignment -->
+                    <!-- Input: center = 600, y=40, width=200, height=100, bottom=140 -->
+                    <!-- Engine: center = 600, y=180, width=300, height=120, bottom=300 -->
+                    <!-- ML Components: all y=400, width=200, height=140, bottom=540, centers: 180, 420, 660, 900 -->
+                    <!-- Artifacts: center = 600, y=580, width=640, height=120, bottom=700 -->
+                    <!-- Storage: center = 500, y=760, width=240, height=40, top=760, bottom=800 -->
+                    <!-- Search: center = 800, y=760, width=240, height=40, top=760, bottom=800 -->
+                    
                     <!-- Layer 1: Input -->
                     <g>
-                        <rect x="500" y="30" width="200" height="100" rx="12" fill="url(#inputGrad)" filter="url(#shadow)"/>
-                        <text x="600" y="65" text-anchor="middle" fill="white" font-size="18" font-weight="700">Conversation</text>
-                        <text x="600" y="90" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="14">Messages Input</text>
-                        <text x="600" y="110" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="12">user/assistant</text>
+                        <rect x="500" y="40" width="200" height="100" rx="12" fill="url(#inputGrad)" filter="url(#shadow)"/>
+                        <text x="600" y="75" text-anchor="middle" fill="white" font-size="18" font-weight="700">Conversation</text>
+                        <text x="600" y="100" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="14">Messages Input</text>
+                        <text x="600" y="120" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="12">user/assistant</text>
                     </g>
                     
                     <!-- Layer 2: Context Engine (Central) -->
@@ -750,98 +758,112 @@ diContainer.register(TOKENS.CONTEXT_STORAGE, RedisStorage);
                         <text x="600" y="285" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="12">Orchestrates ML Pipeline</text>
                     </g>
                     
-                    <!-- Layer 3: ML Processing Components (Horizontal Layout) -->
+                    <!-- Layer 3: ML Processing Components (Perfectly Aligned Horizontal) -->
                     <g>
-                        <!-- Summarizer -->
-                        <rect x="80" y="380" width="200" height="140" rx="12" fill="url(#summarizerGrad)" filter="url(#shadow)"/>
-                        <circle cx="180" cy="420" r="25" fill="rgba(255,255,255,0.3)"/>
-                        <text x="180" y="427" text-anchor="middle" fill="white" font-size="18" font-weight="700">📝</text>
-                        <text x="180" y="460" text-anchor="middle" fill="white" font-size="16" font-weight="600">Summarizer</text>
-                        <text x="180" y="485" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Extract Key Points</text>
-                        <text x="180" y="505" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Generate Summary</text>
+                        <!-- Summarizer - Left -->
+                        <rect x="80" y="400" width="200" height="140" rx="12" fill="url(#summarizerGrad)" filter="url(#shadow)"/>
+                        <circle cx="180" cy="440" r="25" fill="rgba(255,255,255,0.3)"/>
+                        <text x="180" y="448" text-anchor="middle" fill="white" font-size="20" font-weight="700">📝</text>
+                        <text x="180" y="480" text-anchor="middle" fill="white" font-size="16" font-weight="600">Summarizer</text>
+                        <text x="180" y="505" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Extract Key Points</text>
+                        <text x="180" y="525" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Generate Summary</text>
                         
                         <!-- Code Extractor -->
-                        <rect x="320" y="380" width="200" height="140" rx="12" fill="url(#codeGrad)" filter="url(#shadow)"/>
-                        <circle cx="420" cy="420" r="25" fill="rgba(255,255,255,0.3)"/>
-                        <text x="420" y="427" text-anchor="middle" fill="white" font-size="18" font-weight="700">💻</text>
-                        <text x="420" y="460" text-anchor="middle" fill="white" font-size="16" font-weight="600">Code Extractor</text>
-                        <text x="420" y="485" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Find Code Blocks</text>
-                        <text x="420" y="505" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Extract File Refs</text>
+                        <rect x="320" y="400" width="200" height="140" rx="12" fill="url(#codeGrad)" filter="url(#shadow)"/>
+                        <circle cx="420" cy="440" r="25" fill="rgba(255,255,255,0.3)"/>
+                        <text x="420" y="448" text-anchor="middle" fill="white" font-size="20" font-weight="700">💻</text>
+                        <text x="420" y="480" text-anchor="middle" fill="white" font-size="16" font-weight="600">Code Extractor</text>
+                        <text x="420" y="505" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Find Code Blocks</text>
+                        <text x="420" y="525" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Extract File Refs</text>
                         
-                        <!-- Embedder -->
-                        <rect x="560" y="380" width="200" height="140" rx="12" fill="url(#embedGrad)" filter="url(#shadow)"/>
-                        <circle cx="660" cy="420" r="25" fill="rgba(255,255,255,0.3)"/>
-                        <text x="660" y="427" text-anchor="middle" fill="white" font-size="18" font-weight="700">🔗</text>
-                        <text x="660" y="460" text-anchor="middle" fill="white" font-size="16" font-weight="600">Embedder</text>
-                        <text x="660" y="485" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Generate Vectors</text>
-                        <text x="660" y="505" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">384-dim Embeddings</text>
+                        <!-- Embedder - Center (aligned with Engine) -->
+                        <rect x="560" y="400" width="200" height="140" rx="12" fill="url(#embedGrad)" filter="url(#shadow)"/>
+                        <circle cx="660" cy="440" r="25" fill="rgba(255,255,255,0.3)"/>
+                        <text x="660" y="448" text-anchor="middle" fill="white" font-size="20" font-weight="700">🔗</text>
+                        <text x="660" y="480" text-anchor="middle" fill="white" font-size="16" font-weight="600">Embedder</text>
+                        <text x="660" y="505" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Generate Vectors</text>
+                        <text x="660" y="525" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">384-dim Embeddings</text>
                         
-                        <!-- Topic Extractor -->
-                        <rect x="800" y="380" width="200" height="140" rx="12" fill="url(#topicGrad)" filter="url(#shadow)"/>
-                        <circle cx="900" cy="420" r="25" fill="rgba(255,255,255,0.3)"/>
-                        <text x="900" y="427" text-anchor="middle" fill="white" font-size="18" font-weight="700">🏷️</text>
-                        <text x="900" y="460" text-anchor="middle" fill="white" font-size="16" font-weight="600">Topic Extractor</text>
-                        <text x="900" y="485" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Keyword Analysis</text>
-                        <text x="900" y="505" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Topic Identification</text>
+                        <!-- Topic Extractor - Right -->
+                        <rect x="800" y="400" width="200" height="140" rx="12" fill="url(#topicGrad)" filter="url(#shadow)"/>
+                        <circle cx="900" cy="440" r="25" fill="rgba(255,255,255,0.3)"/>
+                        <text x="900" y="448" text-anchor="middle" fill="white" font-size="20" font-weight="700">🏷️</text>
+                        <text x="900" y="480" text-anchor="middle" fill="white" font-size="16" font-weight="600">Topic Extractor</text>
+                        <text x="900" y="505" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Keyword Analysis</text>
+                        <text x="900" y="525" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="12">Topic Identification</text>
                     </g>
                     
-                    <!-- Layer 4: ML Artifacts (Consolidation) -->
+                    <!-- Layer 4: ML Artifacts (Consolidation) - Centered -->
                     <g>
-                        <rect x="280" y="580" width="640" height="120" rx="12" fill="url(#artifactsGrad)" filter="url(#shadow)" stroke="white" stroke-width="2"/>
-                        <text x="600" y="615" text-anchor="middle" fill="white" font-size="20" font-weight="700">ML Artifacts</text>
-                        <text x="350" y="645" fill="rgba(255,255,255,0.95)" font-size="14">• embedding: number[384]</text>
-                        <text x="350" y="665" fill="rgba(255,255,255,0.95)" font-size="14">• summary: string</text>
-                        <text x="650" y="645" fill="rgba(255,255,255,0.95)" font-size="14">• topics: string[]</text>
-                        <text x="650" y="665" fill="rgba(255,255,255,0.95)" font-size="14">• codeRefs: CodeRef[]</text>
+                        <rect x="280" y="600" width="640" height="120" rx="12" fill="url(#artifactsGrad)" filter="url(#shadow)" stroke="white" stroke-width="2"/>
+                        <text x="600" y="635" text-anchor="middle" fill="white" font-size="20" font-weight="700">ML Artifacts</text>
+                        <text x="370" y="665" fill="rgba(255,255,255,0.95)" font-size="14">• embedding: number[384]</text>
+                        <text x="370" y="685" fill="rgba(255,255,255,0.95)" font-size="14">• summary: string</text>
+                        <text x="670" y="665" fill="rgba(255,255,255,0.95)" font-size="14">• topics: string[]</text>
+                        <text x="670" y="685" fill="rgba(255,255,255,0.95)" font-size="14">• codeRefs: CodeRef[]</text>
                     </g>
                     
-                    <!-- Layer 5: Storage & Search -->
+                    <!-- Layer 5: Storage & Search (Perfectly Aligned) -->
                     <g>
-                        <!-- Context Storage -->
-                        <rect x="380" y="750" width="240" height="40" rx="12" fill="url(#storageGrad)" filter="url(#shadow)"/>
-                        <text x="500" y="775" text-anchor="middle" fill="white" font-size="16" font-weight="600">Context Storage</text>
+                        <!-- Context Storage - Left -->
+                        <rect x="380" y="760" width="240" height="50" rx="12" fill="url(#storageGrad)" filter="url(#shadow)"/>
+                        <text x="500" y="788" text-anchor="middle" fill="white" font-size="16" font-weight="600">Context Storage</text>
+                        <text x="500" y="805" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="12">Filesystem + Index</text>
                         
-                        <!-- Search Engine -->
-                        <rect x="680" y="730" width="240" height="60" rx="12" fill="url(#searchGrad)" filter="url(#shadow)"/>
-                        <text x="800" y="755" text-anchor="middle" fill="white" font-size="16" font-weight="600">Search Engine</text>
-                        <text x="800" y="775" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="13">Hybrid Search</text>
-                        <text x="800" y="790" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="12">Keyword + Semantic</text>
+                        <!-- Search Engine - Right -->
+                        <rect x="680" y="760" width="240" height="50" rx="12" fill="url(#searchGrad)" filter="url(#shadow)"/>
+                        <text x="800" y="788" text-anchor="middle" fill="white" font-size="16" font-weight="600">Search Engine</text>
+                        <text x="800" y="805" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="12">Hybrid Search</text>
                     </g>
                     
-                    <!-- Data Flow Arrows -->
-                    <g stroke="#64748b" stroke-width="3" fill="none" opacity="0.6">
-                        <!-- Input to Engine -->
-                        <path d="M 600 130 L 600 180" marker-end="url(#arrowhead)"/>
+                    <!-- Data Flow Arrows - Perfectly Aligned to Centers -->
+                    <g stroke="#64748b" stroke-width="3" fill="none" opacity="0.7">
+                        <!-- Input (600, 140) to Engine (600, 180) - Vertical -->
+                        <path d="M 600 140 L 600 180" marker-end="url(#arrowhead)"/>
                         
-                        <!-- Engine to ML Components -->
-                        <path d="M 550 240 L 280 450" marker-end="url(#arrowhead)"/>
-                        <path d="M 600 300 L 600 380" marker-end="url(#arrowhead)"/>
-                        <path d="M 650 240 L 760 450" marker-end="url(#arrowhead)"/>
-                        <path d="M 580 300 L 900 450" marker-end="url(#arrowhead)"/>
+                        <!-- Engine (600, 300) to ML Components - Diagonal -->
+                        <!-- Engine to Summarizer (180, 400) -->
+                        <path d="M 550 300 L 180 400" marker-end="url(#arrowhead)"/>
+                        <!-- Engine to Code Extractor (420, 400) -->
+                        <path d="M 580 300 L 420 400" marker-end="url(#arrowhead)"/>
+                        <!-- Engine to Embedder (660, 400) - Vertical -->
+                        <path d="M 600 300 L 660 400" marker-end="url(#arrowhead)"/>
+                        <!-- Engine to Topic Extractor (900, 400) -->
+                        <path d="M 650 300 L 900 400" marker-end="url(#arrowhead)"/>
                         
-                        <!-- ML Components to Artifacts -->
-                        <path d="M 180 520 L 350 580" marker-end="url(#arrowhead)"/>
-                        <path d="M 420 520 L 450 580" marker-end="url(#arrowhead)"/>
-                        <path d="M 660 520 L 600 580" marker-end="url(#arrowhead)"/>
-                        <path d="M 900 520 L 850 580" marker-end="url(#arrowhead)"/>
+                        <!-- ML Components (centers at y=470) to Artifacts (600, 600) -->
+                        <!-- Summarizer (180, 540) to Artifacts -->
+                        <path d="M 180 540 L 370 600" marker-end="url(#arrowhead)"/>
+                        <!-- Code Extractor (420, 540) to Artifacts -->
+                        <path d="M 420 540 L 450 600" marker-end="url(#arrowhead)"/>
+                        <!-- Embedder (660, 540) to Artifacts -->
+                        <path d="M 660 540 L 600 600" marker-end="url(#arrowhead)"/>
+                        <!-- Topic Extractor (900, 540) to Artifacts -->
+                        <path d="M 900 540 L 670 600" marker-end="url(#arrowhead)"/>
                         
-                        <!-- Artifacts to Storage -->
-                        <path d="M 500 700 L 500 750" marker-end="url(#arrowhead)"/>
+                        <!-- Artifacts (600, 720) to Storage (500, 760) -->
+                        <path d="M 500 720 L 500 760" marker-end="url(#arrowhead)"/>
                         
-                        <!-- Artifacts to Search -->
-                        <path d="M 800 700 L 800 730" marker-end="url(#arrowhead)"/>
+                        <!-- Artifacts (600, 720) to Search (800, 760) -->
+                        <path d="M 800 720 L 800 760" marker-end="url(#arrowhead)"/>
                     </g>
                     
-                    <!-- Layer Labels -->
-                    <g opacity="0.5">
-                        <text x="50" y="345" fill="#64748b" font-size="11" font-weight="600" text-transform="uppercase" letter-spacing="1px">Input</text>
-                        <text x="50" y="355" fill="#64748b" font-size="9">━━━━━━━━━━━━━━━━</text>
-                        <text x="50" y="340" fill="#64748b" font-size="11" font-weight="600" text-transform="uppercase" letter-spacing="1px">Processing</text>
-                        <text x="50" y="370" fill="#64748b" font-size="9">━━━━━━━━━━━━━━━━</text>
-                        <text x="50" y="555" fill="#64748b" font-size="11" font-weight="600" text-transform="uppercase" letter-spacing="1px">Consolidation</text>
-                        <text x="50" y="565" fill="#64748b" font-size="9">━━━━━━━━━━━━━━━━</text>
-                        <text x="50" y="725" fill="#64748b" font-size="11" font-weight="600" text-transform="uppercase" letter-spacing="1px">Storage & Search</text>
-                        <text x="50" y="735" fill="#64748b" font-size="9">━━━━━━━━━━━━━━━━</text>
+                    <!-- Layer Labels (Left Side) -->
+                    <g opacity="0.6" fill="#64748b">
+                        <text x="30" y="90" font-size="11" font-weight="600" text-transform="uppercase" letter-spacing="1px">Input</text>
+                        <line x1="30" y1="95" x2="460" y2="95" stroke="#64748b" stroke-width="1" opacity="0.3"/>
+                        
+                        <text x="30" y="240" font-size="11" font-weight="600" text-transform="uppercase" letter-spacing="1px">Orchestration</text>
+                        <line x1="30" y1="245" x2="440" y2="245" stroke="#64748b" stroke-width="1" opacity="0.3"/>
+                        
+                        <text x="30" y="470" font-size="11" font-weight="600" text-transform="uppercase" letter-spacing="1px">Processing</text>
+                        <line x1="30" y1="475" x2="70" y2="475" stroke="#64748b" stroke-width="1" opacity="0.3"/>
+                        
+                        <text x="30" y="660" font-size="11" font-weight="600" text-transform="uppercase" letter-spacing="1px">Consolidation</text>
+                        <line x1="30" y1="665" x2="270" y2="665" stroke="#64748b" stroke-width="1" opacity="0.3"/>
+                        
+                        <text x="30" y="785" font-size="11" font-weight="600" text-transform="uppercase" letter-spacing="1px">Storage</text>
+                        <line x1="30" y1="790" x2="370" y2="790" stroke="#64748b" stroke-width="1" opacity="0.3"/>
                     </g>
                 </svg>
             </div>
