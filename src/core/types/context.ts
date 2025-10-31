@@ -329,7 +329,16 @@ export function validateCreateDynamicParams(params: unknown): CreateDynamicConte
     result.repository = parsed.repository;
   }
   if (parsed.mlOptions !== undefined) {
-    result.mlOptions = parsed.mlOptions;
+    result.mlOptions = {};
+    if (parsed.mlOptions.summarize !== undefined) {
+      result.mlOptions.summarize = parsed.mlOptions.summarize;
+    }
+    if (parsed.mlOptions.extractTopics !== undefined) {
+      result.mlOptions.extractTopics = parsed.mlOptions.extractTopics;
+    }
+    if (parsed.mlOptions.extractCode !== undefined) {
+      result.mlOptions.extractCode = parsed.mlOptions.extractCode;
+    }
   }
   return result;
 }

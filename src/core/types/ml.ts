@@ -59,7 +59,20 @@ export function validateMLArtifacts(artifacts: unknown): MLArtifacts {
     topics: parsed.topics,
   };
   if (parsed.codeRefs !== undefined) {
-    result.codeRefs = parsed.codeRefs;
+    result.codeRefs = parsed.codeRefs.map(ref => {
+      const codeRef: CodeRef = {
+        filePath: ref.filePath,
+        snippet: ref.snippet,
+        context: ref.context,
+      };
+      if (ref.lineRange !== undefined) {
+        codeRef.lineRange = ref.lineRange;
+      }
+      if (ref.language !== undefined) {
+        codeRef.language = ref.language;
+      }
+      return codeRef;
+    });
   }
   if (parsed.originalMessages !== undefined) {
     result.originalMessages = parsed.originalMessages;

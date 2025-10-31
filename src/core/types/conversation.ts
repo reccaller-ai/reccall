@@ -55,9 +55,16 @@ export function validateConversationMessage(message: unknown): ConversationMessa
  */
 export function validateConversationMessages(messages: unknown): ConversationMessages {
   const parsed = ConversationMessagesSchema.parse(messages);
-  return parsed.map(msg => ({
-    ...msg,
-    metadata: msg.metadata ?? undefined,
-  }));
+  return parsed.map(msg => {
+    const result: ConversationMessage = {
+      role: msg.role,
+      content: msg.content,
+      timestamp: msg.timestamp,
+    };
+    if (msg.metadata !== undefined) {
+      result.metadata = msg.metadata;
+    }
+    return result;
+  });
 }
 
