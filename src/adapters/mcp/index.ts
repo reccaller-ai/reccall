@@ -23,7 +23,9 @@ export class MCPAdapter {
 
   constructor(engine: ICoreEngine, contextEngine?: ContextEngine) {
     this.engine = engine;
-    this.contextEngine = contextEngine;
+    if (contextEngine !== undefined) {
+      this.contextEngine = contextEngine;
+    }
     this.server = new Server(
       {
         name: 'reccall',
@@ -562,15 +564,24 @@ export class MCPAdapter {
               description?: string;
               repository?: string;
             };
-            const context = await this.contextEngine.createStatic({
+            const createParams: any = {
               name,
               content,
               source,
-              tags,
-              category,
-              description,
-              repository,
-            });
+            };
+            if (tags !== undefined) {
+              createParams.tags = tags;
+            }
+            if (category !== undefined) {
+              createParams.category = category;
+            }
+            if (description !== undefined) {
+              createParams.description = description;
+            }
+            if (repository !== undefined) {
+              createParams.repository = repository;
+            }
+            const context = await this.contextEngine.createStatic(createParams);
             return {
               content: [
                 {
@@ -616,10 +627,14 @@ export class MCPAdapter {
               source?: 'local' | 'global' | 'remote' | 'all';
               type?: 'static' | 'dynamic' | 'hybrid' | 'all';
             };
-            const results = await this.contextEngine.search(query, {
-              source,
-              type,
-            });
+            const filters: any = {};
+            if (source !== undefined) {
+              filters.source = source;
+            }
+            if (type !== undefined) {
+              filters.type = type;
+            }
+            const results = await this.contextEngine.search(query, filters);
             return {
               content: [
                 {
@@ -648,10 +663,14 @@ export class MCPAdapter {
               source?: 'local' | 'global' | 'all';
               type?: 'static' | 'dynamic' | 'hybrid' | 'all';
             };
-            const contexts = await this.contextEngine.list({
-              source,
-              type,
-            });
+            const filters: any = {};
+            if (source !== undefined) {
+              filters.source = source;
+            }
+            if (type !== undefined) {
+              filters.type = type;
+            }
+            const contexts = await this.contextEngine.list(filters);
             return {
               content: [
                 {
@@ -697,7 +716,7 @@ export class MCPAdapter {
               source: 'local' | 'global';
               tags?: string[];
             };
-            const context = await this.contextEngine.createFromConversation({
+            const createParams: any = {
               name,
               messages: messages.map(msg => ({
                 role: msg.role as 'user' | 'assistant',
@@ -705,8 +724,11 @@ export class MCPAdapter {
                 timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
               })),
               source,
-              tags,
-            });
+            };
+            if (tags !== undefined) {
+              createParams.tags = tags;
+            }
+            const context = await this.contextEngine.createFromConversation(createParams);
             return {
               content: [
                 {
