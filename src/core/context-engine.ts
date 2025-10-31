@@ -15,12 +15,25 @@ import type {
 import type { IContextStorage } from './interfaces/context-storage.js';
 import { ContextStore } from './storage/context-store.js';
 import { StorageError } from '../types.js';
+import { ConversationSummarizer } from '../ml/summarizer.js';
+import { CodeExtractor } from '../ml/code-extractor.js';
+import { EmbeddingModel } from '../ml/embedder.js';
+import { TopicExtractor } from '../ml/topic-extractor.js';
+import type { MLArtifacts } from './types/ml.js';
 
 export class ContextEngine {
   private store: IContextStorage;
+  private summarizer: ConversationSummarizer;
+  private embedder: EmbeddingModel;
+  private codeExtractor: CodeExtractor;
+  private topicExtractor: TopicExtractor;
 
   constructor(store?: IContextStorage) {
     this.store = store || new ContextStore();
+    this.summarizer = new ConversationSummarizer();
+    this.embedder = new EmbeddingModel();
+    this.codeExtractor = new CodeExtractor();
+    this.topicExtractor = new TopicExtractor();
   }
 
   /**
@@ -63,26 +76,46 @@ export class ContextEngine {
   }
 
   /**
-   * Create a dynamic context from conversation (stub for Phase 2)
-   * Will be enhanced with ML processing in Phase 2
+   * Create a dynamic context from conversation with ML processing
    */
   async createFromConversation(params: CreateDynamicContextParams): Promise<Context> {
-    // For Phase 1, create a basic dynamic context
-    // Phase 2 will add ML processing (summarization, embeddings, etc.)
+    // Generate ML artifacts
+    const summary = await this.summarizer.summarize(params.messages);
+    const codeRefs = await this.codeExtractor.extract(params.messages);
+    const topics = this.topicExtractor.extractTopics(params.messages);
+
+    // Generate content
+    const content = await this.summarizer.generateContextContent(
+      params.messages,
+      summary,
+      codeRefs
+    );
+
+    // Generate embedding
+    const embedding = await this.embedder.embed(content);
+
+    const mlArtifacts: MLArtifacts = {
+      embedding,
+      summary,
+      topics,
+      codeRefs,
+      originalMessages: params.messages,
+    };
+
     const context: Context = {
       id: this.generateId(),
       name: params.name,
-      content: this.formatConversationAsContent(params.messages),
+      content,
       type: 'dynamic',
       source: params.source,
       tags: params.tags || [],
       version: '1.0.0',
       syncStatus: params.repository ? 'pending' : 'local',
+      ml: mlArtifacts,
       createdAt: new Date(),
       updatedAt: new Date(),
       usageCount: 0,
       platforms: [],
-      // ML artifacts will be added in Phase 2
     };
     if (params.category !== undefined) {
       context.category = params.category;
@@ -96,8 +129,7 @@ export class ContextEngine {
   }
 
   /**
-   * Create a hybrid context (stub for Phase 2)
-   * Will enhance a static template with ML insights from conversation
+   * Create a hybrid context - enhance static template with ML insights
    */
   async enhanceContext(params: CreateHybridContextParams): Promise<Context> {
     // Load the template
@@ -106,22 +138,39 @@ export class ContextEngine {
       throw new StorageError(`Template '${params.templateName}' not found or not a static context`);
     }
 
-    // For Phase 1, simply merge template with conversation
-    // Phase 2 will add ML processing
+    // Generate ML artifacts from conversation
+    const summary = await this.summarizer.summarize(params.messages);
+    const codeRefs = await this.codeExtractor.extract(params.messages);
+    const topics = this.topicExtractor.extractTopics(params.messages);
+
+    // Merge template content with ML-generated insights
+    const enhancedContent = `${template.content}\n\n## Enhanced with Conversation Insights\n\n### Summary\n${summary}\n\n### Key Topics\n${topics.map(t => `- ${t}`).join('\n')}\n\n### Conversation Details\n${this.formatConversationAsContent(params.messages)}`;
+
+    // Generate embedding for hybrid content
+    const embedding = await this.embedder.embed(enhancedContent);
+
+    const mlArtifacts: MLArtifacts = {
+      embedding,
+      summary,
+      topics,
+      codeRefs,
+      originalMessages: params.messages,
+    };
+
     const context: Context = {
       id: this.generateId(),
       name: params.name,
-      content: `${template.content}\n\n## Enhanced with Conversation\n\n${this.formatConversationAsContent(params.messages)}`,
+      content: enhancedContent,
       type: 'hybrid',
       source: params.source || template.source,
       tags: [...(template.tags || []), ...(params.tags || [])],
       version: '1.0.0',
       syncStatus: template.syncStatus,
+      ml: mlArtifacts,
       createdAt: new Date(),
       updatedAt: new Date(),
       usageCount: 0,
       platforms: [],
-      // ML artifacts will be added in Phase 2
     };
     if (params.category !== undefined) {
       context.category = params.category;
