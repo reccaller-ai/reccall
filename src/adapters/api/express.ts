@@ -47,8 +47,8 @@ export function createReccallMiddleware(options: ReccallMiddlewareOptions) {
           return res.json({ shortcuts });
 
         case 'GET /shortcuts/:id':
-          const shortcut = await engine.call(req.params.id as ShortcutId);
-          return res.json({ shortcut: req.params.id, context: shortcut });
+          const shortcutContent = await engine.call(req.params.id as ShortcutId);
+          return res.json({ shortcut: req.params.id, context: shortcutContent });
 
         case 'POST /shortcuts':
           const { shortcut: newShortcut, context } = req.body;
@@ -114,11 +114,11 @@ export function createReccallMiddleware(options: ReccallMiddlewareOptions) {
           if (!contextEngine) {
             return res.status(501).json({ error: 'Context engine not available' });
           }
-          const context = await contextEngine.get(req.params.id);
-          if (!context) {
+          const foundContext = await contextEngine.get(req.params.id);
+          if (!foundContext) {
             return res.status(404).json({ error: 'Context not found' });
           }
-          return res.json({ context });
+          return res.json({ context: foundContext });
 
         case 'POST /contexts':
           if (!contextEngine) {
