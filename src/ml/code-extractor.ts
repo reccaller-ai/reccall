@@ -106,7 +106,9 @@ export class CodeExtractor {
     for (const pattern of patterns) {
       let match;
       while ((match = pattern.exec(content)) !== null) {
-        mentions.push(match[1]);
+        if (match[1]) {
+          mentions.push(match[1]);
+        }
       }
     }
 

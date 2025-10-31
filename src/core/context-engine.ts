@@ -20,9 +20,11 @@ import { CodeExtractor } from '../ml/code-extractor.js';
 import { EmbeddingModel } from '../ml/embedder.js';
 import { TopicExtractor } from '../ml/topic-extractor.js';
 import type { MLArtifacts } from './types/ml.js';
+import { SearchEngine } from './search-engine.js';
 
 export class ContextEngine {
   private store: IContextStorage;
+  private searchEngine: SearchEngine;
   private summarizer: ConversationSummarizer;
   private embedder: EmbeddingModel;
   private codeExtractor: CodeExtractor;
@@ -30,6 +32,7 @@ export class ContextEngine {
 
   constructor(store?: IContextStorage) {
     this.store = store || new ContextStore();
+    this.searchEngine = new SearchEngine(this.store);
     this.summarizer = new ConversationSummarizer();
     this.embedder = new EmbeddingModel();
     this.codeExtractor = new CodeExtractor();
@@ -41,6 +44,12 @@ export class ContextEngine {
    */
   async initialize(): Promise<void> {
     await this.store.initialize();
+    
+    // Index existing contexts for semantic search
+    const contexts = await this.store.list();
+    for (const context of contexts) {
+      await this.searchEngine.indexContext(context);
+    }
   }
 
   /**
@@ -72,6 +81,10 @@ export class ContextEngine {
     }
 
     await this.store.save(context);
+    
+    // Index for semantic search
+    await this.searchEngine.indexContext(context);
+    
     return context;
   }
 
@@ -125,6 +138,10 @@ export class ContextEngine {
     }
 
     await this.store.save(context);
+    
+    // Index for semantic search
+    await this.searchEngine.indexContext(context);
+    
     return context;
   }
 
@@ -185,6 +202,10 @@ export class ContextEngine {
     }
 
     await this.store.save(context);
+    
+    // Index for semantic search
+    await this.searchEngine.indexContext(context);
+    
     return context;
   }
 
@@ -204,10 +225,10 @@ export class ContextEngine {
   }
 
   /**
-   * Search contexts (keyword-based in Phase 1, hybrid in Phase 2)
+   * Search contexts (hybrid: keyword + semantic)
    */
   async search(query: string, filters?: SearchFilters): Promise<Context[]> {
-    return await this.store.search(query, filters);
+    return await this.searchEngine.search(query, filters);
   }
 
   /**
@@ -243,6 +264,7 @@ export class ContextEngine {
    */
   async delete(id: string): Promise<void> {
     await this.store.delete(id);
+    await this.searchEngine.removeFromIndex(id);
   }
 
   /**
