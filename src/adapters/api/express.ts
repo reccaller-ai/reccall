@@ -10,9 +10,11 @@ type NextFunction = any;
 
 import type { ICoreEngine } from '../../core/interfaces.js';
 import type { ShortcutId } from '../../types.js';
+import type { ContextEngine } from '../../core/context-engine.js';
 
 export interface ReccallMiddlewareOptions {
   engine: ICoreEngine;
+  contextEngine?: ContextEngine;
   basePath?: string;
   authenticate?: (req: Request) => Promise<boolean>;
 }
@@ -21,7 +23,7 @@ export interface ReccallMiddlewareOptions {
  * Express middleware factory
  */
 export function createReccallMiddleware(options: ReccallMiddlewareOptions) {
-  const { engine, basePath = '/api/reccall', authenticate } = options;
+  const { engine, contextEngine, basePath = '/api/reccall', authenticate } = options;
 
   return async (req: Request, res: Response, next: NextFunction) => {
     // Authentication check
@@ -45,8 +47,8 @@ export function createReccallMiddleware(options: ReccallMiddlewareOptions) {
           return res.json({ shortcuts });
 
         case 'GET /shortcuts/:id':
-          const shortcut = await engine.call(req.params.id as ShortcutId);
-          return res.json({ shortcut: req.params.id, context: shortcut });
+          const shortcutContent = await engine.call(req.params.id as ShortcutId);
+          return res.json({ shortcut: req.params.id, context: shortcutContent });
 
         case 'POST /shortcuts':
           const { shortcut: newShortcut, context } = req.body;
@@ -96,6 +98,89 @@ export function createReccallMiddleware(options: ReccallMiddlewareOptions) {
 
         case 'GET /health':
           return res.json({ status: 'ok', timestamp: new Date().toISOString() });
+
+        // Context endpoints (Universal Context System)
+        case 'GET /contexts':
+          if (!contextEngine) {
+            return res.status(501).json({ error: 'Context engine not available' });
+          }
+          const contexts = await contextEngine.list({
+            source: req.query.source,
+            type: req.query.type,
+          });
+          return res.json({ contexts });
+
+        case 'GET /contexts/:id':
+          if (!contextEngine) {
+            return res.status(501).json({ error: 'Context engine not available' });
+          }
+          const foundContext = await contextEngine.get(req.params.id);
+          if (!foundContext) {
+            return res.status(404).json({ error: 'Context not found' });
+          }
+          return res.json({ context: foundContext });
+
+        case 'POST /contexts':
+          if (!contextEngine) {
+            return res.status(501).json({ error: 'Context engine not available' });
+          }
+          const { name, content, source, tags, category, description, repository } = req.body;
+          if (!name || !content || !source) {
+            return res.status(400).json({ error: 'Missing required fields: name, content, source' });
+          }
+          const newContext = await contextEngine.createStatic({
+            name,
+            content,
+            source,
+            tags,
+            category,
+            description,
+            repository,
+          });
+          return res.status(201).json({ context: newContext });
+
+        case 'PUT /contexts/:id':
+          if (!contextEngine) {
+            return res.status(501).json({ error: 'Context engine not available' });
+          }
+          const updates = req.body;
+          const updatedContext = await contextEngine.update(req.params.id, updates);
+          return res.json({ context: updatedContext });
+
+        case 'DELETE /contexts/:id':
+          if (!contextEngine) {
+            return res.status(501).json({ error: 'Context engine not available' });
+          }
+          await contextEngine.delete(req.params.id);
+          return res.json({ success: true });
+
+        case 'GET /contexts/search':
+          if (!contextEngine) {
+            return res.status(501).json({ error: 'Context engine not available' });
+          }
+          const searchQuery = req.query.q as string;
+          if (!searchQuery) {
+            return res.status(400).json({ error: 'Missing search query' });
+          }
+          const searchResults = await contextEngine.search(searchQuery, {
+            source: req.query.source,
+            type: req.query.type,
+          });
+          return res.json({ results: searchResults });
+
+        case 'GET /contexts/:id/stats':
+          if (!contextEngine) {
+            return res.status(501).json({ error: 'Context engine not available' });
+          }
+          const contextStats = await contextEngine.getStats(req.params.id);
+          return res.json({ stats: contextStats });
+
+        case 'GET /contexts/stats':
+          if (!contextEngine) {
+            return res.status(501).json({ error: 'Context engine not available' });
+          }
+          const systemStats = await contextEngine.getStats();
+          return res.json({ stats: systemStats });
 
         default:
           return res.status(404).json({ error: 'Not found' });

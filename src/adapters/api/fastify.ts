@@ -10,9 +10,11 @@ type FastifyReply = any;
 
 import type { ICoreEngine } from '../../core/interfaces.js';
 import type { ShortcutId } from '../../types.js';
+import type { ContextEngine } from '../../core/context-engine.js';
 
 export interface ReccallFastifyOptions {
   engine: ICoreEngine;
+  contextEngine?: ContextEngine;
   basePath?: string;
   authenticate?: (request: FastifyRequest) => Promise<boolean>;
 }
@@ -24,7 +26,7 @@ export async function reccallFastifyPlugin(
   fastify: FastifyInstance,
   options: ReccallFastifyOptions
 ) {
-  const { engine, basePath = '/api/reccall', authenticate } = options;
+  const { engine, contextEngine, basePath = '/api/reccall', authenticate } = options;
 
   // Authentication hook
   if (authenticate) {
@@ -119,6 +121,83 @@ export async function reccallFastifyPlugin(
   fastify.get(`${basePath}/health`, async () => {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
+
+  // Context endpoints (Universal Context System)
+  if (contextEngine) {
+    // List contexts
+    fastify.get(`${basePath}/contexts`, async (request: any) => {
+      const contexts = await contextEngine.list({
+        source: request.query.source,
+        type: request.query.type,
+      });
+      return { contexts };
+    });
+
+    // Get context by ID
+    fastify.get(`${basePath}/contexts/:id`, async (request: any) => {
+      const foundContext = await contextEngine.get(request.params.id);
+      if (!foundContext) {
+        return { error: 'Context not found' };
+      }
+      return { context: foundContext };
+    });
+
+    // Create context
+    fastify.post(`${basePath}/contexts`, async (request: any) => {
+      const { name, content, source, tags, category, description, repository } = request.body;
+      if (!name || !content || !source) {
+        return { error: 'Missing required fields: name, content, source' };
+      }
+      const newContext = await contextEngine.createStatic({
+        name,
+        content,
+        source,
+        tags,
+        category,
+        description,
+        repository,
+      });
+      return { context: newContext };
+    });
+
+    // Update context
+    fastify.put(`${basePath}/contexts/:id`, async (request: any) => {
+      const updates = request.body;
+      const updatedContext = await contextEngine.update(request.params.id, updates);
+      return { context: updatedContext };
+    });
+
+    // Delete context
+    fastify.delete(`${basePath}/contexts/:id`, async (request: any) => {
+      await contextEngine.delete(request.params.id);
+      return { success: true };
+    });
+
+    // Search contexts
+    fastify.get(`${basePath}/contexts/search`, async (request: any) => {
+      const query = request.query.q;
+      if (!query) {
+        return { error: 'Missing search query' };
+      }
+      const results = await contextEngine.search(query, {
+        source: request.query.source,
+        type: request.query.type,
+      });
+      return { results };
+    });
+
+    // Get context stats
+    fastify.get(`${basePath}/contexts/:id/stats`, async (request: any) => {
+      const stats = await contextEngine.getStats(request.params.id);
+      return { stats };
+    });
+
+    // Get system stats
+    fastify.get(`${basePath}/contexts/stats`, async () => {
+      const stats = await contextEngine.getStats();
+      return { stats };
+    });
+  }
 }
 
 /**

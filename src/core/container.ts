@@ -17,6 +17,9 @@ import { HttpRepositoryClient } from './repository.js';
 import { MultiLayerCacheManager } from './cache.js';
 import { RecipeValidator } from './validator.js';
 import { configManager } from './config.js';
+import { ContextEngine } from './context-engine.js';
+import { ContextStore } from './storage/context-store.js';
+import type { IContextStorage as IContextStorageNew } from './interfaces/context-storage.js';
 
 // Service tokens for dependency injection
 export const TOKENS = {
@@ -25,6 +28,8 @@ export const TOKENS = {
   REPOSITORY_CLIENT: 'IRepositoryClient',
   CACHE_MANAGER: 'ICacheManager',
   RECIPE_VALIDATOR: 'IRecipeValidator',
+  CONTEXT_ENGINE: 'ContextEngine',
+  CONTEXT_STORAGE_NEW: 'IContextStorageNew',
 } as const;
 
 /**
@@ -63,6 +68,15 @@ export class DIContainer {
         const cache = dependencyContainer.resolve<ICacheManager>(TOKENS.CACHE_MANAGER);
         const validator = dependencyContainer.resolve<IRecipeValidator>(TOKENS.RECIPE_VALIDATOR);
         return new CoreEngine(storage, repository, cache, validator);
+      }
+    } as any);
+
+    // Register Context Engine (Universal Context System)
+    container.registerSingleton<IContextStorageNew>(TOKENS.CONTEXT_STORAGE_NEW, ContextStore);
+    container.registerSingleton<ContextEngine>(TOKENS.CONTEXT_ENGINE, {
+      useFactory: (dependencyContainer: DependencyContainer) => {
+        const store = dependencyContainer.resolve<IContextStorageNew>(TOKENS.CONTEXT_STORAGE_NEW);
+        return new ContextEngine(store);
       }
     } as any);
 
@@ -147,7 +161,8 @@ export async function createCoreEngine(): Promise<ICoreEngine> {
 export async function createCLIAdapter() {
   const { CLIAdapter } = await import('../adapters/cli/index.js');
   const engine = await createCoreEngine();
-  return new CLIAdapter(engine);
+  const contextEngine = await createContextEngine();
+  return new CLIAdapter(engine, contextEngine);
 }
 
 /**
@@ -156,7 +171,8 @@ export async function createCLIAdapter() {
 export async function createMCPAdapter() {
   const { MCPAdapter } = await import('../adapters/mcp/index.js');
   const engine = await createCoreEngine();
-  return new MCPAdapter(engine);
+  const contextEngine = await createContextEngine();
+  return new MCPAdapter(engine, contextEngine);
 }
 
 /**
@@ -166,4 +182,12 @@ export async function createVSCodeAdapter() {
   const { VSCodeAdapter } = await import('../adapters/vscode/index.js');
   const engine = await createCoreEngine();
   return new VSCodeAdapter(engine);
+}
+
+/**
+ * Factory function to create Context Engine with DI
+ */
+export async function createContextEngine(): Promise<ContextEngine> {
+  await diContainer.initialize();
+  return diContainer.get<ContextEngine>(TOKENS.CONTEXT_ENGINE);
 }

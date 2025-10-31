@@ -9,18 +9,23 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { ICoreEngine } from '../../core/interfaces.js';
+import type { ContextEngine } from '../../core/context-engine.js';
 import { RecCallError } from '../../types.js';
 import type { ShortcutId } from '../../types.js';
 
 export class MCPAdapter {
   private engine: ICoreEngine;
+  private contextEngine?: ContextEngine;
   private server: Server;
   private toolsCache: any = null;
   private cacheTimestamp: number = 0;
   private readonly CACHE_TTL = 60000; // 1 minute cache for tools list
 
-  constructor(engine: ICoreEngine) {
+  constructor(engine: ICoreEngine, contextEngine?: ContextEngine) {
     this.engine = engine;
+    if (contextEngine !== undefined) {
+      this.contextEngine = contextEngine;
+    }
     this.server = new Server(
       {
         name: 'reccall',
@@ -204,6 +209,114 @@ export class MCPAdapter {
               type: 'object',
               properties: {},
               required: [],
+            },
+          },
+          // Context tools (Universal Context System)
+          {
+            name: 'rec_context_create',
+            description: 'Create a new static context',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', description: 'Context name' },
+                content: { type: 'string', description: 'Context content (markdown)' },
+                source: {
+                  type: 'string',
+                  enum: ['local', 'global'],
+                  description: 'Storage location',
+                },
+                tags: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Optional tags',
+                },
+                category: { type: 'string', description: 'Optional category' },
+                description: { type: 'string', description: 'Optional description' },
+                repository: { type: 'string', description: 'Optional repository name' },
+              },
+              required: ['name', 'content', 'source'],
+            },
+          },
+          {
+            name: 'rec_context_get',
+            description: 'Get a context by name or ID',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                identifier: {
+                  type: 'string',
+                  description: 'Context name or ID',
+                },
+              },
+              required: ['identifier'],
+            },
+          },
+          {
+            name: 'rec_context_search',
+            description: 'Search contexts by query',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                query: { type: 'string', description: 'Search query' },
+                source: {
+                  type: 'string',
+                  enum: ['local', 'global', 'remote', 'all'],
+                  description: 'Filter by source',
+                },
+                type: {
+                  type: 'string',
+                  enum: ['static', 'dynamic', 'hybrid', 'all'],
+                  description: 'Filter by type',
+                },
+              },
+              required: ['query'],
+            },
+          },
+          {
+            name: 'rec_context_list',
+            description: 'List all contexts',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                source: { type: 'string', enum: ['local', 'global', 'all'] },
+                type: { type: 'string', enum: ['static', 'dynamic', 'hybrid', 'all'] },
+              },
+            },
+          },
+          {
+            name: 'rec_context_delete',
+            description: 'Delete a context',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                id: { type: 'string', description: 'Context ID' },
+              },
+              required: ['id'],
+            },
+          },
+          {
+            name: 'rec_context_from_conversation',
+            description: 'Create a dynamic context from conversation (ML-powered)',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', description: 'Context name' },
+                messages: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      role: { type: 'string', enum: ['user', 'assistant'] },
+                      content: { type: 'string' },
+                      timestamp: { type: 'string' },
+                    },
+                  },
+                  description: 'Conversation messages',
+                },
+                source: { type: 'string', enum: ['local', 'global'] },
+                tags: { type: 'array', items: { type: 'string' } },
+              },
+              required: ['name', 'messages', 'source'],
             },
           },
         ],
@@ -432,6 +545,195 @@ export class MCPAdapter {
                 {
                   type: 'text',
                   text: `📊 RecCall Engine Statistics:\n\nShortcuts: ${stats.shortcutsCount}\nCache Hit Rate: ${(stats.cacheStats.hitRate * 100).toFixed(1)}%\nCache Size: ${stats.cacheStats.size} entries\nRepository: ${stats.repositoryStats.enabled ? 'Enabled' : 'Disabled'}`,
+                },
+              ],
+            };
+          }
+
+          // Context tools (Universal Context System)
+          case 'rec_context_create': {
+            if (!this.contextEngine) {
+              throw new Error('Context engine not initialized');
+            }
+            const { name, content, source, tags, category, description, repository } = args as {
+              name: string;
+              content: string;
+              source: 'local' | 'global';
+              tags?: string[];
+              category?: string;
+              description?: string;
+              repository?: string;
+            };
+            const createParams: any = {
+              name,
+              content,
+              source,
+            };
+            if (tags !== undefined) {
+              createParams.tags = tags;
+            }
+            if (category !== undefined) {
+              createParams.category = category;
+            }
+            if (description !== undefined) {
+              createParams.description = description;
+            }
+            if (repository !== undefined) {
+              createParams.repository = repository;
+            }
+            const context = await this.contextEngine.createStatic(createParams);
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: `✅ Context '${context.name}' created successfully (ID: ${context.id})`,
+                },
+              ],
+            };
+          }
+
+          case 'rec_context_get': {
+            if (!this.contextEngine) {
+              throw new Error('Context engine not initialized');
+            }
+            const { identifier } = args as { identifier: string };
+            const context = await this.contextEngine.use(identifier, 'mcp');
+            if (!context) {
+              return {
+                content: [
+                  {
+                    type: 'text',
+                    text: `Context '${identifier}' not found`,
+                  },
+                ],
+              };
+            }
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: context.content,
+                },
+              ],
+            };
+          }
+
+          case 'rec_context_search': {
+            if (!this.contextEngine) {
+              throw new Error('Context engine not initialized');
+            }
+            const { query, source, type } = args as {
+              query: string;
+              source?: 'local' | 'global' | 'remote' | 'all';
+              type?: 'static' | 'dynamic' | 'hybrid' | 'all';
+            };
+            const filters: any = {};
+            if (source !== undefined) {
+              filters.source = source;
+            }
+            if (type !== undefined) {
+              filters.type = type;
+            }
+            const results = await this.contextEngine.search(query, filters);
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: JSON.stringify({
+                    count: results.length,
+                    contexts: results.map(c => ({
+                      id: c.id,
+                      name: c.name,
+                      description: c.description,
+                      tags: c.tags,
+                      type: c.type,
+                      source: c.source,
+                    })),
+                  }, null, 2),
+                },
+              ],
+            };
+          }
+
+          case 'rec_context_list': {
+            if (!this.contextEngine) {
+              throw new Error('Context engine not initialized');
+            }
+            const { source, type } = args as {
+              source?: 'local' | 'global' | 'all';
+              type?: 'static' | 'dynamic' | 'hybrid' | 'all';
+            };
+            const filters: any = {};
+            if (source !== undefined) {
+              filters.source = source;
+            }
+            if (type !== undefined) {
+              filters.type = type;
+            }
+            const contexts = await this.contextEngine.list(filters);
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: JSON.stringify({
+                    count: contexts.length,
+                    contexts: contexts.map(c => ({
+                      id: c.id,
+                      name: c.name,
+                      description: c.description,
+                      type: c.type,
+                      source: c.source,
+                    })),
+                  }, null, 2),
+                },
+              ],
+            };
+          }
+
+          case 'rec_context_delete': {
+            if (!this.contextEngine) {
+              throw new Error('Context engine not initialized');
+            }
+            const { id } = args as { id: string };
+            await this.contextEngine.delete(id);
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: `✅ Context deleted successfully`,
+                },
+              ],
+            };
+          }
+
+          case 'rec_context_from_conversation': {
+            if (!this.contextEngine) {
+              throw new Error('Context engine not initialized');
+            }
+            const { name, messages, source, tags } = args as {
+              name: string;
+              messages: Array<{ role: string; content: string; timestamp?: string }>;
+              source: 'local' | 'global';
+              tags?: string[];
+            };
+            const createParams: any = {
+              name,
+              messages: messages.map(msg => ({
+                role: msg.role as 'user' | 'assistant',
+                content: msg.content,
+                timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+              })),
+              source,
+            };
+            if (tags !== undefined) {
+              createParams.tags = tags;
+            }
+            const context = await this.contextEngine.createFromConversation(createParams);
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: `✅ Dynamic context '${context.name}' created successfully (ID: ${context.id})`,
                 },
               ],
             };
