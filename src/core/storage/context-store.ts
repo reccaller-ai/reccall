@@ -3,6 +3,8 @@
  * Stores contexts in filesystem with index for fast lookups
  */
 
+import 'reflect-metadata';
+import { injectable } from 'tsyringe';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
@@ -25,6 +27,7 @@ interface ContextIndex {
   }>;
 }
 
+@injectable()
 export class ContextStore {
   private basePath: string;
   private index: Map<string, Context> = new Map();

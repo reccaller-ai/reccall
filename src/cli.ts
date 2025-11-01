@@ -4,6 +4,7 @@
  * RecCall CLI - Refactored to use core engine with DI
  */
 
+import 'reflect-metadata';
 import { createCLIAdapter } from './core/container.js';
 
 async function main() {

@@ -4,6 +4,7 @@
  * RecCall MCP Server - Refactored to use core engine with DI
  */
 
+import 'reflect-metadata';
 import { createMCPAdapter } from './src/core/container.js';
 
 async function main() {

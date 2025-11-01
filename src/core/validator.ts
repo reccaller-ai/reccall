@@ -2,10 +2,13 @@
  * Recipe validator implementation
  */
 
+import 'reflect-metadata';
+import { injectable } from 'tsyringe';
 import type { IRecipeValidator, Recipe, ValidationResult } from './interfaces.js';
 import { ValidationError } from '../types.js';
 import type { ShortcutId } from '../types.js';
 
+@injectable()
 export class RecipeValidator implements IRecipeValidator {
   validate(recipe: Recipe): ValidationResult {
     const errors: string[] = [];

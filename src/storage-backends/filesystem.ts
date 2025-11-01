@@ -2,6 +2,8 @@
  * Context storage implementation using filesystem
  */
 
+import 'reflect-metadata';
+import { injectable } from 'tsyringe';
 import fs from 'fs/promises';
 import path from 'path';
 import type { IContextStorage, Shortcut } from '../core/interfaces.js';
@@ -9,6 +11,7 @@ import { StorageError } from '../types.js';
 import type { ShortcutId } from '../types.js';
 import { configManager } from '../core/config.js';
 
+@injectable()
 export class FileSystemStorage implements IContextStorage {
   private shortcutsCache: Record<string, Shortcut> | null = null;
   private cacheTimestamp: number = 0;
