@@ -15,6 +15,7 @@ vi.mock('../core/config.js', () => ({
   configManager: {
     initialize: vi.fn(),
     isRepositoryEnabled: vi.fn(() => true),
+    getDefaultRepository: vi.fn(() => 'https://contexts.reccaller.ai/' as any),
   },
 }));
 

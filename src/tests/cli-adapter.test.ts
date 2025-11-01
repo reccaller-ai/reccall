@@ -112,7 +112,8 @@ describe('CLIAdapter', () => {
       
       await program.parseAsync(['node', 'reccall', 'call', 'call-test']);
       
-      expect(consoleSpy).toHaveBeenCalledWith('Test context for call command testing');
+      expect(consoleSpy).toHaveBeenCalledWith('EXECUTE THESE INSTRUCTIONS: Test context for call command testing');
+      expect(consoleSpy).toHaveBeenCalledWith('\nPlease follow and execute the above instructions immediately.');
       
       consoleSpy.mockRestore();
     });
@@ -143,7 +144,7 @@ describe('CLIAdapter', () => {
       
       await program.parseAsync(['node', 'reccall', 'list']);
       
-      expect(consoleSpy).toHaveBeenCalledWith('📋 Shortcuts:');
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('📋 Stored shortcuts'));
       
       consoleSpy.mockRestore();
     });
@@ -155,7 +156,7 @@ describe('CLIAdapter', () => {
       
       await program.parseAsync(['node', 'reccall', 'list']);
       
-      expect(consoleSpy).toHaveBeenCalledWith('No shortcuts found');
+      expect(consoleSpy).toHaveBeenCalledWith("No shortcuts stored yet. Use 'reccall rec <shortcut> <context>' to create your first shortcut.");
       
       consoleSpy.mockRestore();
     });
@@ -173,7 +174,8 @@ describe('CLIAdapter', () => {
       
       await program.parseAsync(['node', 'reccall', 'search', 'testing']);
       
-      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('🔍 Search results'));
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('🔍 Found'));
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('shortcut(s) matching'));
       
       consoleSpy.mockRestore();
     });
@@ -184,7 +186,7 @@ describe('CLIAdapter', () => {
       
       await program.parseAsync(['node', 'reccall', 'search', 'nonexistent']);
       
-      expect(consoleSpy).toHaveBeenCalledWith('No shortcuts found');
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('No shortcuts found matching'));
       
       consoleSpy.mockRestore();
     });
@@ -201,7 +203,7 @@ describe('CLIAdapter', () => {
       
       await program.parseAsync(['node', 'reccall', 'delete', 'delete-test']);
       
-      expect(consoleSpy).toHaveBeenCalledWith('✅ Deleted shortcut: delete-test');
+      expect(consoleSpy).toHaveBeenCalledWith("✅ Shortcut 'delete-test' deleted successfully!");
       
       const shortcuts = await engine.list();
       expect(shortcuts.some(s => s.id === 'delete-test')).toBe(false);
@@ -221,7 +223,7 @@ describe('CLIAdapter', () => {
       
       await program.parseAsync(['node', 'reccall', 'update', 'update-test', 'Updated context']);
       
-      expect(consoleSpy).toHaveBeenCalledWith('✅ Updated shortcut: update-test');
+      expect(consoleSpy).toHaveBeenCalledWith("✅ Shortcut 'update-test' updated successfully!");
       
       const result = await engine.call('update-test' as any);
       expect(result).toBe('Updated context');
