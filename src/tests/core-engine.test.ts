@@ -236,7 +236,10 @@ describe('CoreEngine', () => {
 
     it('should search multiple shortcuts', async () => {
       const results = await engine.search('Create');
-      expect(results.length).toBe(2);
+      // Should find at least the 2 we created, may find more from starter pack
+      expect(results.length).toBeGreaterThanOrEqual(2);
+      expect(results.some(r => r.id === 'react-component')).toBe(true);
+      expect(results.some(r => r.id === 'api-endpoint')).toBe(true);
     });
   });
 
