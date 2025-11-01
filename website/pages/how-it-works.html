@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - RecCall</title>
+    <meta name="description" content="Learn about RecCall's architecture, ML-powered context generation, and technical implementation details.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="../index.html" class="logo">RecCall</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="use-cases.html">Use Cases</a></li>
+                <li><a href="integrations.html">Integrations</a></li>
+                <li><a href="getting-started.html">Get Started</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" style="padding: 4rem 0;">
+        <div class="container">
+            <h1 class="hero-title" style="font-size: 2.5rem;">How RecCall Works</h1>
+            <p class="hero-subtitle" style="font-size: 1.1rem;">
+                Technical deep dive into RecCall's architecture and ML-powered context management
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="tech-content">
+                <h2>Universal Context System</h2>
+                <p>RecCall uses a unified context model that supports three types of contexts:</p>
+                
+                <div class="context-types">
+                    <div class="context-type-card">
+                        <h3>Static Contexts</h3>
+                        <p>Manually created templates for project documentation, coding standards, and architectural decisions. Perfect for onboarding and reference.</p>
+                    </div>
+                    <div class="context-type-card">
+                        <h3>Dynamic Contexts</h3>
+                        <p>Automatically generated from conversations using ML. Captures summaries, key topics, code references, and embeddings for semantic search.</p>
+                    </div>
+                    <div class="context-type-card">
+                        <h3>Hybrid Contexts</h3>
+                        <p>Static templates enhanced with ML insights. Combine the structure of templates with the intelligence of dynamic context.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">ML-Powered Intelligence</h2>
+            <p class="section-intro">
+                RecCall's ML layer automatically processes conversations to extract meaningful context artifacts.
+            </p>
+
+            <div class="ml-architecture">
+                <div class="ml-component">
+                    <div class="ml-icon">📝</div>
+                    <h3>Summarization</h3>
+                    <p>Extracts key points and generates concise summaries from conversations, preserving important decisions and insights.</p>
+                </div>
+                <div class="ml-component">
+                    <div class="ml-icon">🔍</div>
+                    <h3>Topic Extraction</h3>
+                    <p>Identifies key topics and themes from conversations, enabling better organization and discovery.</p>
+                </div>
+                <div class="ml-component">
+                    <div class="ml-icon">💻</div>
+                    <h3>Code Reference Extraction</h3>
+                    <p>Finds code blocks, file references, and line ranges mentioned in conversations, creating traceable links.</p>
+                </div>
+                <div class="ml-component">
+                    <div class="ml-icon">🔗</div>
+                    <h3>Semantic Embeddings</h3>
+                    <p>Generates vector embeddings for semantic search, enabling intelligent context matching based on meaning.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Hybrid Search</h2>
+            <p class="section-intro">
+                RecCall combines keyword and semantic search to find the most relevant context quickly.
+            </p>
+            
+            <div class="search-explanation">
+                <div class="search-type">
+                    <h3>Keyword Search</h3>
+                    <p>Fast text-based search for exact matches, file names, and specific terms.</p>
+                </div>
+                <div class="search-type">
+                    <h3>Semantic Search</h3>
+                    <p>AI-powered search that understands meaning and intent, finding related context even without exact keyword matches.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Architecture & Access Layers</h2>
+            <p class="section-intro">
+                RecCall provides multiple ways to access and manage context, fitting into any workflow.
+            </p>
+
+            <div class="architecture-grid">
+                <div class="arch-card">
+                    <h3>MCP Server</h3>
+                    <p>Model Context Protocol integration for AI IDEs like Cursor. Automatic context injection.</p>
+                    <div class="arch-badge">Native</div>
+                </div>
+                <div class="arch-card">
+                    <h3>CLI</h3>
+                    <p>Command-line interface for terminal-based workflows. Full context management from command line.</p>
+                    <div class="arch-badge">Terminal</div>
+                </div>
+                <div class="arch-card">
+                    <h3>REST API</h3>
+                    <p>HTTP API for web applications and custom integrations. Express.js and Fastify adapters available.</p>
+                    <div class="arch-badge">Web</div>
+                </div>
+                <div class="arch-card">
+                    <h3>SDKs</h3>
+                    <p>JavaScript SDK for programmatic access. Python and Go SDKs coming soon.</p>
+                    <div class="arch-badge">SDK</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Storage & Sync</h2>
+            <div class="storage-info">
+                <div class="storage-option">
+                    <h3>File System (Default)</h3>
+                    <p>Local file-based storage with atomic writes and in-memory indexing. Fast and reliable for single-user scenarios.</p>
+                </div>
+                <div class="storage-option">
+                    <h3>Git Sync (Coming Soon)</h3>
+                    <p>Version-controlled context repositories. Share and sync contexts across teams using Git.</p>
+                </div>
+                <div class="storage-option">
+                    <h3>PostgreSQL & Redis (Optional)</h3>
+                    <p>Enterprise storage backends for scalable deployments. ACID compliance and high-performance caching.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Security & Privacy</h2>
+            <div class="security-features">
+                <div class="security-item">
+                    <h3>🔒 Local-First</h3>
+                    <p>All context data stored locally by default. No data leaves your machine unless explicitly configured.</p>
+                </div>
+                <div class="security-item">
+                    <h3>🔐 Encryption Ready</h3>
+                    <p>Storage backends support encryption at rest. Enterprise deployments can use encrypted databases.</p>
+                </div>
+                <div class="security-item">
+                    <h3>👥 Access Control</h3>
+                    <p>Context-level permissions and sharing controls. Manage who has access to which contexts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Try RecCall?</h2>
+            <p class="cta-subtitle">Get started in 2 minutes and see how it works.</p>
+            <div class="cta-buttons">
+                <a href="getting-started.html" class="btn btn-primary">Get Started</a>
+                <a href="https://github.com/reccaller-ai/reccall" class="btn btn-secondary">View on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>RecCall</h4>
+                    <p>Stop repeating yourself to AI. Remember everything.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="use-cases.html">Use Cases</a></li>
+                        <li><a href="integrations.html">Integrations</a></li>
+                        <li><a href="how-it-works.html">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="getting-started.html">Getting Started</a></li>
+                        <li><a href="https://github.com/reccaller-ai/reccall">GitHub</a></li>
+                        <li><a href="https://github.com/reccaller-ai/reccall/blob/main/docs/UNIVERSAL_CONTEXT_SYSTEM.md">Documentation</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 RecCall. Open source under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .tech-content h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--gray-900);
+        }
+
+        .tech-content p {
+            color: var(--gray-600);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .context-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .context-type-card {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .context-type-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .context-type-card p {
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        .ml-architecture {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .ml-component {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid var(--gray-200);
+            text-align: center;
+        }
+
+        .ml-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .ml-component h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .ml-component p {
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        .search-explanation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .search-type {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid var(--gray-200);
+        }
+
+        .search-type h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .search-type p {
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .arch-card {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .arch-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .arch-card p {
+            color: var(--gray-600);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .arch-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .storage-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .storage-option {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid var(--gray-200);
+        }
+
+        .storage-option h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .storage-option p {
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        .security-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .security-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid var(--gray-200);
+        }
+
+        .security-item h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .security-item p {
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+    </style>
+</body>
+</html>
+
