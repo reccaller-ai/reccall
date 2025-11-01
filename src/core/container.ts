@@ -54,31 +54,32 @@ export class DIContainer {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    // Register core services
-    container.registerSingleton<IContextStorage>(TOKENS.CONTEXT_STORAGE, FileSystemStorage);
-    container.registerSingleton<IRepositoryClient>(TOKENS.REPOSITORY_CLIENT, HttpRepositoryClient);
-    container.registerSingleton<ICacheManager>(TOKENS.CACHE_MANAGER, MultiLayerCacheManager);
-    container.registerSingleton<IRecipeValidator>(TOKENS.RECIPE_VALIDATOR, RecipeValidator);
+    // Register core services - instantiate directly to avoid tsyringe metadata issues
+    const storageInstance = new FileSystemStorage();
+    const repositoryInstance = new HttpRepositoryClient();
+    const cacheInstance = new MultiLayerCacheManager();
+    const validatorInstance = new RecipeValidator();
+
+    container.registerInstance<IContextStorage>(TOKENS.CONTEXT_STORAGE, storageInstance);
+    container.registerInstance<IRepositoryClient>(TOKENS.REPOSITORY_CLIENT, repositoryInstance);
+    container.registerInstance<ICacheManager>(TOKENS.CACHE_MANAGER, cacheInstance);
+    container.registerInstance<IRecipeValidator>(TOKENS.RECIPE_VALIDATOR, validatorInstance);
 
     // Register core engine with manual instantiation
-    container.registerSingleton<ICoreEngine>(TOKENS.CORE_ENGINE, {
-      useFactory: (dependencyContainer: DependencyContainer) => {
-        const storage = dependencyContainer.resolve<IContextStorage>(TOKENS.CONTEXT_STORAGE);
-        const repository = dependencyContainer.resolve<IRepositoryClient>(TOKENS.REPOSITORY_CLIENT);
-        const cache = dependencyContainer.resolve<ICacheManager>(TOKENS.CACHE_MANAGER);
-        const validator = dependencyContainer.resolve<IRecipeValidator>(TOKENS.RECIPE_VALIDATOR);
-        return new CoreEngine(storage, repository, cache, validator);
-      }
-    } as any);
+    const coreEngineInstance = new CoreEngine(
+      storageInstance,
+      repositoryInstance,
+      cacheInstance,
+      validatorInstance
+    );
+    container.registerInstance<ICoreEngine>(TOKENS.CORE_ENGINE, coreEngineInstance);
 
     // Register Context Engine (Universal Context System)
-    container.registerSingleton<IContextStorageNew>(TOKENS.CONTEXT_STORAGE_NEW, ContextStore);
-    container.registerSingleton<ContextEngine>(TOKENS.CONTEXT_ENGINE, {
-      useFactory: (dependencyContainer: DependencyContainer) => {
-        const store = dependencyContainer.resolve<IContextStorageNew>(TOKENS.CONTEXT_STORAGE_NEW);
-        return new ContextEngine(store);
-      }
-    } as any);
+    const contextStoreInstance = new ContextStore();
+    container.registerInstance<IContextStorageNew>(TOKENS.CONTEXT_STORAGE_NEW, contextStoreInstance);
+
+    const contextEngineInstance = new ContextEngine(contextStoreInstance);
+    container.registerInstance<ContextEngine>(TOKENS.CONTEXT_ENGINE, contextEngineInstance);
 
     // Initialize configuration
     await configManager.initialize();

@@ -3,6 +3,8 @@
  * Provides CRUD operations and usage tracking for contexts
  */
 
+import 'reflect-metadata';
+import { injectable } from 'tsyringe';
 import type {
   Context,
   CreateStaticContextParams,
@@ -22,6 +24,7 @@ import { TopicExtractor } from '../ml/topic-extractor.js';
 import type { MLArtifacts } from './types/ml.js';
 import { SearchEngine } from './search-engine.js';
 
+@injectable()
 export class ContextEngine {
   private store: IContextStorage;
   private searchEngine: SearchEngine;

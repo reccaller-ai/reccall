@@ -9,11 +9,8 @@ import { vi } from 'vitest';
 
 vi.mock('../core/config.js', () => ({
   configManager: {
-    getCacheConfig: vi.fn(() => ({
-      directory: '/tmp/reccall-cache',
-      ttl: 3600,
-      memoryTtl: 300,
-    })),
+    getCacheTtl: vi.fn(() => 3600 * 1000), // 1 hour in milliseconds
+    getMemoryTtl: vi.fn(() => 5 * 1000), // 5 seconds in milliseconds
     getCacheDirectory: vi.fn(() => '/tmp/reccall-cache'),
   },
 }));
@@ -22,6 +19,11 @@ describe('MultiLayerCacheManager', () => {
   let cache: MultiLayerCacheManager;
 
   beforeEach(async () => {
+    // Ensure cache directory exists
+    const fs = await import('fs/promises');
+    const cacheDir = '/tmp/reccall-cache';
+    await fs.mkdir(cacheDir, { recursive: true });
+    
     cache = new MultiLayerCacheManager();
     await cache.clear();
   });

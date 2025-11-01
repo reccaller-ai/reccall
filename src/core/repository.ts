@@ -2,6 +2,8 @@
  * Repository client implementation
  */
 
+import 'reflect-metadata';
+import { injectable } from 'tsyringe';
 import type { 
   IRepositoryClient, 
   Recipe, 
@@ -12,6 +14,7 @@ import { RepositoryError } from '../types.js';
 import type { ShortcutId } from '../types.js';
 import { configManager } from './config.js';
 
+@injectable()
 export class HttpRepositoryClient implements IRepositoryClient {
   async fetchManifest(repoUrl: RepositoryUrl): Promise<RepositoryManifest> {
     try {

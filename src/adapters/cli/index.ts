@@ -282,9 +282,13 @@ export class CLIAdapter {
 
     // Context commands (Universal Context System)
     if (this.contextEngine) {
+      const contextCommand = program
+        .command('context')
+        .description('Manage contexts');
+
       // Context create command
-      program
-        .command('context create <name>')
+      contextCommand
+        .command('create <name>')
         .description('Create a static context')
         .option('-c, --content <content>', 'Context content')
         .option('-f, --file <file>', 'Read content from file')
@@ -324,8 +328,8 @@ export class CLIAdapter {
         });
 
       // Context get command
-      program
-        .command('context get <identifier>')
+      contextCommand
+        .command('get <identifier>')
         .description('Get a context by name or ID')
         .action(async (identifier: string) => {
           try {
@@ -341,8 +345,8 @@ export class CLIAdapter {
         });
 
       // Context search command
-      program
-        .command('context search <query>')
+      contextCommand
+        .command('search <query>')
         .description('Search contexts')
         .option('-s, --source <source>', 'Filter by source')
         .option('-t, --type <type>', 'Filter by type')
@@ -377,8 +381,8 @@ export class CLIAdapter {
         });
 
       // Context list command
-      program
-        .command('context list')
+      contextCommand
+        .command('list')
         .description('List all contexts')
         .option('-s, --source <source>', 'Filter by source')
         .option('-t, --type <type>', 'Filter by type')
@@ -415,8 +419,8 @@ export class CLIAdapter {
         });
 
       // Context delete command
-      program
-        .command('context delete <id>')
+      contextCommand
+        .command('delete <id>')
         .description('Delete a context')
         .option('-f, --force', 'Skip confirmation')
         .action(async (id: string, options) => {
@@ -440,8 +444,8 @@ export class CLIAdapter {
         });
 
       // Context stats command
-      program
-        .command('context stats [id]')
+      contextCommand
+        .command('stats [id]')
         .description('Show context statistics')
         .action(async (id?: string) => {
           try {

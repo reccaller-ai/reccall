@@ -2,12 +2,15 @@
  * Cache manager implementation with multi-layer caching and LRU eviction
  */
 
+import 'reflect-metadata';
+import { injectable } from 'tsyringe';
 import fs from 'fs/promises';
 import path from 'path';
 import { LRUCache } from 'lru-cache';
 import type { ICacheManager, CacheEntry } from './interfaces.js';
 import { configManager } from './config.js';
 
+@injectable()
 export class MultiLayerCacheManager implements ICacheManager {
   private memoryCache: LRUCache<string, CacheEntry>;
   private hitCount = 0;
