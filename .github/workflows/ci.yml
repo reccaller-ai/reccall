@@ -134,10 +134,19 @@ jobs:
     - name: Setup Pages
       uses: actions/configure-pages@v4
       
+    - name: Prepare website for deployment
+      run: |
+        # Copy CNAME to website directory if it exists
+        if [ -f CNAME ]; then
+          cp CNAME website/
+        fi
+        # Ensure website directory structure is ready
+        mkdir -p website/assets/css website/assets/js
+        
     - name: Upload to GitHub Pages
       uses: actions/upload-pages-artifact@v3
       with:
-        path: '.'
+        path: 'website'
         
     - name: Deploy to GitHub Pages
       id: deployment
