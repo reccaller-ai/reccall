@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "description": "RecCall: Record and call context shortcuts across AI IDEs and environments (Cursor, VSCode, Warp, CLI)",
   "type": "module",
-  "main": "index.js",
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "starter-pack",
+    "index.js",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
   "exports": {
     ".": "./dist/index.js",
     "./core": "./dist/src/core/engine.js",
@@ -12,11 +20,20 @@
   },
   "bin": {
     "reccall": "./dist/src/cli.js",
-    "reccall-mcp": "./index.js"
+    "reccall-mcp": "./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reccaller-ai/reccall.git"
+  },
+  "homepage": "https://reccaller.ai",
+  "bugs": {
+    "url": "https://github.com/reccaller-ai/reccall/issues"
   },
   "scripts": {
     "build": "tsc && cp -r starter-pack dist/",
     "prepare": "npm run build",
+    "prepublishOnly": "npm run build",
     "dev": "tsc --watch",
     "test": "vitest",
     "test:watch": "vitest --watch",
@@ -24,7 +41,8 @@
     "lint:fix": "biome check --write .",
     "type-check": "tsc --noEmit",
     "format": "biome format --write .",
-    "format:check": "biome format ."
+    "format:check": "biome format .",
+    "publish:dry-run": "npm pack --dry-run"
   },
   "keywords": [
     "mcp",
@@ -37,10 +55,18 @@
     "reccall",
     "ai-ide",
     "enterprise",
-    "plugin-architecture"
+    "plugin-architecture",
+    "model-context-protocol",
+    "ai-assistant",
+    "context-management",
+    "ml",
+    "machine-learning"
   ],
-  "author": "",
+  "author": "RecCall Team",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "commander": "^12.0.0",

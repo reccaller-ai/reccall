@@ -1,0 +1,68 @@
+# Development files
+src/
+*.ts
+!*.d.ts
+tsconfig.json
+vitest.config.ts
+
+# Test files
+**/*.test.ts
+**/*.spec.ts
+**/*.test.js
+**/*.spec.js
+tests/
+__tests__/
+coverage/
+.vitest/
+
+# Development tools
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# CI/CD
+.github/
+
+# Documentation (optional - include if you want docs in npm)
+# docs/
+
+# Website
+website/
+index.html
+CNAME
+
+# Build artifacts that shouldn't be published
+*.map
+*.d.ts.map
+
+# IDE and editor files
+.editorconfig
+.eslintrc*
+.prettierrc*
+
+# Other
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.local
+
+# Warp integration script (will be available separately)
+warp-integration/
+
+# VS Code extension (published separately)
+vscode-extension/
+
+# Scripts
+scripts/
+
+# Starter pack (may want to include, but large)
+# starter-pack/
+
+# Context files
+contexts/
+
