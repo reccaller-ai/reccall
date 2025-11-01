@@ -2,7 +2,7 @@ name: Publish to npm
 
 on:
   release:
-    types: [published]
+    types: [published, edited]
   workflow_dispatch:
     inputs:
       version:
@@ -55,6 +55,8 @@ jobs:
           # Use tag version (remove 'v' prefix if present)
           VERSION="${{ github.event.release.tag_name }}"
           VERSION=${VERSION#v}
+          # Update package.json to match release version
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
           echo "version=$VERSION" >> $GITHUB_OUTPUT
         elif [ -n "${{ github.event.inputs.version }}" ]; then
           CURRENT_VERSION=$(node -p "require('./package.json').version")
