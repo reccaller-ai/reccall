@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrations - RecCall</title>
+    <meta name="description" content="RecCall works seamlessly with Cursor, VS Code, Warp terminal, and more. See all available integrations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="../index.html" class="logo">RecCall</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="use-cases.html">Use Cases</a></li>
+                <li><a href="integrations.html">Integrations</a></li>
+                <li><a href="getting-started.html">Get Started</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" style="padding: 4rem 0;">
+        <div class="container">
+            <h1 class="hero-title" style="font-size: 2.5rem;">Integrations</h1>
+            <p class="hero-subtitle" style="font-size: 1.1rem;">
+                Works seamlessly with your favorite development tools
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="integration-grid">
+                <div class="integration-card featured">
+                    <div class="integration-icon">🎯</div>
+                    <h3>Cursor</h3>
+                    <p>Native MCP integration for Cursor IDE. Your context is automatically available in every conversation.</p>
+                    <div class="integration-badge">Native Support</div>
+                </div>
+
+                <div class="integration-card featured">
+                    <div class="integration-icon">💻</div>
+                    <h3>VS Code</h3>
+                    <p>VS Code extension brings RecCall context directly into your editor. Access context from the command palette.</p>
+                    <div class="integration-badge">Extension Available</div>
+                </div>
+
+                <div class="integration-card">
+                    <div class="integration-icon">⚡</div>
+                    <h3>Warp Terminal</h3>
+                    <p>CLI integration for Warp terminal. Manage and use context directly from your terminal.</p>
+                    <div class="integration-badge">CLI Support</div>
+                </div>
+
+                <div class="integration-card">
+                    <div class="integration-icon">🔄</div>
+                    <h3>MCP Protocol</h3>
+                    <p>Built on Model Context Protocol, works with any MCP-compatible AI IDE or tool.</p>
+                    <div class="integration-badge">MCP Compatible</div>
+                </div>
+
+                <div class="integration-card">
+                    <div class="integration-icon">🌐</div>
+                    <h3>REST API</h3>
+                    <p>Full REST API for programmatic access. Build custom integrations with your workflow.</p>
+                    <div class="integration-badge">API Available</div>
+                </div>
+
+                <div class="integration-card">
+                    <div class="integration-icon">📦</div>
+                    <h3>JavaScript SDK</h3>
+                    <p>Official SDK for Node.js and browser environments. Easy integration into existing projects.</p>
+                    <div class="integration-badge">SDK Available</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">How Integration Works</h2>
+            <div class="integration-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Install RecCall</h3>
+                    <p>One-time setup takes less than 2 minutes. Works across all your tools.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Connect Your Tools</h3>
+                    <p>Install the extension or configure MCP. No workflow changes needed.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Start Using</h3>
+                    <p>Your context is automatically available. No manual configuration required.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Get Started in 2 Minutes</h2>
+            <p class="cta-subtitle">Install RecCall and start saving time today.</p>
+            <div class="cta-buttons">
+                <a href="getting-started.html" class="btn btn-primary">Install Now</a>
+                <a href="how-it-works.html" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>RecCall</h4>
+                    <p>Stop repeating yourself to AI. Remember everything.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="use-cases.html">Use Cases</a></li>
+                        <li><a href="integrations.html">Integrations</a></li>
+                        <li><a href="how-it-works.html">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="getting-started.html">Getting Started</a></li>
+                        <li><a href="https://github.com/reccaller-ai/reccall">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 RecCall. Open source under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .integration-card {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .integration-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .integration-card.featured {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--gray-50) 0%, white 100%);
+        }
+
+        .integration-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .integration-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .integration-card p {
+            color: var(--gray-600);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .integration-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .integration-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .step {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 2px solid var(--gray-200);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--gray-900);
+        }
+
+        .step p {
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+    </style>
+</body>
+</html>
+
