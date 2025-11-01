@@ -10,7 +10,7 @@ on:
         required: false
         default: 'patch'
       dry_run:
-        description: 'Dry run (don\'t actually publish)'
+        description: 'Dry run (do not actually publish)'
         required: false
         type: boolean
         default: false
