@@ -90,7 +90,7 @@ jobs:
       run: npm pack --dry-run
       
     - name: Publish to npm
-      if: github.event.inputs.dry_run != 'true'
+      if: github.event.inputs.dry_run != 'true' || github.event_name == 'release'
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       run: |
