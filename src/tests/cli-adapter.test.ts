@@ -75,7 +75,7 @@ describe('CLIAdapter', () => {
       
       await program.parseAsync(['node', 'reccall', 'rec', 'test-shortcut', 'Test context for CLI testing']);
       
-      expect(consoleSpy).toHaveBeenCalledWith('✅ Recorded shortcut: test-shortcut');
+      expect(consoleSpy).toHaveBeenCalledWith("✅ Shortcut 'test-shortcut' recorded successfully!");
       
       const shortcuts = await engine.list();
       expect(shortcuts.some(s => s.id === 'test-shortcut')).toBe(true);
