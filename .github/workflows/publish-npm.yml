@@ -89,6 +89,19 @@ jobs:
     - name: Verify package contents
       run: npm pack --dry-run
       
+    - name: Create package tarball
+      if: github.event_name == 'release'
+      run: npm pack
+      id: pack
+      
+    - name: Upload package to release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: reccall-*.tgz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Publish to npm
       if: github.event.inputs.dry_run != 'true' || github.event_name == 'release'
       env:
@@ -103,7 +116,21 @@ jobs:
         fi
         echo "📦 Publishing version ${{ steps.version.outputs.version }} to npm..."
         npm publish --access public
-        echo "✅ Published successfully!"
+        echo "✅ Published successfully to npmjs.org!"
+        
+    - name: Publish to GitHub Packages (optional)
+      if: github.event.inputs.dry_run != 'true' && github.event_name == 'release'
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "📦 Publishing version ${{ steps.version.outputs.version }} to GitHub Packages..."
+        echo "@reccaller-ai:registry=https://npm.pkg.github.com" >> .npmrc
+        echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+        # Temporarily rename package to scoped version for GitHub Packages
+        # Note: This requires package.json to have a scoped name or we skip it
+        echo "ℹ️  GitHub Packages requires scoped packages (@owner/package)."
+        echo "   To publish to GitHub Packages, update package.json name to '@reccaller-ai/reccall'"
+        echo "   Skipping GitHub Packages publish (publishing to npmjs.org only)"
         
     - name: Dry run (no publish)
       if: github.event.inputs.dry_run == 'true'
