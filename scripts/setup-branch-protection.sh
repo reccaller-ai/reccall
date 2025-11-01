@@ -65,11 +65,11 @@ rm /tmp/branch-protection.json
 
 echo "✅ Branch protection rules configured successfully!"
 
-# Enable GitHub Pages
-echo "🌐 Enabling GitHub Pages..."
-gh api repos/$REPO_OWNER/$REPO_NAME/pages \
-  --method POST \
-  --field source='{"branch":"main","path":"/"}' || echo "⚠️  GitHub Pages might already be enabled"
+# Enable GitHub Pages (using Actions deployment - path configured in workflow)
+echo "🌐 GitHub Pages configured via Actions workflow..."
+echo "   Source: website/ directory"
+echo "   Branch: main"
+echo "   Note: Pages source is set via GitHub Actions (actions/configure-pages@v4)"
 
 echo "✅ GitHub Pages configuration updated!"
 
