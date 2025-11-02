@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perplexity Integration - RecCall</title>
+    <meta name="description" content="Learn how to integrate RecCall with Perplexity AI for persistent context across conversations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="../index.html" class="logo">RecCall</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="use-cases.html">Use Cases</a></li>
+                <li><a href="integrations.html">Integrations</a></li>
+                <li><a href="getting-started.html">Get Started</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" style="padding: 4rem 0;">
+        <div class="container">
+            <h1 class="hero-title" style="font-size: 2.5rem;">Perplexity Integration</h1>
+            <p class="hero-subtitle" style="font-size: 1.1rem;">
+                Bring persistent context to your Perplexity AI conversations
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="integration-overview">
+                <h2>Overview</h2>
+                <p>RecCall integrates with Perplexity AI to provide persistent context across your conversations. Your project knowledge, coding standards, and architectural decisions are automatically available in every Perplexity interaction.</p>
+                
+                <div class="feature-highlight">
+                    <h3>✨ Key Benefits</h3>
+                    <ul>
+                        <li><strong>Persistent Context</strong>: Your project knowledge persists across conversations</li>
+                        <li><strong>Code Standards</strong>: Perplexity understands your coding patterns and preferences</li>
+                        <li><strong>Architecture Awareness</strong>: AI responses consider your system architecture</li>
+                        <li><strong>Team Consistency</strong>: Shared contexts ensure uniform AI assistance across team</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">How to Integrate</h2>
+            
+            <div class="integration-steps">
+                <div class="step-detail">
+                    <div class="step-number">1</div>
+                    <h3>Install RecCall</h3>
+                    <p>First, ensure RecCall is installed globally:</p>
+                    <div class="code-block">
+npm install -g reccall
+                    </div>
+                    <p>Or use the automated installer:</p>
+                    <div class="code-block">
+curl -sfL https://reccaller.ai/install.sh | sh -
+                    </div>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-number">2</div>
+                    <h3>Configure Perplexity MCP Server</h3>
+                    <p>Perplexity supports Model Context Protocol (MCP). Configure RecCall as an MCP server:</p>
+                    <div class="code-block">
+{
+  "mcpServers": {
+    "reccall": {
+      "command": "reccall-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}
+                    </div>
+                    <p><strong>Location:</strong> Add this configuration to your Perplexity MCP settings file (typically <code>~/.perplexity/mcp.json</code> or similar based on your Perplexity installation).</p>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-number">3</div>
+                    <h3>Create Contexts</h3>
+                    <p>Create contexts that will be available in Perplexity conversations:</p>
+                    <div class="code-block">
+# Create a static context via CLI
+reccall context create "react-best-practices" \
+  --content "Always use TypeScript for React components. Use functional components with hooks. Include PropTypes or TypeScript interfaces. Implement error boundaries." \
+  --tags react,typescript,best-practices
+
+# Or create from a conversation (dynamic context)
+reccall context from-conversation "react-forms-conversation" \
+  --messages conversation.json \
+  --tags react,forms,validation
+                    </div>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-number">4</div>
+                    <h3>Use in Perplexity</h3>
+                    <p>Once configured, your contexts are automatically available in Perplexity conversations:</p>
+                    <ul>
+                        <li><strong>Automatic Context Loading</strong>: RecCall automatically injects relevant contexts into Perplexity queries</li>
+                        <li><strong>Context-Aware Responses</strong>: Perplexity considers your stored contexts when generating responses</li>
+                        <li><strong>Search & Discovery</strong>: Use Perplexity to search and discover relevant contexts</li>
+                    </ul>
+                    <div class="code-block">
+# In Perplexity, you can ask:
+"Using my react-best-practices context, show me how to create a form component"
+
+# Or:
+"Search for contexts related to authentication"
+
+# Contexts are automatically included based on query relevance
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Available MCP Tools</h2>
+            <p>RecCall exposes the following MCP tools to Perplexity:</p>
+            
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h3>rec_context_create</h3>
+                    <p>Create a new static context</p>
+                    <div class="code-block">
+{
+  "name": "context-name",
+  "content": "Context content",
+  "tags": ["tag1", "tag2"],
+  "category": "development"
+}
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>rec_context_get</h3>
+                    <p>Retrieve a context by name or ID</p>
+                    <div class="code-block">
+{
+  "identifier": "context-name-or-id"
+}
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>rec_context_search</h3>
+                    <p>Search contexts using hybrid search (keyword + semantic)</p>
+                    <div class="code-block">
+{
+  "query": "react forms",
+  "limit": 10,
+  "filters": {
+    "tags": ["react"],
+    "category": "development"
+  }
+}
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>rec_context_list</h3>
+                    <p>List all available contexts with optional filters</p>
+                    <div class="code-block">
+{
+  "filters": {
+    "category": "development",
+    "tags": ["react"]
+  },
+  "limit": 20
+}
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>rec_context_from_conversation</h3>
+                    <p>Create dynamic context from conversation messages (ML-powered)</p>
+                    <div class="code-block">
+{
+  "name": "conversation-context",
+  "messages": [
+    {"role": "user", "content": "..."},
+    {"role": "assistant", "content": "..."}
+  ],
+  "tags": ["tag1"],
+  "category": "development"
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Use Cases</h2>
+            
+            <div class="use-case-list">
+                <div class="use-case-item">
+                    <h3>📚 Research Projects</h3>
+                    <p>Maintain context about your research topics, methodologies, and findings across multiple Perplexity conversations. Your research notes become part of every query.</p>
+                </div>
+
+                <div class="use-case-item">
+                    <h3>💻 Development Standards</h3>
+                    <p>Ensure Perplexity understands your coding standards, architectural patterns, and best practices. Get suggestions that align with your project's conventions.</p>
+                </div>
+
+                <div class="use-case-item">
+                    <h3>🏢 Team Knowledge Base</h3>
+                    <p>Share team knowledge through contexts. New team members get immediate access to accumulated project wisdom through Perplexity.</p>
+                </div>
+
+                <div class="use-case-item">
+                    <h3>🔍 Intelligent Search</h3>
+                    <p>Use Perplexity's search capabilities enhanced with your RecCall contexts. Find relevant information faster with semantic search across your knowledge base.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Configuration Options</h2>
+            
+            <div class="config-options">
+                <h3>Environment Variables</h3>
+                <div class="code-block">
+# RecCall storage location
+export RECCALL_STORAGE_PATH="$HOME/.reccall/contexts"
+
+# Enable verbose logging
+export RECCALL_LOG_LEVEL="debug"
+
+# Configure cache TTL (in milliseconds)
+export RECCALL_CACHE_TTL=3600000
+                </div>
+
+                <h3>MCP Server Options</h3>
+                <div class="code-block">
+{
+  "mcpServers": {
+    "reccall": {
+      "command": "reccall-mcp",
+      "args": [
+        "--storage-path", "$HOME/.reccall/contexts",
+        "--log-level", "info"
+      ],
+      "env": {
+        "RECCALL_CACHE_TTL": "3600000"
+      }
+    }
+  }
+}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Troubleshooting</h2>
+            
+            <div class="troubleshooting">
+                <div class="trouble-item">
+                    <h3>MCP Server Not Found</h3>
+                    <p><strong>Issue:</strong> Perplexity cannot find the RecCall MCP server.</p>
+                    <p><strong>Solution:</strong> Ensure RecCall is installed globally (<code>npm install -g reccall</code>) and the path in MCP configuration is correct.</p>
+                </div>
+
+                <div class="trouble-item">
+                    <h3>Contexts Not Loading</h3>
+                    <p><strong>Issue:</strong> Contexts are not appearing in Perplexity conversations.</p>
+                    <p><strong>Solution:</strong> Verify contexts exist using <code>reccall context list</code>. Check MCP server logs for errors.</p>
+                </div>
+
+                <div class="trouble-item">
+                    <h3>Permission Errors</h3>
+                    <p><strong>Issue:</strong> Permission denied errors when accessing contexts.</p>
+                    <p><strong>Solution:</strong> Check file permissions on <code>~/.reccall/</code> directory. Ensure the MCP server process has read/write access.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Get Started?</h2>
+            <p class="cta-subtitle">Install RecCall and start using persistent context in Perplexity today.</p>
+            <div class="cta-buttons">
+                <a href="getting-started.html" class="btn btn-primary">Install RecCall</a>
+                <a href="integrations.html" class="btn btn-secondary">See All Integrations</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>RecCall</h4>
+                    <p>Stop repeating yourself to AI. Remember everything.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="use-cases.html">Use Cases</a></li>
+                        <li><a href="integrations.html">Integrations</a></li>
+                        <li><a href="how-it-works.html">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="getting-started.html">Getting Started</a></li>
+                        <li><a href="https://github.com/reccaller-ai/reccall">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 RecCall. Open source under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .integration-overview {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .feature-highlight {
+            background: linear-gradient(135deg, var(--primary-light) 0%, white 100%);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-highlight ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-highlight li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .feature-highlight li:last-child {
+            border-bottom: none;
+        }
+
+        .step-detail {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-left: 5rem;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 2rem;
+            top: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tool-card {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .tool-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: var(--gray-900);
+            color: var(--gray-100);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            line-height: 1.6;
+        }
+
+        .use-case-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .use-case-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--gray-200);
+        }
+
+        .use-case-item h3 {
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .config-options {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid var(--gray-200);
+        }
+
+        .config-options h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .config-options h3:first-child {
+            margin-top: 0;
+        }
+
+        .troubleshooting {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .trouble-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .trouble-item h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .trouble-item p {
+            margin: 0.5rem 0;
+            color: var(--gray-600);
+        }
+    </style>
+</body>
+</html>
+
