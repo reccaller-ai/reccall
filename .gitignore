@@ -38,3 +38,6 @@ Thumbs.db
 # Temporary test files (keep test scripts, ignore generated)
 *.tmp
 test-context-*
+
+# VSCode extension packages (build artifacts)
+*.vsix
