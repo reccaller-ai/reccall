@@ -38,20 +38,23 @@ Sora → Browser Extension → chrome.storage ❌
 - Duplicate storage/logic
 - Inconsistent API
 
-### Proposed Architecture (Unified)
+### Proposed Architecture (Unified - MCP-First)
 
 ```
 Cursor → MCP (stdio) → Core Engine ✅
-Perplexity → MCP (HTTP) → Core Engine ✅
-Sora → MCP (HTTP) → Core Engine ✅
+Perplexity → MCP (HTTP) → Core Engine ✅ (Primary)
+         → Browser Extension (Optional) ⚙️
+Sora → MCP (HTTP) → Core Engine ✅ (Primary)
+    → Browser Extension (Optional) ⚙️
 ```
 
 **Benefits**:
-- ✅ All platforms use core engine
+- ✅ All platforms use core engine (MCP path)
 - ✅ ML-powered contexts everywhere
 - ✅ Unified storage and caching
 - ✅ Consistent API
 - ✅ Single source of truth
+- ✅ Browser extensions remain as simple alternative
 
 ## 🛠️ Implementation Approach
 
@@ -109,24 +112,25 @@ await client.callTool('rec_context_create', {...});
 ### Challenge 2: Server Lifecycle
 **Solution**: Start HTTP server when extensions active, or always-running daemon
 
-### Challenge 3: Migration Path
-**Solution**: Migration utility to sync browser storage → core engine
+### Challenge 3: Breaking Changes
+**Solution**: ✅ Acceptable in dev phase - no migration needed
 
 ## 📈 Recommendation
 
-**✅ PROCEED with MCP unification**
+**✅ PROCEED with MCP unification (Simplified)**
 
 **Priority**: High
-**Timeline**: 3-4 weeks
-**Risk**: Low (can maintain backward compatibility)
+**Timeline**: 2 weeks (simplified, no migration)
+**Risk**: Very Low (breaking changes acceptable, no production clients)
 
-## 🚀 Quick Start Implementation
+## 🚀 Quick Start Implementation (Simplified)
 
 1. **Add Express dependency**: `npm install express @types/express`
-2. **Enhance MCPAdapter**: Support HTTP transport alongside stdio
-3. **Update entry point**: Add `--http-port` flag
-4. **Create browser MCP client**: Shared library for extensions
-5. **Migrate extensions**: Replace storage with MCP calls
+2. **Enhance MCPAdapter**: Support HTTP transport alongside stdio (default on)
+3. **Update entry point**: Default HTTP on port 3000, `--http-port` for custom
+4. **Create browser MCP client**: Shared library for Perplexity/Sora
+5. **Update Perplexity/Sora**: Use MCP as primary, keep browser extension optional
+6. **No migration needed** - breaking changes OK in dev phase
 
 ## 📚 Full Documentation
 
