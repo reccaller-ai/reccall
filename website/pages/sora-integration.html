@@ -72,65 +72,55 @@ curl -sfL https://reccaller.ai/install.sh | sh -
 
                 <div class="step-detail">
                     <div class="step-number">2</div>
-                    <h3>Configure Sora MCP Server</h3>
-                    <p>Sora supports Model Context Protocol (MCP). Configure RecCall as an MCP server:</p>
-                    <div class="code-block">
-{
-  "mcpServers": {
-    "reccall": {
-      "command": "reccall-mcp",
-      "args": [],
-      "env": {
-        "RECCALL_STORAGE_PATH": "$HOME/.reccall/contexts"
-      }
-    }
-  }
-}
-                    </div>
-                    <p><strong>Location:</strong> Add this configuration to your Sora MCP settings file (typically <code>~/.sora/mcp.json</code> or similar based on your Sora installation).</p>
+                    <h3>Install Browser Extension</h3>
+                    <p>RecCall integrates with OpenAI's Sora via a browser extension that injects video prompt context management into the OpenAI website.</p>
+                    <ol>
+                        <li><strong>Download Extension:</strong> The extension files are located in <code>src/adapters/sora/extension/</code></li>
+                        <li><strong>Load Extension in Chrome/Edge:</strong>
+                            <ul>
+                                <li>Open Chrome/Edge and navigate to <code>chrome://extensions/</code></li>
+                                <li>Enable "Developer mode" (toggle in top-right)</li>
+                                <li>Click "Load unpacked"</li>
+                                <li>Select the <code>src/adapters/sora/extension/</code> directory</li>
+                            </ul>
+                        </li>
+                        <li><strong>Verify Installation:</strong> You should see "RecCall for Sora" in your extensions list</li>
+                    </ol>
+                    <p><strong>Note:</strong> This extension works with OpenAI's Sora video generation on <code>openai.com</code> and <code>chat.openai.com</code>. The extension injects a UI panel for managing video generation prompts.</p>
                 </div>
 
                 <div class="step-detail">
                     <div class="step-number">3</div>
-                    <h3>Create Project Contexts</h3>
-                    <p>Create contexts that define your project's standards and patterns:</p>
-                    <div class="code-block">
-# Create coding standards context
-reccall context create "typescript-standards" \
-  --content "Use TypeScript strict mode. Prefer interfaces over types. Use readonly for immutable properties. Always define return types explicitly." \
-  --tags typescript,standards,code-style
-
-# Create API design context
-reccall context create "api-design" \
-  --content "Follow RESTful principles. Use proper HTTP status codes. Implement pagination for list endpoints. Include request/response validation." \
-  --tags api,rest,design-patterns
-
-# Create from conversation (learns from past interactions)
-reccall context from-conversation "auth-patterns" \
-  --messages auth-conversation.json \
-  --tags authentication,security
-                    </div>
+                    <h3>Access RecCall for Sora</h3>
+                    <p>Once the extension is installed:</p>
+                    <ol>
+                        <li>Visit <a href="https://openai.com" target="_blank">openai.com</a> or <a href="https://chat.openai.com" target="_blank">chat.openai.com</a></li>
+                        <li>Navigate to Sora video generation interface</li>
+                        <li>Look for the <strong>🎬 RecCall</strong> button</li>
+                        <li>Click the button to open the video context panel</li>
+                    </ol>
+                    <p><strong>Visual Integration:</strong> The extension injects a RecCall button and panel for managing video generation prompts and contexts.</p>
                 </div>
 
                 <div class="step-detail">
                     <div class="step-number">4</div>
-                    <h3>Use in Sora</h3>
-                    <p>Once configured, your contexts are automatically available in Sora:</p>
+                    <h3>Use Video Context Shortcuts</h3>
+                    <p>The extension provides the following features for video generation:</p>
                     <ul>
-                        <li><strong>Automatic Context Injection</strong>: Relevant contexts are automatically included in Sora queries</li>
-                        <li><strong>Context-Aware Generation</strong>: Code generation considers your stored contexts and patterns</li>
-                        <li><strong>Semantic Search</strong>: Sora can search your contexts to find relevant patterns and examples</li>
-                        <li><strong>Dynamic Context Updates</strong>: Contexts can be created from Sora conversations automatically</li>
+                        <li><strong>Record Video Prompts:</strong> Save frequently used video generation prompts as shortcuts</li>
+                        <li><strong>Call Contexts:</strong> Click "Use" to inject saved prompts into the input field</li>
+                        <li><strong>Clipboard Detection:</strong> Automatically detects video prompts in clipboard and suggests saving them</li>
+                        <li><strong>Copy to Clipboard:</strong> Copy prompts to clipboard for easy pasting</li>
                     </ul>
                     <div class="code-block">
-# In Sora, you can request:
-"Generate a React component following my typescript-standards context"
-
-# Or:
-"Create an authentication endpoint using my auth-patterns context"
-
-# Contexts are automatically applied to improve code quality
+# Example workflow:
+1. Create a video prompt: "A cinematic shot of a sunset over mountains"
+2. If this is a style you'll reuse, click RecCall button
+3. Click "+ Add Video Context", name it "sunset-scene"
+4. Next time, click "Use" on "sunset-scene" to inject it instantly
+5. Or copy it to clipboard for pasting elsewhere
                     </div>
+                    <p><strong>Storage:</strong> Video prompts are stored locally in your browser using Chrome's storage API. They persist across sessions.</p>
                 </div>
             </div>
         </div>
@@ -138,74 +128,58 @@ reccall context from-conversation "auth-patterns" \
 
     <section class="section">
         <div class="container">
-            <h2 class="section-title">Available MCP Tools</h2>
-            <p>RecCall exposes the following MCP tools to Sora for context management:</p>
+            <h2 class="section-title">Extension Features</h2>
+            <p>The Sora browser extension provides the following capabilities for video generation:</p>
             
             <div class="tool-grid">
                 <div class="tool-card">
-                    <h3>rec_context_create</h3>
-                    <p>Create a new static context</p>
-                    <div class="code-block">
-{
-  "name": "context-name",
-  "content": "Context content",
-  "tags": ["tag1", "tag2"],
-  "category": "development"
-}
-                    </div>
+                    <h3>🎬 RecCall Button</h3>
+                    <p>Visual button injected into OpenAI's interface for video context management</p>
+                    <ul>
+                        <li>Appears near the video generation input</li>
+                        <li>One-click access to video context panel</li>
+                        <li>Non-intrusive UI integration</li>
+                    </ul>
                 </div>
 
                 <div class="tool-card">
-                    <h3>rec_context_get</h3>
-                    <p>Retrieve a context by name or ID</p>
-                    <div class="code-block">
-{
-  "identifier": "context-name-or-id"
-}
-                    </div>
+                    <h3>📋 Video Context Panel</h3>
+                    <p>Manage your video generation prompts and contexts</p>
+                    <ul>
+                        <li>View all saved video prompts</li>
+                        <li>Quick access to use or copy prompts</li>
+                        <li>Add new video contexts on the fly</li>
+                    </ul>
                 </div>
 
                 <div class="tool-card">
-                    <h3>rec_context_search</h3>
-                    <p>Hybrid search (keyword + semantic) for finding relevant contexts</p>
-                    <div class="code-block">
-{
-  "query": "authentication patterns",
-  "limit": 10,
-  "filters": {
-    "tags": ["security"],
-    "category": "development"
-  }
-}
-                    </div>
+                    <h3>📋 Clipboard Detection</h3>
+                    <p>Automatically detects video prompts in clipboard</p>
+                    <ul>
+                        <li>Monitors clipboard for video-related content</li>
+                        <li>Suggests saving prompts automatically</li>
+                        <li>Helps capture prompts from other sources</li>
+                    </ul>
                 </div>
 
                 <div class="tool-card">
-                    <h3>rec_context_from_conversation</h3>
-                    <p>Create dynamic context from conversation (ML-powered extraction)</p>
-                    <div class="code-block">
-{
-  "name": "conversation-summary",
-  "messages": [
-    {"role": "user", "content": "..."},
-    {"role": "assistant", "content": "..."}
-  ],
-  "tags": ["learned-pattern"],
-  "category": "development"
-}
-                    </div>
-                    <p><em>This automatically extracts: summary, topics, code references, and generates embeddings.</em></p>
+                    <h3>📋 Copy to Clipboard</h3>
+                    <p>Quickly copy video prompts for use elsewhere</p>
+                    <ul>
+                        <li>One-click copy button for each prompt</li>
+                        <li>Easy sharing between tools</li>
+                        <li>Paste into any video generation interface</li>
+                    </ul>
                 </div>
 
                 <div class="tool-card">
-                    <h3>rec_context_enhance</h3>
-                    <p>Enhance a static context with ML insights from conversations</p>
-                    <div class="code-block">
-{
-  "contextId": "existing-context-id",
-  "conversationMessages": [...]
-}
-                    </div>
+                    <h3>💾 Local Storage</h3>
+                    <p>Video prompts stored in browser local storage</p>
+                    <ul>
+                        <li>Persistent across sessions</li>
+                        <li>Device-specific storage</li>
+                        <li>Fast access with no network calls</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -217,23 +191,23 @@ reccall context from-conversation "auth-patterns" \
             
             <div class="use-case-list">
                 <div class="use-case-item">
-                    <h3>🎨 Code Generation</h3>
-                    <p>Generate code that automatically follows your project's coding standards, naming conventions, and architectural patterns. Sora understands your preferences from contexts.</p>
+                    <h3>🎨 Video Style Templates</h3>
+                    <p>Save and reuse video generation styles consistently. Create templates for specific moods, visual effects, or cinematic techniques that you use frequently.</p>
                 </div>
 
                 <div class="use-case-item">
-                    <h3>🏗️ Architecture Consistency</h3>
-                    <p>Ensure generated code aligns with your system architecture. Sora considers your microservices patterns, API design, and database schemas when generating code.</p>
+                    <h3>🎬 Production Workflows</h3>
+                    <p>Streamline video production workflows by saving common prompts for different phases (concept, storyboard, final production) or different project types.</p>
                 </div>
 
                 <div class="use-case-item">
                     <h3>📚 Learning from Past Work</h3>
-                    <p>Convert successful Sora conversations into reusable contexts. Patterns that worked well are automatically learned and applied to future code generation.</p>
+                    <p>Save successful video prompts as shortcuts. Reuse cinematic styles, shot compositions, and video patterns that worked well in previous generations.</p>
                 </div>
 
                 <div class="use-case-item">
-                    <h3>🔍 Context Discovery</h3>
-                    <p>Use Sora's enhanced search capabilities to discover relevant contexts and patterns. Find best practices faster with semantic search across your knowledge base.</p>
+                    <h3>🎨 Style Consistency</h3>
+                    <p>Maintain consistent visual styles across video generations. Save and reuse prompts for specific moods, color palettes, and cinematic techniques.</p>
                 </div>
             </div>
         </div>
@@ -245,23 +219,23 @@ reccall context from-conversation "auth-patterns" \
             
             <div class="best-practices">
                 <div class="practice-item">
-                    <h3>📝 Create Granular Contexts</h3>
-                    <p>Create focused contexts for specific areas (e.g., "api-design", "error-handling", "testing-patterns") rather than one large context. This improves relevance and searchability.</p>
+                    <h3>📝 Create Focused Prompts</h3>
+                    <p>Save specific video prompts for different styles (e.g., "cinematic-sunset", "documentary-style", "animated-explainer") rather than generic prompts. This improves reusability.</p>
                 </div>
 
                 <div class="practice-item">
-                    <h3>🏷️ Use Meaningful Tags</h3>
-                    <p>Tag contexts with relevant keywords (e.g., "react", "typescript", "authentication") to improve discoverability and automatic context matching.</p>
+                    <h3>🏷️ Use Descriptive Names</h3>
+                    <p>Name your video contexts descriptively (e.g., "product-demo-style", "nature-documentary", "urban-time-lapse") to quickly identify and reuse them.</p>
                 </div>
 
                 <div class="practice-item">
-                    <h3>🔄 Update from Conversations</h3>
-                    <p>Regularly create contexts from successful Sora conversations to capture learned patterns and improve future code generation quality.</p>
+                    <h3>🔄 Save Successful Prompts</h3>
+                    <p>When a video generation produces great results, immediately save the prompt as a shortcut. This builds your library of proven video generation patterns.</p>
                 </div>
 
                 <div class="practice-item">
-                    <h3>🔍 Leverage Hybrid Search</h3>
-                    <p>Use RecCall's hybrid search (keyword + semantic) to find relevant contexts quickly. This helps discover related patterns you might have forgotten.</p>
+                    <h3>📋 Use Clipboard Detection</h3>
+                    <p>Enable clipboard monitoring to automatically detect when you copy video prompts from other sources. The extension will suggest saving them as shortcuts.</p>
                 </div>
             </div>
         </div>
@@ -272,39 +246,34 @@ reccall context from-conversation "auth-patterns" \
             <h2 class="section-title">Configuration Options</h2>
             
             <div class="config-options">
-                <h3>Environment Variables</h3>
+                <h3>Extension Permissions</h3>
+                <p>The extension requires the following permissions:</p>
+                <ul>
+                    <li><strong>activeTab:</strong> Access to the current OpenAI tab for UI injection</li>
+                    <li><strong>storage:</strong> Save and load video prompts locally in the browser</li>
+                    <li><strong>clipboardRead:</strong> Monitor clipboard for video prompt detection</li>
+                    <li><strong>clipboardWrite:</strong> Copy prompts to clipboard</li>
+                </ul>
+
+                <h3>Browser Compatibility</h3>
+                <p>The extension is compatible with:</p>
+                <ul>
+                    <li>✅ Google Chrome (Manifest V3)</li>
+                    <li>✅ Microsoft Edge (Chromium-based)</li>
+                    <li>✅ Brave Browser</li>
+                    <li>⚠️ Firefox (requires Manifest V2 conversion)</li>
+                </ul>
+
+                <h3>Extension Source</h3>
+                <p>The extension source code is located at:</p>
                 <div class="code-block">
-# RecCall storage location
-export RECCALL_STORAGE_PATH="$HOME/.reccall/contexts"
-
-# Enable verbose logging for debugging
-export RECCALL_LOG_LEVEL="debug"
-
-# Configure cache TTL (in milliseconds)
-export RECCALL_CACHE_TTL=3600000
-
-# Enable automatic context creation from conversations
-export RECCALL_AUTO_CONTEXT=true
-                </div>
-
-                <h3>MCP Server Options</h3>
-                <div class="code-block">
-{
-  "mcpServers": {
-    "reccall": {
-      "command": "reccall-mcp",
-      "args": [
-        "--storage-path", "$HOME/.reccall/contexts",
-        "--log-level", "info",
-        "--auto-context"
-      ],
-      "env": {
-        "RECCALL_CACHE_TTL": "3600000",
-        "RECCALL_AUTO_CONTEXT": "true"
-      }
-    }
-  }
-}
+reccall/src/adapters/sora/extension/
+├── manifest.json        # Extension configuration
+├── content.js          # Main content script
+├── popup.js            # Popup interface
+├── background.js       # Background service worker
+├── styles.css          # Extension styling
+└── icons/              # Extension icons
                 </div>
             </div>
         </div>
@@ -316,21 +285,21 @@ export RECCALL_AUTO_CONTEXT=true
             
             <div class="troubleshooting">
                 <div class="trouble-item">
-                    <h3>MCP Server Not Connecting</h3>
-                    <p><strong>Issue:</strong> Sora cannot connect to RecCall MCP server.</p>
-                    <p><strong>Solution:</strong> Verify RecCall is installed globally and the MCP configuration path is correct. Check Sora logs for connection errors.</p>
+                    <h3>Extension Not Loading</h3>
+                    <p><strong>Issue:</strong> Extension doesn't appear after installation.</p>
+                    <p><strong>Solution:</strong> Ensure "Developer mode" is enabled in Chrome extensions page. Check browser console for errors. Verify the extension directory path is correct.</p>
                 </div>
 
                 <div class="trouble-item">
-                    <h3>Contexts Not Applied</h3>
-                    <p><strong>Issue:</strong> Generated code doesn't follow your contexts.</p>
-                    <p><strong>Solution:</strong> Ensure contexts are tagged correctly and use semantic search to verify context relevance. Check that contexts are being loaded in Sora's MCP tool list.</p>
+                    <h3>RecCall Button Not Visible</h3>
+                    <p><strong>Issue:</strong> The RecCall button doesn't appear on OpenAI website.</p>
+                    <p><strong>Solution:</strong> Refresh the OpenAI page. Check that the extension is enabled. Verify you're on <code>https://openai.com</code> or <code>https://chat.openai.com</code> (not a different domain). Ensure you're on the Sora video generation page.</p>
                 </div>
 
                 <div class="trouble-item">
-                    <h3>Performance Issues</h3>
-                    <p><strong>Issue:</strong> Context loading is slow or timing out.</p>
-                    <p><strong>Solution:</strong> Reduce the number of contexts loaded per query. Use filters to limit context scope. Increase cache TTL if contexts don't change frequently.</p>
+                    <h3>Clipboard Detection Not Working</h3>
+                    <p><strong>Issue:</strong> Clipboard monitoring doesn't detect video prompts.</p>
+                    <p><strong>Solution:</strong> Check that clipboard permissions are granted. Ensure the content contains video-related keywords. Try copying text again - detection runs every 2 seconds.</p>
                 </div>
             </div>
         </div>
