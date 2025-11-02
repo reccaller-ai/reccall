@@ -1,9 +1,11 @@
 /**
  * MCP adapter for RecCall core engine
+ * Supports both stdio (Cursor) and HTTP (Perplexity/Sora) transports
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
@@ -12,6 +14,16 @@ import type { ICoreEngine } from '../../core/interfaces.js';
 import type { ContextEngine } from '../../core/context-engine.js';
 import { RecCallError } from '../../types.js';
 import type { ShortcutId } from '../../types.js';
+import express, { type Express } from 'express';
+import { randomUUID } from 'crypto';
+
+export interface MCPStartOptions {
+  stdio?: boolean; // Start stdio transport for Cursor (default: true)
+  http?: {
+    port?: number; // HTTP server port (default: 3000)
+    expressApp?: Express; // Optional existing Express app
+  } | false; // Set to false to disable HTTP transport
+}
 
 export class MCPAdapter {
   private engine: ICoreEngine;
@@ -20,6 +32,10 @@ export class MCPAdapter {
   private toolsCache: any = null;
   private cacheTimestamp: number = 0;
   private readonly CACHE_TTL = 60000; // 1 minute cache for tools list
+  
+  // Transport instances
+  private stdioTransport?: StdioServerTransport;
+  private httpServer?: ReturnType<Express['listen']>;
 
   constructor(engine: ICoreEngine, contextEngine?: ContextEngine) {
     this.engine = engine;
@@ -775,9 +791,81 @@ export class MCPAdapter {
     });
   }
 
-  async start(): Promise<void> {
-    const transport = new StdioServerTransport();
-    await this.server.connect(transport);
-    console.error('RecCall MCP Server running on stdio');
+  /**
+   * Start MCP server with specified transport(s)
+   * @param options Transport configuration options
+   */
+  async start(options: MCPStartOptions = { stdio: true, http: { port: 3000 } }): Promise<void> {
+    // Start stdio transport (for Cursor) - default enabled
+    if (options.stdio !== false) {
+      this.stdioTransport = new StdioServerTransport();
+      await this.server.connect(this.stdioTransport);
+      console.error('RecCall MCP Server running on stdio (Cursor)');
+    }
+
+    // Start HTTP transport (for Perplexity/Sora) - default enabled
+    if (options.http !== undefined && options.http !== false) {
+      const httpConfig = options.http;
+      const port = httpConfig.port ?? 3000;
+      const app = httpConfig.expressApp ?? express();
+
+      // Middleware for JSON parsing
+      if (!httpConfig.expressApp) {
+        app.use(express.json());
+      }
+
+      // HTTP transport - according to SDK docs, create transport per request
+      // Attach transport to Express route
+      app.post('/mcp', async (req, res) => {
+        // Create a new transport for each request to prevent request ID collisions
+        const transport = new StreamableHTTPServerTransport({
+          sessionIdGenerator: () => randomUUID(),
+          enableJsonResponse: true, // Use JSON responses for simpler browser integration
+        });
+
+        // Clean up transport when response closes
+        res.on('close', () => {
+          transport.close();
+        });
+
+        // Connect server to this transport and handle request
+        await this.server.connect(transport);
+        await transport.handleRequest(req, res, req.body);
+      });
+
+      // Start HTTP server if we created the app
+      if (!httpConfig.expressApp) {
+        this.httpServer = app.listen(port, () => {
+          console.error(`RecCall MCP HTTP server running on http://localhost:${port}/mcp`);
+        });
+      } else {
+        console.error(`RecCall MCP HTTP transport attached to existing Express app at /mcp`);
+      }
+    }
+  }
+
+  /**
+   * Stop all transports and clean up
+   */
+  async stop(): Promise<void> {
+    // Close HTTP server if we started it
+    if (this.httpServer) {
+      return new Promise((resolve, reject) => {
+        this.httpServer?.close((err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        });
+      });
+    }
+  }
+
+  /**
+   * Get HTTP server port (if HTTP transport is active)
+   */
+  getHttpPort(): number | undefined {
+    return this.httpServer ? (this.httpServer.address() as { port: number })?.port : undefined;
   }
 }
