@@ -177,7 +177,13 @@ export class ReccallSDK {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ error: response.statusText }));
+        const text = await response.text().catch(() => response.statusText);
+        let error: { error?: string } = {};
+        try {
+          error = JSON.parse(text);
+        } catch {
+          error = { error: text || response.statusText };
+        }
         throw new Error(error.error || `HTTP ${response.status}: ${response.statusText}`);
       }
 
