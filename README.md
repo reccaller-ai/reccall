@@ -143,6 +143,37 @@ reccall context stats
 }
 ```
 
+**By default, RecCall MCP server runs both stdio (for Cursor) and HTTP (for browser extensions) transports.**
+
+#### HTTP MCP Server (for Browser Extensions)
+
+The HTTP MCP server runs on `http://localhost:3000/mcp` by default, enabling browser extensions (Perplexity, Sora) to connect via HTTP.
+
+**CLI Options:**
+```bash
+# Default: both stdio and HTTP enabled
+reccall-mcp
+
+# Custom HTTP port
+reccall-mcp --http-port 8080
+
+# Only HTTP (for testing browser clients)
+reccall-mcp --http-only
+
+# Only stdio (Cursor only)
+reccall-mcp --stdio-only
+
+# Disable HTTP
+reccall-mcp --no-http
+```
+
+**Testing HTTP endpoint:**
+```bash
+curl -X POST http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
+```
+
 ### Browser Extensions
 - **Perplexity**: Inject context into AI search queries
 - **Sora**: Use video generation prompts with context shortcuts

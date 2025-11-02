@@ -1,103 +1,107 @@
 {
-  "name": "reccall",
-  "version": "2.1.0",
-  "description": "RecCall: Record and call context shortcuts across AI IDEs and environments (Cursor, VSCode, Warp, CLI)",
-  "type": "module",
-  "main": "./dist/index.js",
-  "files": [
-    "dist",
-    "starter-pack",
-    "index.js",
-    "index.d.ts",
-    "README.md",
-    "LICENSE"
-  ],
-  "exports": {
-    ".": "./dist/index.js",
-    "./core": "./dist/src/core/engine.js",
-    "./types": "./dist/src/types.js",
-    "./interfaces": "./dist/src/core/interfaces.js"
-  },
-  "bin": {
-    "reccall": "./dist/src/cli.js",
-    "reccall-mcp": "./dist/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/reccaller-ai/reccall.git"
-  },
-  "homepage": "https://reccaller.ai",
-  "bugs": {
-    "url": "https://github.com/reccaller-ai/reccall/issues"
-  },
-  "scripts": {
-    "build": "tsc && cp -r starter-pack dist/",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run build",
-    "dev": "tsc --watch",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
-    "test:e2e": "npm run build && node tests/e2e/test-dynamic-context.js && node tests/e2e/test-hybrid-context.js && node tests/e2e/test-mcp-tools.js",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
-    "type-check": "tsc --noEmit",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "publish:dry-run": "npm pack --dry-run"
-  },
-  "keywords": [
-    "mcp",
-    "cursor",
-    "vscode",
-    "warp",
-    "cli",
-    "context",
-    "shortcuts",
-    "reccall",
-    "ai-ide",
-    "enterprise",
-    "plugin-architecture",
-    "model-context-protocol",
-    "ai-assistant",
-    "context-management",
-    "ml",
-    "machine-learning"
-  ],
-  "author": "RecCall Team",
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
-    "commander": "^12.0.0",
-    "lru-cache": "^10.1.0",
-    "pino": "^10.1.0",
-    "reflect-metadata": "^0.2.2",
-    "tslib": "^2.8.1",
-    "tsyringe": "^4.10.0",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.4.1",
-    "@types/node": "^22.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "@vitest/ui": "^4.0.5",
-    "eslint": "^8.0.0",
-    "jsdom": "^27.0.1",
-    "prettier": "^3.0.0",
-    "tsx": "^4.6.2",
-    "typescript": "^5.6.0",
-    "vitest": "^4.0.5"
-  },
-  "optionalDependencies": {
-    "bull": "^4.12.2",
-    "ioredis": "^5.3.2",
-    "passport": "^0.7.0"
-  }
+	"name": "reccall",
+	"version": "2.1.0",
+	"description": "RecCall: Record and call context shortcuts across AI IDEs and environments (Cursor, VSCode, Warp, CLI)",
+	"type": "module",
+	"main": "./dist/index.js",
+	"files": [
+		"dist",
+		"starter-pack",
+		"index.js",
+		"index.d.ts",
+		"README.md",
+		"LICENSE"
+	],
+	"exports": {
+		".": "./dist/index.js",
+		"./core": "./dist/src/core/engine.js",
+		"./types": "./dist/src/types.js",
+		"./interfaces": "./dist/src/core/interfaces.js"
+	},
+	"bin": {
+		"reccall": "./dist/src/cli.js",
+		"reccall-mcp": "./dist/index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/reccaller-ai/reccall.git"
+	},
+	"homepage": "https://reccaller.ai",
+	"bugs": {
+		"url": "https://github.com/reccaller-ai/reccall/issues"
+	},
+	"scripts": {
+		"build": "tsc && cp -r starter-pack dist/",
+		"prepare": "npm run build",
+		"prepublishOnly": "npm run build",
+		"dev": "tsc --watch",
+		"test": "vitest",
+		"test:watch": "vitest --watch",
+		"test:e2e": "npm run build && node tests/e2e/test-dynamic-context.js && node tests/e2e/test-hybrid-context.js && node tests/e2e/test-mcp-tools.js",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"type-check": "tsc --noEmit",
+		"format": "biome format --write .",
+		"format:check": "biome format .",
+		"publish:dry-run": "npm pack --dry-run"
+	},
+	"keywords": [
+		"mcp",
+		"cursor",
+		"vscode",
+		"warp",
+		"cli",
+		"context",
+		"shortcuts",
+		"reccall",
+		"ai-ide",
+		"enterprise",
+		"plugin-architecture",
+		"model-context-protocol",
+		"ai-assistant",
+		"context-management",
+		"ml",
+		"machine-learning"
+	],
+	"author": "RecCall Team",
+	"license": "MIT",
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.0.0",
+		"commander": "^12.0.0",
+		"express": "^4.18.2",
+		"lru-cache": "^10.1.0",
+		"pino": "^10.1.0",
+		"reflect-metadata": "^0.2.2",
+		"tslib": "^2.8.1",
+		"tsyringe": "^4.10.0",
+		"zod": "^3.22.4"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.4.1",
+		"@types/express": "^4.17.21",
+		"@types/node": "^22.0.0",
+		"@typescript-eslint/eslint-plugin": "^6.0.0",
+		"@typescript-eslint/parser": "^6.0.0",
+		"@vitest/coverage-istanbul": "^4.0.6",
+		"@vitest/coverage-v8": "^4.0.6",
+		"@vitest/ui": "^4.0.5",
+		"eslint": "^8.0.0",
+		"jsdom": "^27.0.1",
+		"prettier": "^3.0.0",
+		"tsx": "^4.6.2",
+		"typescript": "^5.6.0",
+		"vitest": "^4.0.5"
+	},
+	"optionalDependencies": {
+		"bull": "^4.12.2",
+		"ioredis": "^5.3.2",
+		"passport": "^0.7.0"
+	}
 }
