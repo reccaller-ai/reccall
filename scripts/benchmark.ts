@@ -13,12 +13,61 @@ interface BenchmarkResult {
 class RecCallBenchmark {
   private results: BenchmarkResult[] = [];
 
+  // Allowed commands whitelist to prevent command injection
+  private readonly ALLOWED_COMMANDS = new Set([
+    'rec',
+    'call',
+    'list',
+    'search',
+    'update',
+    'delete'
+  ]);
+
+  /**
+   * Sanitize command to prevent command injection
+   * Only allows alphanumeric characters and hyphens
+   */
+  private sanitizeCommand(command: string): string {
+    if (!command || typeof command !== 'string') {
+      throw new Error('Invalid command: must be a non-empty string');
+    }
+    if (!this.ALLOWED_COMMANDS.has(command)) {
+      throw new Error(`Command '${command}' is not in the allowed whitelist`);
+    }
+    return command;
+  }
+
+  /**
+   * Sanitize arguments to prevent command injection
+   * Removes control characters and limits length
+   */
+  private sanitizeArgs(args: string[]): string[] {
+    if (!Array.isArray(args)) {
+      return [];
+    }
+    return args
+      .filter(arg => typeof arg === 'string' && arg.length > 0)
+      .map(arg => {
+        // Remove control characters and limit length to prevent injection
+        const sanitized = arg.replace(/[\x00-\x1F\x7F]/g, '');
+        // Limit each argument to 1000 characters
+        return sanitized.substring(0, 1000);
+      });
+  }
+
   async runCommand(command: string, args: string[] = []): Promise<BenchmarkResult> {
     const startTime = performance.now();
     
+    // Sanitize inputs to prevent command injection
+    const sanitizedCommand = this.sanitizeCommand(command);
+    const sanitizedArgs = this.sanitizeArgs(args);
+    
     return new Promise((resolve) => {
-      const child = spawn('node', ['dist/src/cli.js', command, ...args], {
-        stdio: 'pipe'
+      // Explicitly set shell: false to prevent shell injection
+      // Use array form to pass arguments safely
+      const child = spawn('node', ['dist/src/cli.js', sanitizedCommand, ...sanitizedArgs], {
+        stdio: 'pipe',
+        shell: false  // Explicitly disable shell to prevent injection
       });
 
       let stdout = '';
@@ -35,7 +84,7 @@ class RecCallBenchmark {
       child.on('close', (code) => {
         const duration = performance.now() - startTime;
         resolve({
-          command: `${command} ${args.join(' ')}`.trim(),
+          command: `${sanitizedCommand} ${sanitizedArgs.join(' ')}`.trim(),
           duration,
           success: code === 0,
           error: code !== 0 ? stderr : undefined
@@ -45,7 +94,7 @@ class RecCallBenchmark {
       child.on('error', (error) => {
         const duration = performance.now() - startTime;
         resolve({
-          command: `${command} ${args.join(' ')}`.trim(),
+          command: `${sanitizedCommand} ${sanitizedArgs.join(' ')}`.trim(),
           duration,
           success: false,
           error: error.message
