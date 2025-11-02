@@ -4,6 +4,15 @@
 
 This document analyzes the feasibility of unifying all RecCall integrations (Cursor, Perplexity, Sora) under the Model Context Protocol (MCP) for architectural consistency and design unity.
 
+## 🎯 Simplified Approach (Updated)
+
+**Since we're in early development with no client usage, we can take a simpler, breaking-change-friendly approach:**
+
+- ✅ **MCP as Default Path** - Primary integration method for all platforms
+- ✅ **Browser Extensions as Optional** - Keep browser extensions but as alternative, not default
+- ✅ **No Bridge Needed** - Direct MCP support for Perplexity and Sora via HTTP transport
+- ✅ **Breaking Changes OK** - We can simplify without backward compatibility concerns
+
 ## Current State
 
 ### Integration Methods
@@ -34,9 +43,9 @@ This document analyzes the feasibility of unifying all RecCall integrations (Cur
 
 **Conclusion**: It is **highly feasible** to unify all integrations under MCP with the following approach.
 
-## Proposed Unified Architecture
+## Proposed Unified Architecture (Simplified)
 
-### Option 1: MCP Server with Browser Bridge (Recommended)
+### MCP-First Approach (Recommended for Dev Phase)
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -49,18 +58,23 @@ This document analyzes the feasibility of unifying all RecCall integrations (Cur
         ┌───────────────┼───────────────┐
         │               │               │
 ┌───────▼──────┐  ┌────▼──────┐  ┌─────▼──────┐
-│ MCP Server   │  │ HTTP MCP  │  │ WebSocket  │
-│ (Stdio)      │  │ Bridge    │  │ MCP Bridge │
-│              │  │           │  │            │
+│ MCP Server   │  │ MCP HTTP  │  │ Browser    │
+│ (Stdio)      │  │ Transport │  │ Extension  │
+│              │  │ (SSE)     │  │ (Optional) │
 └───────┬──────┘  └─────┬─────┘  └─────┬──────┘
         │               │               │
     ┌───▼───┐      ┌────▼────┐    ┌────▼────┐
-    │Cursor │      │Browser  │    │Browser  │
-    │(MCP)  │      │Extension│    │Extension│
-    └───────┘      │(HTTP)   │    │(WS)     │
-                   └─────────┘    └─────────┘
-                   Perplexity      Sora
+    │Cursor │      │Perplexity│   │  Sora   │
+    │(MCP)  │      │(MCP HTTP)│   │(MCP HTTP)│
+    └───────┘      └──────────┘    └─────────┘
+      Primary         Primary       Primary
 ```
+
+**Key Changes**:
+- ✅ MCP HTTP transport is **primary path** for Perplexity/Sora
+- ✅ Browser extensions remain as **optional alternative**
+- ✅ No bridge needed - direct MCP connection
+- ✅ Simpler architecture
 
 ### Implementation Strategy
 
@@ -199,33 +213,25 @@ await client.callTool('rec_context_create', {
 });
 ```
 
-#### 4. Native Messaging Alternative
+#### 4. Browser Extensions (Optional Alternative)
 
-For tighter integration, use Chrome Native Messaging:
+Keep browser extensions as **optional alternative** for users who prefer direct browser integration:
 
-```json
-// Browser Extension manifest.json
-{
-  "nativeMessaging": "reccall-mcp-native",
-  "permissions": ["nativeMessaging"]
-}
-```
+**Browser Extension (Optional Path)**:
+- Uses `chrome.storage.local` (standalone)
+- Direct DOM injection
+- No MCP server required
+- Simpler setup for basic use cases
 
-```typescript
-// Native host that bridges extension → MCP server
-// src/adapters/browser/native-host.ts
-const mcpServer = spawn('reccall-mcp', [], { stdio: ['pipe', 'pipe', 'inherit'] });
+**MCP Path (Default/Recommended)**:
+- Connects to RecCall MCP server via HTTP
+- Full core engine features
+- ML-powered contexts
+- Unified storage
 
-chrome.runtime.onConnectNative.addListener((port) => {
-  port.onMessage.addListener((message) => {
-    mcpServer.stdin.write(JSON.stringify(message) + '\n');
-  });
-  
-  mcpServer.stdout.on('data', (data) => {
-    port.postMessage(JSON.parse(data.toString()));
-  });
-});
-```
+**User Choice**:
+- Power users → MCP (full features)
+- Casual users → Browser extension (simpler)
 
 ## Comparison: Current vs Proposed
 
@@ -267,44 +273,48 @@ chrome.runtime.onConnectNative.addListener((port) => {
 
 1. **Enhance MCPAdapter for Multiple Transports**
    - File: `src/adapters/mcp/index.ts`
-   - Add support for starting HTTP transport alongside stdio
+   - Add support for HTTP transport alongside stdio
    - Use existing `StreamableHTTPServerTransport` from SDK
+   - Default: start both stdio and HTTP simultaneously
 
 2. **Update index.ts Entry Point**
-   - Support `--http-port` flag for HTTP server
-   - Start both stdio (for Cursor) and HTTP (for extensions) simultaneously
+   - Default: start HTTP server on port 3000
+   - Support `--http-port` flag for customization
+   - Support `--no-http` to disable HTTP (stdio-only mode)
 
 3. **Add Express Dependency**
    - Required for `StreamableHTTPServerTransport`
    - Add to `package.json` dependencies
 
-### Phase 2: Browser Extension MCP Clients (Week 2-3)
+### Phase 2: Perplexity/Sora MCP Clients (Week 1-2)
 
-1. **Perplexity MCP Client**
-   - Replace direct storage with MCP client calls
-   - Connect to HTTP/WebSocket MCP bridge
-   - Maintain existing UI injection functionality
+1. **Create MCP Client Library**
+   - File: `src/adapters/browser/mcp-client.ts`
+   - Use MCP SDK's `StreamableHTTPClientTransport`
+   - Shared library for both Perplexity and Sora
 
-2. **Sora MCP Client**
-   - Replace direct storage with MCP client calls
-   - Connect to HTTP/WebSocket MCP bridge
+2. **Update Perplexity Integration**
+   - **Primary**: MCP client connecting to HTTP server
+   - **Optional**: Keep browser extension as alternative
+   - Maintain UI injection functionality
+
+3. **Update Sora Integration**
+   - **Primary**: MCP client connecting to HTTP server
+   - **Optional**: Keep browser extension as alternative
    - Maintain clipboard detection features
 
-3. **Unified Extension Base**
-   - Create shared MCP client library for extensions
-   - `src/adapters/browser/mcp-client.ts`
+### Phase 3: Documentation & Testing (Week 2)
 
-### Phase 3: Migration & Testing (Week 3-4)
-
-1. **Migrate Existing Extensions**
-   - Update Perplexity extension to use MCP
-   - Update Sora extension to use MCP
-   - Maintain backward compatibility during transition
+1. **Update Documentation**
+   - MCP as default integration method
+   - Browser extensions as optional alternative
+   - Setup instructions for both paths
 
 2. **Testing**
-   - E2E tests for all platforms
+   - E2E tests for MCP path
    - Verify core engine integration
    - Performance testing
+   - Test both MCP and browser extension paths
 
 ## Technical Considerations
 
@@ -359,59 +369,65 @@ chrome.runtime.onConnectNative.addListener((port) => {
 2. **Auto-start**: Extension launches server if not running
 3. **Lazy start**: Start server on first use
 
-#### Challenge 4: Migration Path
+#### Challenge 4: Breaking Changes
 
-**Problem**: Existing users have data in browser storage.
+**Problem**: Moving to MCP-first breaks existing browser extension usage.
 
 **Solution**:
-- Migration utility to sync browser storage → core engine
-- Dual-mode support during transition
-- Clear migration instructions
+- ✅ **Acceptable** - We're in dev phase with no production clients
+- ✅ **Cleaner** - No migration complexity needed
+- ✅ **Future-proof** - MCP is the standard path
+- Keep browser extensions as optional alternative for basic use cases
 
-## Recommended Approach
+## Recommended Approach (Simplified)
 
-### Primary: HTTP MCP Transport + Extension Clients ✅ RECOMMENDED
+### MCP-First Architecture ✅ SIMPLIFIED APPROACH
 
-**Why**:
-- ✅ **Built-in support** - MCP SDK already provides `StreamableHTTPServerTransport`
-- ✅ Simpler implementation (no custom code needed)
-- ✅ No native code required
-- ✅ Works across all browsers
-- ✅ Easy to debug and test
-- ✅ Server-Sent Events (SSE) for real-time updates
-- ✅ Can run on different ports for multiple instances
+**Since we're in dev phase with no clients, we can make breaking changes and simplify:**
+
+1. **MCP as Default** - All platforms primarily use MCP
+2. **HTTP Transport** - Perplexity and Sora connect via HTTP/SSE MCP transport
+3. **Browser Extensions Optional** - Keep as alternative path, not default
+4. **No Bridge** - Direct MCP integration, no compatibility layer needed
+
+**Why This Approach**:
+- ✅ **Simpler** - No bridge code, no migration complexity
+- ✅ **Unified** - All platforms use MCP by default
+- ✅ **Clean Architecture** - Single integration method
+- ✅ **Future-Proof** - MCP is the standard protocol
+- ✅ **Dev-Friendly** - Breaking changes are acceptable
 
 **Implementation**:
 
 ```typescript
-// Enhanced MCPAdapter supporting multiple transports
+// Enhanced MCPAdapter - supports stdio and HTTP simultaneously
 export class MCPAdapter {
   private server: Server;
   private stdioTransport?: StdioServerTransport;
   private httpTransport?: StreamableHTTPServerTransport;
 
   async start(options: {
-    stdio?: boolean;
-    http?: { port: number; expressApp?: any };
-  }) {
-    if (options.stdio) {
+    stdio?: boolean;  // For Cursor
+    http?: { port: number };  // For Perplexity/Sora (optional, but default for web)
+  } = { stdio: true, http: { port: 3000 } }) {
+    // Always start stdio for Cursor
+    if (options.stdio !== false) {
       this.stdioTransport = new StdioServerTransport();
       await this.server.connect(this.stdioTransport);
     }
     
+    // Start HTTP for Perplexity/Sora (default on)
     if (options.http) {
-      const app = options.expressApp || express();
+      const app = express();
       this.httpTransport = new StreamableHTTPServerTransport({
         server: app,
         path: '/mcp'
       });
       await this.server.connect(this.httpTransport);
       
-      if (!options.expressApp) {
-        app.listen(options.http.port, () => {
-          console.log(`MCP HTTP server on http://localhost:${options.http.port}/mcp`);
-        });
-      }
+      app.listen(options.http.port, () => {
+        console.log(`RecCall MCP HTTP server: http://localhost:${options.http.port}/mcp`);
+      });
     }
   }
 }
@@ -419,14 +435,17 @@ export class MCPAdapter {
 
 **Usage**:
 ```bash
-# Start with both stdio (Cursor) and HTTP (browser extensions)
+# Default: stdio (Cursor) + HTTP (Perplexity/Sora)
+reccall-mcp
+
+# Or configure ports
 reccall-mcp --http-port 3000
 ```
 
-**Browser Extension Integration**:
+**Perplexity/Sora Integration (MCP-First)**:
 
 ```typescript
-// Perplexity extension
+// Perplexity/Sora connect via MCP HTTP client
 import { MCPClient } from './mcp-client';
 
 const client = new MCPClient('http://localhost:3000/mcp');
@@ -502,11 +521,14 @@ await mcpAdapter.start({
 
 **Risk Level**: Low - Can maintain backward compatibility during migration
 
-## Next Steps
+## Next Steps (Simplified)
 
-1. Create HTTP/WebSocket transport implementations
-2. Enhance MCPAdapter to support multiple transports
-3. Update browser extensions to use MCP clients
-4. Add migration utilities for existing browser storage
-5. Update documentation and create PR
+1. ✅ Enhance MCPAdapter to support HTTP transport (using SDK's StreamableHTTPServerTransport)
+2. ✅ Create MCP client library for Perplexity/Sora
+3. ✅ Update Perplexity/Sora to use MCP as primary path
+4. ✅ Keep browser extensions as optional alternative (no removal)
+5. ✅ Update documentation (MCP-first, browser extensions optional)
+6. ✅ Create PR
+
+**No migration needed** - breaking changes acceptable in dev phase.
 

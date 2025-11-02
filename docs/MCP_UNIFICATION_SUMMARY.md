@@ -1,8 +1,17 @@
 # MCP Unification - Executive Summary
 
-## 🎯 Feasibility: ✅ HIGHLY FEASIBLE
+## 🎯 Feasibility: ✅ HIGHLY FEASIBLE (Simplified Approach)
 
 Unifying all integrations (Cursor, Perplexity, Sora) under MCP is **highly feasible** and recommended for architectural unity.
+
+## 🎯 Simplified Strategy (Updated)
+
+**Since we're in dev phase with no clients, we can make breaking changes:**
+
+- ✅ **MCP as Default** - Primary integration path for all platforms
+- ✅ **No Bridge Needed** - Direct MCP support via HTTP transport
+- ✅ **Browser Extensions Optional** - Keep as alternative, not default
+- ✅ **Breaking Changes OK** - Simpler without backward compatibility
 
 ## 🔑 Key Discovery
 
