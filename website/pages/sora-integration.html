@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sora Integration - RecCall</title>
+    <meta name="description" content="Learn how to integrate RecCall with Sora AI for persistent context in AI-powered code generation and assistance.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="../index.html" class="logo">RecCall</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="use-cases.html">Use Cases</a></li>
+                <li><a href="integrations.html">Integrations</a></li>
+                <li><a href="getting-started.html">Get Started</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" style="padding: 4rem 0;">
+        <div class="container">
+            <h1 class="hero-title" style="font-size: 2.5rem;">Sora Integration</h1>
+            <p class="hero-subtitle" style="font-size: 1.1rem;">
+                Enhance Sora AI with persistent context and knowledge management
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="integration-overview">
+                <h2>Overview</h2>
+                <p>RecCall integrates with Sora AI to provide persistent context and knowledge management for AI-powered code generation and assistance. Your project standards, architectural decisions, and coding patterns are automatically available in every Sora interaction.</p>
+                
+                <div class="feature-highlight">
+                    <h3>✨ Key Benefits</h3>
+                    <ul>
+                        <li><strong>Code Generation Context</strong>: Sora generates code that follows your project's patterns and standards</li>
+                        <li><strong>Architecture Awareness</strong>: Generated code considers your system architecture and dependencies</li>
+                        <li><strong>Consistent Style</strong>: Maintain coding style consistency across all AI-generated code</li>
+                        <li><strong>Knowledge Persistence</strong>: Project knowledge persists across sessions and conversations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">How to Integrate</h2>
+            
+            <div class="integration-steps">
+                <div class="step-detail">
+                    <div class="step-number">1</div>
+                    <h3>Install RecCall</h3>
+                    <p>First, ensure RecCall is installed globally:</p>
+                    <div class="code-block">
+npm install -g reccall
+                    </div>
+                    <p>Or use the automated installer:</p>
+                    <div class="code-block">
+curl -sfL https://reccaller.ai/install.sh | sh -
+                    </div>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-number">2</div>
+                    <h3>Configure Sora MCP Server</h3>
+                    <p>Sora supports Model Context Protocol (MCP). Configure RecCall as an MCP server:</p>
+                    <div class="code-block">
+{
+  "mcpServers": {
+    "reccall": {
+      "command": "reccall-mcp",
+      "args": [],
+      "env": {
+        "RECCALL_STORAGE_PATH": "$HOME/.reccall/contexts"
+      }
+    }
+  }
+}
+                    </div>
+                    <p><strong>Location:</strong> Add this configuration to your Sora MCP settings file (typically <code>~/.sora/mcp.json</code> or similar based on your Sora installation).</p>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-number">3</div>
+                    <h3>Create Project Contexts</h3>
+                    <p>Create contexts that define your project's standards and patterns:</p>
+                    <div class="code-block">
+# Create coding standards context
+reccall context create "typescript-standards" \
+  --content "Use TypeScript strict mode. Prefer interfaces over types. Use readonly for immutable properties. Always define return types explicitly." \
+  --tags typescript,standards,code-style
+
+# Create API design context
+reccall context create "api-design" \
+  --content "Follow RESTful principles. Use proper HTTP status codes. Implement pagination for list endpoints. Include request/response validation." \
+  --tags api,rest,design-patterns
+
+# Create from conversation (learns from past interactions)
+reccall context from-conversation "auth-patterns" \
+  --messages auth-conversation.json \
+  --tags authentication,security
+                    </div>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-number">4</div>
+                    <h3>Use in Sora</h3>
+                    <p>Once configured, your contexts are automatically available in Sora:</p>
+                    <ul>
+                        <li><strong>Automatic Context Injection</strong>: Relevant contexts are automatically included in Sora queries</li>
+                        <li><strong>Context-Aware Generation</strong>: Code generation considers your stored contexts and patterns</li>
+                        <li><strong>Semantic Search</strong>: Sora can search your contexts to find relevant patterns and examples</li>
+                        <li><strong>Dynamic Context Updates</strong>: Contexts can be created from Sora conversations automatically</li>
+                    </ul>
+                    <div class="code-block">
+# In Sora, you can request:
+"Generate a React component following my typescript-standards context"
+
+# Or:
+"Create an authentication endpoint using my auth-patterns context"
+
+# Contexts are automatically applied to improve code quality
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Available MCP Tools</h2>
+            <p>RecCall exposes the following MCP tools to Sora for context management:</p>
+            
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h3>rec_context_create</h3>
+                    <p>Create a new static context</p>
+                    <div class="code-block">
+{
+  "name": "context-name",
+  "content": "Context content",
+  "tags": ["tag1", "tag2"],
+  "category": "development"
+}
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>rec_context_get</h3>
+                    <p>Retrieve a context by name or ID</p>
+                    <div class="code-block">
+{
+  "identifier": "context-name-or-id"
+}
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>rec_context_search</h3>
+                    <p>Hybrid search (keyword + semantic) for finding relevant contexts</p>
+                    <div class="code-block">
+{
+  "query": "authentication patterns",
+  "limit": 10,
+  "filters": {
+    "tags": ["security"],
+    "category": "development"
+  }
+}
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>rec_context_from_conversation</h3>
+                    <p>Create dynamic context from conversation (ML-powered extraction)</p>
+                    <div class="code-block">
+{
+  "name": "conversation-summary",
+  "messages": [
+    {"role": "user", "content": "..."},
+    {"role": "assistant", "content": "..."}
+  ],
+  "tags": ["learned-pattern"],
+  "category": "development"
+}
+                    </div>
+                    <p><em>This automatically extracts: summary, topics, code references, and generates embeddings.</em></p>
+                </div>
+
+                <div class="tool-card">
+                    <h3>rec_context_enhance</h3>
+                    <p>Enhance a static context with ML insights from conversations</p>
+                    <div class="code-block">
+{
+  "contextId": "existing-context-id",
+  "conversationMessages": [...]
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Use Cases</h2>
+            
+            <div class="use-case-list">
+                <div class="use-case-item">
+                    <h3>🎨 Code Generation</h3>
+                    <p>Generate code that automatically follows your project's coding standards, naming conventions, and architectural patterns. Sora understands your preferences from contexts.</p>
+                </div>
+
+                <div class="use-case-item">
+                    <h3>🏗️ Architecture Consistency</h3>
+                    <p>Ensure generated code aligns with your system architecture. Sora considers your microservices patterns, API design, and database schemas when generating code.</p>
+                </div>
+
+                <div class="use-case-item">
+                    <h3>📚 Learning from Past Work</h3>
+                    <p>Convert successful Sora conversations into reusable contexts. Patterns that worked well are automatically learned and applied to future code generation.</p>
+                </div>
+
+                <div class="use-case-item">
+                    <h3>🔍 Context Discovery</h3>
+                    <p>Use Sora's enhanced search capabilities to discover relevant contexts and patterns. Find best practices faster with semantic search across your knowledge base.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Best Practices</h2>
+            
+            <div class="best-practices">
+                <div class="practice-item">
+                    <h3>📝 Create Granular Contexts</h3>
+                    <p>Create focused contexts for specific areas (e.g., "api-design", "error-handling", "testing-patterns") rather than one large context. This improves relevance and searchability.</p>
+                </div>
+
+                <div class="practice-item">
+                    <h3>🏷️ Use Meaningful Tags</h3>
+                    <p>Tag contexts with relevant keywords (e.g., "react", "typescript", "authentication") to improve discoverability and automatic context matching.</p>
+                </div>
+
+                <div class="practice-item">
+                    <h3>🔄 Update from Conversations</h3>
+                    <p>Regularly create contexts from successful Sora conversations to capture learned patterns and improve future code generation quality.</p>
+                </div>
+
+                <div class="practice-item">
+                    <h3>🔍 Leverage Hybrid Search</h3>
+                    <p>Use RecCall's hybrid search (keyword + semantic) to find relevant contexts quickly. This helps discover related patterns you might have forgotten.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Configuration Options</h2>
+            
+            <div class="config-options">
+                <h3>Environment Variables</h3>
+                <div class="code-block">
+# RecCall storage location
+export RECCALL_STORAGE_PATH="$HOME/.reccall/contexts"
+
+# Enable verbose logging for debugging
+export RECCALL_LOG_LEVEL="debug"
+
+# Configure cache TTL (in milliseconds)
+export RECCALL_CACHE_TTL=3600000
+
+# Enable automatic context creation from conversations
+export RECCALL_AUTO_CONTEXT=true
+                </div>
+
+                <h3>MCP Server Options</h3>
+                <div class="code-block">
+{
+  "mcpServers": {
+    "reccall": {
+      "command": "reccall-mcp",
+      "args": [
+        "--storage-path", "$HOME/.reccall/contexts",
+        "--log-level", "info",
+        "--auto-context"
+      ],
+      "env": {
+        "RECCALL_CACHE_TTL": "3600000",
+        "RECCALL_AUTO_CONTEXT": "true"
+      }
+    }
+  }
+}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Troubleshooting</h2>
+            
+            <div class="troubleshooting">
+                <div class="trouble-item">
+                    <h3>MCP Server Not Connecting</h3>
+                    <p><strong>Issue:</strong> Sora cannot connect to RecCall MCP server.</p>
+                    <p><strong>Solution:</strong> Verify RecCall is installed globally and the MCP configuration path is correct. Check Sora logs for connection errors.</p>
+                </div>
+
+                <div class="trouble-item">
+                    <h3>Contexts Not Applied</h3>
+                    <p><strong>Issue:</strong> Generated code doesn't follow your contexts.</p>
+                    <p><strong>Solution:</strong> Ensure contexts are tagged correctly and use semantic search to verify context relevance. Check that contexts are being loaded in Sora's MCP tool list.</p>
+                </div>
+
+                <div class="trouble-item">
+                    <h3>Performance Issues</h3>
+                    <p><strong>Issue:</strong> Context loading is slow or timing out.</p>
+                    <p><strong>Solution:</strong> Reduce the number of contexts loaded per query. Use filters to limit context scope. Increase cache TTL if contexts don't change frequently.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Get Started?</h2>
+            <p class="cta-subtitle">Install RecCall and enhance Sora with persistent context today.</p>
+            <div class="cta-buttons">
+                <a href="getting-started.html" class="btn btn-primary">Install RecCall</a>
+                <a href="integrations.html" class="btn btn-secondary">See All Integrations</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>RecCall</h4>
+                    <p>Stop repeating yourself to AI. Remember everything.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="use-cases.html">Use Cases</a></li>
+                        <li><a href="integrations.html">Integrations</a></li>
+                        <li><a href="how-it-works.html">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="getting-started.html">Getting Started</a></li>
+                        <li><a href="https://github.com/reccaller-ai/reccall">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 RecCall. Open source under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .integration-overview {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .feature-highlight {
+            background: linear-gradient(135deg, var(--primary-light) 0%, white 100%);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-highlight ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-highlight li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .feature-highlight li:last-child {
+            border-bottom: none;
+        }
+
+        .step-detail {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-left: 5rem;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 2rem;
+            top: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tool-card {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .tool-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: var(--gray-900);
+            color: var(--gray-100);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            line-height: 1.6;
+        }
+
+        .use-case-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .use-case-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--gray-200);
+        }
+
+        .use-case-item h3 {
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .best-practices {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .practice-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .practice-item h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .config-options {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid var(--gray-200);
+        }
+
+        .config-options h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .config-options h3:first-child {
+            margin-top: 0;
+        }
+
+        .troubleshooting {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .trouble-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .trouble-item h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .trouble-item p {
+            margin: 0.5rem 0;
+            color: var(--gray-600);
+        }
+    </style>
+</body>
+</html>
+
