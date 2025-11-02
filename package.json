@@ -37,6 +37,7 @@
     "dev": "tsc --watch",
     "test": "vitest",
     "test:watch": "vitest --watch",
+    "test:e2e": "npm run build && node tests/e2e/test-dynamic-context.js && node tests/e2e/test-hybrid-context.js && node tests/e2e/test-mcp-tools.js",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "type-check": "tsc --noEmit",
