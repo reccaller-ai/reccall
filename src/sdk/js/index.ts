@@ -318,7 +318,7 @@ export class ReccallSDK {
       const response = await this.request<{ context: Context }>(`/contexts/${identifier}`);
       return response.context;
     } catch (error) {
-      if (error instanceof Error && error.message.includes('404')) {
+      if (error instanceof Error && (error.message.includes('404') || error.message.includes('Not Found'))) {
         return null;
       }
       throw error;
