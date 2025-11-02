@@ -54,8 +54,21 @@
 
     <section class="section section-alt">
         <div class="container">
-            <h2 class="section-title">How to Integrate</h2>
+            <h2 class="section-title">Integration Methods</h2>
             
+            <div class="integration-method-card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #10b981; padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <span style="font-size: 2rem;">🔄</span>
+                    <div>
+                        <h3 style="margin: 0; color: #059669;">MCP Integration (Primary - Recommended)</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: #047857; font-weight: 500;">Full-featured integration with core engine</p>
+                    </div>
+                </div>
+                <p style="color: var(--gray-700); margin-bottom: 1.5rem;">
+                    Connect Sora to RecCall via <strong>MCP HTTP transport</strong> for full access to ML-powered contexts, unified storage, semantic search, and all core engine features for video prompts.
+                </p>
+            </div>
+
             <div class="integration-steps">
                 <div class="step-detail">
                     <div class="step-number">1</div>
@@ -72,55 +85,61 @@ curl -sfL https://reccaller.ai/install.sh | sh -
 
                 <div class="step-detail">
                     <div class="step-number">2</div>
-                    <h3>Install Browser Extension</h3>
-                    <p>RecCall integrates with OpenAI's Sora via a browser extension that injects video prompt context management into the OpenAI website.</p>
-                    <ol>
-                        <li><strong>Download Extension:</strong> The extension files are located in <code>src/adapters/sora/extension/</code></li>
-                        <li><strong>Load Extension in Chrome/Edge:</strong>
-                            <ul>
-                                <li>Open Chrome/Edge and navigate to <code>chrome://extensions/</code></li>
-                                <li>Enable "Developer mode" (toggle in top-right)</li>
-                                <li>Click "Load unpacked"</li>
-                                <li>Select the <code>src/adapters/sora/extension/</code> directory</li>
-                            </ul>
-                        </li>
-                        <li><strong>Verify Installation:</strong> You should see "RecCall for Sora" in your extensions list</li>
-                    </ol>
-                    <p><strong>Note:</strong> This extension works with OpenAI's Sora video generation on <code>openai.com</code> and <code>chat.openai.com</code>. The extension injects a UI panel for managing video generation prompts.</p>
+                    <h3>Start MCP HTTP Server</h3>
+                    <p>RecCall MCP server runs HTTP transport by default on <code>http://localhost:3000/mcp</code>:</p>
+                    <div class="code-block">
+# Default: both stdio (Cursor) and HTTP (browser) enabled
+reccall-mcp
+
+# Or HTTP-only mode
+reccall-mcp --http-only
+
+# Custom port
+reccall-mcp --http-port 8080
+                    </div>
+                    <p><strong>Verify:</strong> You should see "RecCall MCP HTTP server running on http://localhost:3000/mcp"</p>
                 </div>
 
                 <div class="step-detail">
                     <div class="step-number">3</div>
-                    <h3>Access RecCall for Sora</h3>
-                    <p>Once the extension is installed:</p>
+                    <h3>Install Browser Extension (MCP Client)</h3>
+                    <p>The Sora browser extension now uses <strong>MCP client</strong> to connect to the HTTP server:</p>
                     <ol>
-                        <li>Visit <a href="https://openai.com" target="_blank">openai.com</a> or <a href="https://chat.openai.com" target="_blank">chat.openai.com</a></li>
-                        <li>Navigate to Sora video generation interface</li>
-                        <li>Look for the <strong>🎬 RecCall</strong> button</li>
-                        <li>Click the button to open the video context panel</li>
+                        <li><strong>Download Extension:</strong> Extension files in <code>src/adapters/sora/extension/</code></li>
+                        <li><strong>Load Extension:</strong>
+                            <ul>
+                                <li>Open Chrome/Edge → <code>chrome://extensions/</code></li>
+                                <li>Enable "Developer mode"</li>
+                                <li>Click "Load unpacked"</li>
+                                <li>Select <code>src/adapters/sora/extension/</code></li>
+                            </ul>
+                        </li>
+                        <li><strong>Extension Configuration:</strong> The extension automatically connects to <code>http://localhost:3000/mcp</code></li>
                     </ol>
-                    <p><strong>Visual Integration:</strong> The extension injects a RecCall button and panel for managing video generation prompts and contexts.</p>
+                    <p><strong>Benefits:</strong> Extension uses RecCall's core engine via MCP, giving you full access to ML-powered contexts, unified storage, and semantic search for video prompts.</p>
                 </div>
 
                 <div class="step-detail">
                     <div class="step-number">4</div>
-                    <h3>Use Video Context Shortcuts</h3>
-                    <p>The extension provides the following features for video generation:</p>
+                    <h3>Use Video Context Shortcuts (via MCP)</h3>
+                    <p>With MCP integration, you get access to all RecCall features:</p>
                     <ul>
-                        <li><strong>Record Video Prompts:</strong> Save frequently used video generation prompts as shortcuts</li>
-                        <li><strong>Call Contexts:</strong> Click "Use" to inject saved prompts into the input field</li>
-                        <li><strong>Clipboard Detection:</strong> Automatically detects video prompts in clipboard and suggests saving them</li>
-                        <li><strong>Copy to Clipboard:</strong> Copy prompts to clipboard for easy pasting</li>
+                        <li><strong>Record Video Prompts:</strong> Save video generation prompts via MCP tools</li>
+                        <li><strong>Call Contexts:</strong> Inject saved prompts into Sora interface</li>
+                        <li><strong>ML-Powered Contexts:</strong> Create dynamic contexts from video generation sessions</li>
+                        <li><strong>Semantic Search:</strong> Find video prompts by meaning, not just keywords</li>
+                        <li><strong>Unified Storage:</strong> All prompts stored in core engine, synced across platforms</li>
+                        <li><strong>Clipboard Detection:</strong> Auto-detect and save prompts from clipboard</li>
                     </ul>
                     <div class="code-block">
-# Example workflow:
-1. Create a video prompt: "A cinematic shot of a sunset over mountains"
-2. If this is a style you'll reuse, click RecCall button
-3. Click "+ Add Video Context", name it "sunset-scene"
-4. Next time, click "Use" on "sunset-scene" to inject it instantly
-5. Or copy it to clipboard for pasting elsewhere
+# Example MCP workflow:
+1. Start MCP server: reccall-mcp
+2. Extension connects to http://localhost:3000/mcp
+3. Create video context: Extension calls MCP tool 'rec_context_create'
+4. Search contexts: Use semantic search via MCP for video styles
+5. Inject prompt: Extension calls 'rec_context_get' and injects into Sora
                     </div>
-                    <p><strong>Storage:</strong> Video prompts are stored locally in your browser using Chrome's storage API. They persist across sessions.</p>
+                    <p><strong>Storage:</strong> All video prompts stored in RecCall's core engine (filesystem), accessible from any platform.</p>
                 </div>
             </div>
         </div>
@@ -128,57 +147,73 @@ curl -sfL https://reccaller.ai/install.sh | sh -
 
     <section class="section">
         <div class="container">
-            <h2 class="section-title">Extension Features</h2>
-            <p>The Sora browser extension provides the following capabilities for video generation:</p>
+            <h2 class="section-title">MCP Integration Features</h2>
+            <p>The MCP-first integration provides comprehensive capabilities for video generation:</p>
             
             <div class="tool-grid">
                 <div class="tool-card">
-                    <h3>🎬 RecCall Button</h3>
-                    <p>Visual button injected into OpenAI's interface for video context management</p>
+                    <h3>🔄 MCP HTTP Client</h3>
+                    <p>Browser extension connects to RecCall via MCP HTTP transport</p>
                     <ul>
-                        <li>Appears near the video generation input</li>
-                        <li>One-click access to video context panel</li>
-                        <li>Non-intrusive UI integration</li>
+                        <li>Connects to <code>http://localhost:3000/mcp</code></li>
+                        <li>Full access to all MCP tools</li>
+                        <li>Stateless requests for concurrent access</li>
+                        <li>Automatic reconnection on failure</li>
                     </ul>
                 </div>
 
                 <div class="tool-card">
-                    <h3>📋 Video Context Panel</h3>
-                    <p>Manage your video generation prompts and contexts</p>
+                    <h3>🎬 Video Prompt Management</h3>
+                    <p>Save and organize video generation prompts</p>
                     <ul>
-                        <li>View all saved video prompts</li>
-                        <li>Quick access to use or copy prompts</li>
-                        <li>Add new video contexts on the fly</li>
+                        <li>Create contexts for video styles</li>
+                        <li>Tag and categorize prompts</li>
+                        <li>Version control support</li>
+                        <li>Search by style, mood, technique</li>
                     </ul>
                 </div>
 
                 <div class="tool-card">
-                    <h3>📋 Clipboard Detection</h3>
-                    <p>Automatically detects video prompts in clipboard</p>
+                    <h3>🧠 ML-Powered Contexts</h3>
+                    <p>Create dynamic contexts from video generation sessions</p>
                     <ul>
-                        <li>Monitors clipboard for video-related content</li>
-                        <li>Suggests saving prompts automatically</li>
-                        <li>Helps capture prompts from other sources</li>
+                        <li>Automatic summarization of video prompts</li>
+                        <li>Topic extraction (styles, techniques)</li>
+                        <li>Semantic embeddings for search</li>
+                        <li>Pattern recognition</li>
                     </ul>
                 </div>
 
                 <div class="tool-card">
-                    <h3>📋 Copy to Clipboard</h3>
-                    <p>Quickly copy video prompts for use elsewhere</p>
+                    <h3>🔍 Hybrid Search</h3>
+                    <p>Find video prompts using keyword and semantic search</p>
                     <ul>
-                        <li>One-click copy button for each prompt</li>
-                        <li>Easy sharing between tools</li>
-                        <li>Paste into any video generation interface</li>
+                        <li>Fast keyword matching</li>
+                        <li>Meaning-based semantic search</li>
+                        <li>Filter by style, mood, technique</li>
+                        <li>Combined results for accuracy</li>
                     </ul>
                 </div>
 
                 <div class="tool-card">
-                    <h3>💾 Local Storage</h3>
-                    <p>Video prompts stored in browser local storage</p>
+                    <h3>💾 Unified Storage</h3>
+                    <p>All video prompts stored in RecCall's core engine</p>
                     <ul>
-                        <li>Persistent across sessions</li>
-                        <li>Device-specific storage</li>
-                        <li>Fast access with no network calls</li>
+                        <li>Persistent across platforms</li>
+                        <li>Synced across Cursor, CLI, extensions</li>
+                        <li>Single source of truth</li>
+                        <li>Backup and version control</li>
+                    </ul>
+                </div>
+
+                <div class="tool-card">
+                    <h3>🎯 Extension UI</h3>
+                    <p>Visual interface for managing video contexts</p>
+                    <ul>
+                        <li>RecCall button in Sora interface</li>
+                        <li>Video context panel</li>
+                        <li>Quick prompt injection</li>
+                        <li>Clipboard detection</li>
                     </ul>
                 </div>
             </div>

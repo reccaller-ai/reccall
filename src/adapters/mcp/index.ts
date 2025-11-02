@@ -36,6 +36,7 @@ export class MCPAdapter {
   // Transport instances
   private stdioTransport?: StdioServerTransport;
   private httpServer?: ReturnType<Express['listen']>;
+  private httpServerInstance?: Server; // Separate server instance for HTTP to avoid transport conflicts
 
   constructor(engine: ICoreEngine, contextEngine?: ContextEngine) {
     this.engine = engine;
@@ -60,9 +61,24 @@ export class MCPAdapter {
     this.setupHandlers();
   }
 
+  /**
+   * Setup handlers on a server instance (used for both stdio and HTTP servers)
+   */
+  private setupHandlersOnServer(server: Server): void {
+    this.setupHandlersForServer(server);
+  }
+
   private setupHandlers(): void {
+    this.setupHandlersForServer(this.server);
+  }
+
+  /**
+   * Setup handlers on a specific server instance
+   * This allows us to have separate server instances for stdio and HTTP
+   */
+  private setupHandlersForServer(server: Server): void {
     // List available tools (cached for performance)
-    this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+    server.setRequestHandler(ListToolsRequestSchema, async () => {
       // Cache tools list to reduce overhead
       const now = Date.now();
       if (this.toolsCache && (now - this.cacheTimestamp) < this.CACHE_TTL) {
@@ -346,7 +362,7 @@ export class MCPAdapter {
     });
 
     // Handle tool calls
-    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { name, arguments: args } = request.params;
 
       try {
@@ -814,23 +830,57 @@ export class MCPAdapter {
         app.use(express.json());
       }
 
+      // Create a separate server instance for HTTP to avoid transport conflicts with stdio
+      // The stdio server (this.server) is already connected to stdio transport
+      // HTTP needs its own server instance to handle concurrent requests
+      this.httpServerInstance = new Server(
+        {
+          name: 'reccall-http',
+          version: '1.0.0',
+        },
+        {
+          capabilities: {
+            tools: {},
+          },
+        },
+      );
+
+      // Setup the same handlers on HTTP server instance
+      this.setupHandlersOnServer(this.httpServerInstance);
+
       // HTTP transport - according to SDK docs, create transport per request
-      // Attach transport to Express route
+      // For HTTP, we use a stateless approach (no session ID) to allow multiple concurrent requests
       app.post('/mcp', async (req, res) => {
-        // Create a new transport for each request to prevent request ID collisions
-        const transport = new StreamableHTTPServerTransport({
-          sessionIdGenerator: () => randomUUID(),
-          enableJsonResponse: true, // Use JSON responses for simpler browser integration
-        });
+        try {
+          // Create a new transport for each request to prevent request ID collisions
+          // Stateless mode (no session ID) for better concurrent request handling
+          const transport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: undefined, // Stateless mode
+            enableJsonResponse: true, // Use JSON responses for simpler browser integration
+          });
 
-        // Clean up transport when response closes
-        res.on('close', () => {
-          transport.close();
-        });
+          // Clean up transport when response closes
+          res.on('close', () => {
+            transport.close();
+          });
 
-        // Connect server to this transport and handle request
-        await this.server.connect(transport);
-        await transport.handleRequest(req, res, req.body);
+          // Connect HTTP server instance to this transport and handle request
+          await this.httpServerInstance!.connect(transport);
+          await transport.handleRequest(req, res, req.body);
+        } catch (error) {
+          console.error('HTTP transport error:', error);
+          if (!res.headersSent) {
+            res.status(500).json({
+              jsonrpc: '2.0',
+              id: req.body?.id ?? null,
+              error: {
+                code: -32603,
+                message: 'Internal error',
+                data: error instanceof Error ? error.message : String(error)
+              }
+            });
+          }
+        }
       });
 
       // Start HTTP server if we created the app
