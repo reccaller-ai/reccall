@@ -16,7 +16,8 @@
 		".": "./dist/index.js",
 		"./core": "./dist/src/core/engine.js",
 		"./types": "./dist/src/types.js",
-		"./interfaces": "./dist/src/core/interfaces.js"
+		"./interfaces": "./dist/src/core/interfaces.js",
+		"./sdk": "./dist/src/sdk/js/index.js"
 	},
 	"bin": {
 		"reccall": "./dist/src/cli.js",
