@@ -166,10 +166,14 @@ ci-deps: ## CI: Install dependencies (frozen lockfile)
 
 ci-test: ## CI: Run tests (with coverage, fallback to without coverage)
 	@echo "$(BLUE)CI: Running tests...$(NC)"
-	@if $(PKG_RUN) test --run --coverage 2>/dev/null; then \
+	@set +e; \
+	$(PKG_RUN) test --run --coverage; \
+	TEST_EXIT_CODE=$$?; \
+	if [ $$TEST_EXIT_CODE -eq 0 ]; then \
 		echo "$(GREEN)CI: Tests with coverage passed!$(NC)"; \
+		exit 0; \
 	else \
-		echo "$(YELLOW)CI: Coverage test failed, running tests without coverage...$(NC)"; \
+		echo "$(YELLOW)CI: Coverage test failed (exit code $$TEST_EXIT_CODE), running tests without coverage...$(NC)"; \
 		$(PKG_RUN) test --run; \
 	fi
 

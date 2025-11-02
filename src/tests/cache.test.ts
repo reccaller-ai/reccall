@@ -41,16 +41,16 @@ describe("MultiLayerCacheManager", () => {
 		});
 
 	it("should respect TTL", async () => {
-		await cache.set("ttl-key", "value", 1); // 1 second TTL
+		await cache.set("ttl-key", "value", 1000); // 1 second TTL (1000ms)
 		
-		// Small delay to ensure set is complete (coverage adds overhead)
-		await new Promise((resolve) => setTimeout(resolve, 10));
+		// Small delay to ensure set is complete
+		await new Promise((resolve) => setTimeout(resolve, 50));
 		
 		const result1 = await cache.get("ttl-key");
 		expect(result1).toBe("value");
 
-		// Wait for TTL to expire
-		await new Promise((resolve) => setTimeout(resolve, 1100));
+		// Wait for TTL to expire (add buffer for coverage overhead)
+		await new Promise((resolve) => setTimeout(resolve, 1200));
 		const result2 = await cache.get("ttl-key");
 		expect(result2).toBeNull();
 	});
