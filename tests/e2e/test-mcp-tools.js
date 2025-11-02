@@ -14,7 +14,7 @@ const __dirname = dirname(__filename);
 async function testMCPTools() {
   console.log('🧪 Testing MCP Tools for Cursor Integration...\n');
   
-  const mcpPath = join(__dirname, 'dist/index.js');
+  const mcpPath = join(__dirname, '../../dist/index.js');
   console.log(`📦 MCP Server Path: ${mcpPath}\n`);
   
   // Test 1: Check if MCP server starts

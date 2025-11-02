@@ -3,7 +3,7 @@
  * Test script for hybrid context enhancement
  */
 
-import { createContextEngine } from './dist/src/core/container.js';
+import { createContextEngine } from '../../dist/src/core/container.js';
 
 async function testHybridContext() {
   try {

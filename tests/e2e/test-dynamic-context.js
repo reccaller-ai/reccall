@@ -3,7 +3,7 @@
  * Test script for dynamic context creation with ML processing
  */
 
-import { createContextEngine } from './dist/src/core/container.js';
+import { createContextEngine } from '../../dist/src/core/container.js';
 
 const testMessages = [
   {
