@@ -427,10 +427,24 @@ export class MCPAdapter {
 						}
 
 						const shortcutDetails = shortcuts
-							.map(
-								(s) =>
-									`• ${s.id}: ${s.context.substring(0, 100)}${s.context.length > 100 ? "..." : ""}`,
-							)
+							.map((s) => {
+								// Safely handle context - ensure it's a string
+								let contextStr: string;
+								if (typeof s.context === 'string') {
+									contextStr = s.context;
+								} else if (s.context !== null && s.context !== undefined) {
+									// Convert to string if it's not already
+									contextStr = String(s.context);
+								} else {
+									contextStr = '(no context)';
+								}
+								
+								const preview = contextStr.length > 100 
+									? contextStr.substring(0, 100) + '...' 
+									: contextStr;
+								
+								return `• ${s.id}: ${preview}`;
+							})
 							.join("\n");
 
 						return {
@@ -499,12 +513,55 @@ export class MCPAdapter {
 
 					case "call": {
 						const { shortcut } = args as { shortcut: string };
-						const context = await this.engine.call(shortcut as ShortcutId);
+						
+						// Try to get from old shortcut system first
+						let contextStr: string | null = null;
+						try {
+							const context = await this.engine.call(shortcut as ShortcutId);
+							if (context) {
+								contextStr = context;
+							}
+						} catch (error) {
+							// Shortcut not found in old system, try Context system
+							if (this.contextEngine) {
+								try {
+									const context = await this.contextEngine.use(shortcut, "mcp");
+									if (context) {
+										// Safely handle context content
+										if (typeof context.content === 'string') {
+											contextStr = context.content;
+										} else if (context.content !== null && context.content !== undefined) {
+											contextStr = String(context.content);
+										}
+									}
+								} catch (contextError) {
+									// Context not found either
+								}
+							}
+						}
+						
+						// If still not found, show error
+						if (!contextStr) {
+							return {
+								content: [
+									{
+										type: "text",
+										text: `❌ Shortcut or context '${shortcut}' not found. Use 'rec <shortcut> <context>' to create a shortcut, or 'rec_context_create' to create a context.`,
+									},
+								],
+							};
+						}
+						
+						// Safely handle context - ensure it's a string
+						if (typeof contextStr !== 'string') {
+							contextStr = String(contextStr);
+						}
+						
 						return {
 							content: [
 								{
 									type: "text",
-									text: `EXECUTE THESE INSTRUCTIONS: ${context}\n\nPlease follow and execute the above instructions immediately.`,
+									text: `EXECUTE THESE INSTRUCTIONS: ${contextStr}\n\nPlease follow and execute the above instructions immediately.`,
 								},
 							],
 						};
@@ -551,10 +608,24 @@ export class MCPAdapter {
 						}
 
 						const results = shortcuts
-							.map(
-								(s) =>
-									`• ${s.id}: ${s.context.substring(0, 100)}${s.context.length > 100 ? "..." : ""}`,
-							)
+							.map((s) => {
+								// Safely handle context - ensure it's a string
+								let contextStr: string;
+								if (typeof s.context === 'string') {
+									contextStr = s.context;
+								} else if (s.context !== null && s.context !== undefined) {
+									// Convert to string if it's not already
+									contextStr = String(s.context);
+								} else {
+									contextStr = '(no context)';
+								}
+								
+								const preview = contextStr.length > 100 
+									? contextStr.substring(0, 100) + '...' 
+									: contextStr;
+								
+								return `• ${s.id}: ${preview}`;
+							})
 							.join("\n");
 
 						return {
@@ -604,10 +675,13 @@ export class MCPAdapter {
 						}
 
 						const recipeList = recipes
-							.map(
-								(r) =>
-									`• ${r.shortcut}: ${r.name || r.shortcut}\n  ${r.description}`,
-							)
+							.map((r) => {
+								// Safely handle recipe fields - ensure they're strings
+								const shortcut = typeof r.shortcut === 'string' ? r.shortcut : String(r.shortcut || 'unknown');
+								const name = typeof r.name === 'string' ? r.name : (r.name ? String(r.name) : shortcut);
+								const description = typeof r.description === 'string' ? r.description : (r.description ? String(r.description) : '(no description)');
+								return `• ${shortcut}: ${name}\n  ${description}`;
+							})
 							.join("\n");
 
 						return {
@@ -698,11 +772,23 @@ export class MCPAdapter {
 								],
 							};
 						}
+						
+						// Safely handle context content - ensure it's a string
+						let contentStr: string;
+						if (typeof context.content === 'string') {
+							contentStr = context.content;
+						} else if (context.content !== null && context.content !== undefined) {
+							// Convert to string if it's not already
+							contentStr = String(context.content);
+						} else {
+							contentStr = '(no content available)';
+						}
+						
 						return {
 							content: [
 								{
 									type: "text",
-									text: context.content,
+									text: contentStr,
 								},
 							],
 						};
@@ -733,12 +819,12 @@ export class MCPAdapter {
 										{
 											count: results.length,
 											contexts: results.map((c) => ({
-												id: c.id,
-												name: c.name,
-												description: c.description,
-												tags: c.tags,
-												type: c.type,
-												source: c.source,
+												id: typeof c.id === 'string' ? c.id : String(c.id || 'unknown'),
+												name: typeof c.name === 'string' ? c.name : String(c.name || 'unnamed'),
+												description: typeof c.description === 'string' ? c.description : (c.description ? String(c.description) : undefined),
+												tags: Array.isArray(c.tags) ? c.tags.map(t => typeof t === 'string' ? t : String(t)) : [],
+												type: typeof c.type === 'string' ? c.type : String(c.type || 'static'),
+												source: typeof c.source === 'string' ? c.source : String(c.source || 'local'),
 											})),
 										},
 										null,
@@ -773,11 +859,11 @@ export class MCPAdapter {
 										{
 											count: contexts.length,
 											contexts: contexts.map((c) => ({
-												id: c.id,
-												name: c.name,
-												description: c.description,
-												type: c.type,
-												source: c.source,
+												id: typeof c.id === 'string' ? c.id : String(c.id || 'unknown'),
+												name: typeof c.name === 'string' ? c.name : String(c.name || 'unnamed'),
+												description: typeof c.description === 'string' ? c.description : (c.description ? String(c.description) : undefined),
+												type: typeof c.type === 'string' ? c.type : String(c.type || 'static'),
+												source: typeof c.source === 'string' ? c.source : String(c.source || 'local'),
 											})),
 										},
 										null,
