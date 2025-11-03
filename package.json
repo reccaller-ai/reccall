@@ -1,6 +1,6 @@
 {
 	"name": "reccall",
-	"version": "2.1.2",
+	"version": "2.1.3",
 	"description": "RecCall: Record and call context shortcuts across AI IDEs and environments (Cursor, VSCode, Warp, CLI)",
 	"type": "module",
 	"main": "./dist/index.js",
