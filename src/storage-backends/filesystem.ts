@@ -132,7 +132,26 @@ export class FileSystemStorage implements IContextStorage {
           };
         } else if (typeof value === 'object' && value !== null) {
           // New format: { shortcut: Shortcut }
-          shortcuts[key] = value as Shortcut;
+          const shortcutObj = value as any;
+          
+          // Ensure context is always a string (handle corrupted/malformed data)
+          let contextStr: string;
+          if (typeof shortcutObj.context === 'string') {
+            contextStr = shortcutObj.context;
+          } else if (shortcutObj.context !== null && shortcutObj.context !== undefined) {
+            contextStr = String(shortcutObj.context);
+          } else {
+            contextStr = '(no context)';
+          }
+          
+          shortcuts[key] = {
+            id: (shortcutObj.id || key) as ShortcutId,
+            context: contextStr,
+            createdAt: shortcutObj.createdAt ? new Date(shortcutObj.createdAt) : new Date(),
+            updatedAt: shortcutObj.updatedAt ? new Date(shortcutObj.updatedAt) : new Date(),
+            category: shortcutObj.category,
+            description: shortcutObj.description
+          } as Shortcut;
         }
       }
       
