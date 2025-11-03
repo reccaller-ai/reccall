@@ -117,6 +117,8 @@ Overall Statistics:
 
 ## Website Claims Validation
 
+> **Note**: The website has been moved to a separate repository: [reccaller-ai/websites](https://github.com/reccaller-ai/websites). Original website files are archived in `website-archive/` in this repository.
+
 ### ✅ Verified Claims from how-it-works.html
 
 1. **"Three Context Types"** ✅

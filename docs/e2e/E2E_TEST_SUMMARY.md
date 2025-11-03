@@ -73,6 +73,8 @@ Usage tracking: ✅ Working
 
 ## Website Claims Validation
 
+> **Note**: The website has been moved to a separate repository: [reccaller-ai/websites](https://github.com/reccaller-ai/websites). Original website files are archived in `website-archive/` in this repository.
+
 ✅ All claims on how-it-works.html verified:
 - Three context types working
 - ML-powered intelligence operational

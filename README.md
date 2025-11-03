@@ -501,7 +501,7 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 ## 🔗 Links
 
-- **Main Site**: https://reccaller.ai
+- **Main Site**: https://reccaller.ai (website hosted at [reccaller-ai/websites](https://github.com/reccaller-ai/websites))
 - **Repository**: https://github.com/reccaller-ai/reccall
 - **Contexts**: https://contexts.reccaller.ai
 - **Issues**: https://github.com/reccaller-ai/reccall/issues

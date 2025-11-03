@@ -2,6 +2,8 @@
 
 This document provides the research basis and citations for the statistics and claims used in RecCall's marketing materials and website.
 
+> **Note**: The website has been moved to a separate repository: [reccaller-ai/websites](https://github.com/reccaller-ai/websites). Original website files are archived in `website-archive/` in this repository.
+
 ## Key Statistics & Data Sources
 
 ### 1. Developers Waste 2-3 Hours Per Day Re-explaining Context
@@ -127,6 +129,8 @@ When referencing these statistics:
    > "The annual value of $50,000+ per developer is calculated based on average developer salaries (BLS, 2024), time savings of 500+ hours per year, and additional productivity benefits including reduced errors and faster onboarding."
 
 ## Recommended Updates to Website
+
+> **Note**: Website is now maintained in [reccaller-ai/websites](https://github.com/reccaller-ai/websites) repository.
 
 1. Add a "Research & Data Sources" section or page
 2. Include footnotes/references in hero section statistics

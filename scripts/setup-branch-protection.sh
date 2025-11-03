@@ -65,11 +65,11 @@ rm /tmp/branch-protection.json
 
 echo "✅ Branch protection rules configured successfully!"
 
-# Enable GitHub Pages (using Actions deployment - path configured in workflow)
-echo "🌐 GitHub Pages configured via Actions workflow..."
-echo "   Source: website/ directory"
+# GitHub Pages is now configured in the separate websites repository
+echo "🌐 GitHub Pages configured in separate repository..."
+echo "   Repository: reccaller-ai/websites"
 echo "   Branch: main"
-echo "   Note: Pages source is set via GitHub Actions (actions/configure-pages@v4)"
+echo "   Note: Website deployment moved to https://github.com/reccaller-ai/websites"
 
 echo "✅ GitHub Pages configuration updated!"
 

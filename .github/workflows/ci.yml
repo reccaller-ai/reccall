@@ -95,82 +95,9 @@ jobs:
           index.d.ts
         retention-days: 30
 
-  deploy:
-    name: Deploy to GitHub Pages
-    runs-on: ubuntu-latest
-    # Run deployment if we're on main branch AND comprehensive-test completed
-    # Using always() ensures deployment runs even if comprehensive-test had failures
-    # This ensures deployment runs as long as the job completed (not cancelled/aborted)
-    if: github.ref == 'refs/heads/main' && always()
-    needs: [comprehensive-test]
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-      
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install Make (if not available)
-      run: |
-        if ! command -v make &> /dev/null; then
-          sudo apt-get update && sudo apt-get install -y make
-        fi
-        
-    - name: Install dependencies
-      run: make ci-deps || npm ci
-      
-    - name: Type check (verify before deployment)
-      run: make ci-type-check || npm run type-check
-      
-    - name: Build project
-      run: make ci-build || npm run build
-      
-    - name: Verify website directory exists
-      run: |
-        if [ ! -d "website" ]; then
-          echo "❌ Error: website directory does not exist"
-          exit 1
-        fi
-        echo "✅ Website directory found"
-        ls -la website/ || true
-        
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-      
-    - name: Prepare website for deployment
-      run: |
-        # Copy CNAME to website directory if it exists
-        if [ -f CNAME ]; then
-          cp CNAME website/
-          echo "✅ CNAME copied to website/"
-        fi
-        # Ensure website directory structure is ready
-        mkdir -p website/assets/css website/assets/js
-        echo "✅ Website structure verified"
-        # List website contents for debugging
-        echo "Website contents:"
-        ls -la website/ || true
-        
-    - name: Upload to GitHub Pages
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: 'website'
-      continue-on-error: false
-        
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
-      timeout-minutes: 5
-      continue-on-error: false
+  # Website deployment moved to separate repository: reccaller-ai/websites
+  # GitHub Pages is now configured in that repository's workflow
+  # deploy:
+  #   name: Deploy to GitHub Pages
+  #   runs-on: ubuntu-latest
+  #   # ... (removed - website moved to separate repo)
