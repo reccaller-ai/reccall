@@ -427,10 +427,24 @@ export class MCPAdapter {
 						}
 
 						const shortcutDetails = shortcuts
-							.map(
-								(s) =>
-									`• ${s.id}: ${s.context.substring(0, 100)}${s.context.length > 100 ? "..." : ""}`,
-							)
+							.map((s) => {
+								// Safely handle context - ensure it's a string
+								let contextStr: string;
+								if (typeof s.context === 'string') {
+									contextStr = s.context;
+								} else if (s.context !== null && s.context !== undefined) {
+									// Convert to string if it's not already
+									contextStr = String(s.context);
+								} else {
+									contextStr = '(no context)';
+								}
+								
+								const preview = contextStr.length > 100 
+									? contextStr.substring(0, 100) + '...' 
+									: contextStr;
+								
+								return `• ${s.id}: ${preview}`;
+							})
 							.join("\n");
 
 						return {
@@ -551,10 +565,24 @@ export class MCPAdapter {
 						}
 
 						const results = shortcuts
-							.map(
-								(s) =>
-									`• ${s.id}: ${s.context.substring(0, 100)}${s.context.length > 100 ? "..." : ""}`,
-							)
+							.map((s) => {
+								// Safely handle context - ensure it's a string
+								let contextStr: string;
+								if (typeof s.context === 'string') {
+									contextStr = s.context;
+								} else if (s.context !== null && s.context !== undefined) {
+									// Convert to string if it's not already
+									contextStr = String(s.context);
+								} else {
+									contextStr = '(no context)';
+								}
+								
+								const preview = contextStr.length > 100 
+									? contextStr.substring(0, 100) + '...' 
+									: contextStr;
+								
+								return `• ${s.id}: ${preview}`;
+							})
 							.join("\n");
 
 						return {
