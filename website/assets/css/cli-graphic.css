@@ -1,0 +1,115 @@
+/* CLI Graphic Styles */
+.cli-demo {
+    background: #1e1e1e;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+.cli-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.cli-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.cli-dot-red { background: #ff5f57; }
+.cli-dot-yellow { background: #ffbd2e; }
+.cli-dot-green { background: #28ca42; }
+
+.cli-title {
+    color: #888;
+    font-size: 0.85rem;
+    margin-left: auto;
+}
+
+.cli-line {
+    margin: 0.75rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.cli-prompt {
+    color: #28ca42;
+    font-weight: bold;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.cli-command {
+    color: #fff;
+    font-weight: 500;
+}
+
+.cli-comment {
+    color: #888;
+    font-style: italic;
+}
+
+.cli-output {
+    color: #d4d4d4;
+    margin-left: 1.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid #333;
+}
+
+.cli-output-success {
+    color: #28ca42;
+}
+
+.cli-output-info {
+    color: #4fc3f7;
+}
+
+.cli-output-highlight {
+    color: #ffbd2e;
+    font-weight: 600;
+}
+
+.cli-section {
+    margin: 1.5rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid #333;
+}
+
+.cli-section-title {
+    color: #888;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cli-demo {
+        padding: 1.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .cli-line {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .cli-output {
+        margin-left: 0;
+        padding-left: 0.5rem;
+    }
+}
+
