@@ -513,17 +513,48 @@ export class MCPAdapter {
 
 					case "call": {
 						const { shortcut } = args as { shortcut: string };
-						const context = await this.engine.call(shortcut as ShortcutId);
+						
+						// Try to get from old shortcut system first
+						let contextStr: string | null = null;
+						try {
+							const context = await this.engine.call(shortcut as ShortcutId);
+							if (context) {
+								contextStr = context;
+							}
+						} catch (error) {
+							// Shortcut not found in old system, try Context system
+							if (this.contextEngine) {
+								try {
+									const context = await this.contextEngine.use(shortcut, "mcp");
+									if (context) {
+										// Safely handle context content
+										if (typeof context.content === 'string') {
+											contextStr = context.content;
+										} else if (context.content !== null && context.content !== undefined) {
+											contextStr = String(context.content);
+										}
+									}
+								} catch (contextError) {
+									// Context not found either
+								}
+							}
+						}
+						
+						// If still not found, show error
+						if (!contextStr) {
+							return {
+								content: [
+									{
+										type: "text",
+										text: `❌ Shortcut or context '${shortcut}' not found. Use 'rec <shortcut> <context>' to create a shortcut, or 'rec_context_create' to create a context.`,
+									},
+								],
+							};
+						}
 						
 						// Safely handle context - ensure it's a string
-						let contextStr: string;
-						if (typeof context === 'string') {
-							contextStr = context;
-						} else if (context !== null && context !== undefined) {
-							// Convert to string if it's not already
-							contextStr = String(context);
-						} else {
-							contextStr = '(no context available)';
+						if (typeof contextStr !== 'string') {
+							contextStr = String(contextStr);
 						}
 						
 						return {
