@@ -124,6 +124,8 @@ curl -X POST http://localhost:3000/mcp \
 
 **Status**: ✅ PASS
 
+> **Note**: The website has been moved to a separate repository: [reccaller-ai/websites](https://github.com/reccaller-ai/websites). Original website files are archived in `website-archive/` in this repository.
+
 - ✅ integrations.html - MCP-first approach highlighted
 - ✅ perplexity-integration.html - MCP primary, browser optional
 - ✅ sora-integration.html - MCP primary, browser optional
@@ -150,7 +152,7 @@ curl -X POST http://localhost:3000/mcp \
 | CLI Flags | ✅ | PASS |
 | Graceful Shutdown | ✅ | PASS |
 | Documentation | ✅ | PASS |
-| Website | ✅ | PASS |
+| Website | ✅ | PASS (moved to reccaller-ai/websites) |
 | Browser Client | ✅ | PASS |
 | Type Safety | ✅ | PASS |
 
@@ -191,7 +193,7 @@ curl -X POST http://localhost:3000/mcp \
 - ✅ Complete and accurate
 - ✅ Examples work as documented
 - ✅ Troubleshooting guide comprehensive
-- ✅ Website reflects MCP-first approach
+- ✅ Website reflects MCP-first approach (now in [reccaller-ai/websites](https://github.com/reccaller-ai/websites))
 
 ## 🚀 Performance
 

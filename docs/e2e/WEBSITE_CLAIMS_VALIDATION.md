@@ -8,6 +8,8 @@
 
 All features and capabilities documented on the RecCall website (`how-it-works.html`, `getting-started.html`, etc.) have been validated through comprehensive E2E testing. **100% of tested features are working as documented.**
 
+> **Note**: The website has been moved to a separate repository: [reccaller-ai/websites](https://github.com/reccaller-ai/websites). Original website files are archived in `website-archive/` in this repository.
+
 ## Detailed Validation
 
 ### ✅ Universal Context System
