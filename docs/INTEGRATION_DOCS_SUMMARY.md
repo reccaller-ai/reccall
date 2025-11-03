@@ -7,7 +7,7 @@ This document summarizes the documentation enhancements for Perplexity and Sora 
 ## 📄 Documentation Created
 
 ### 1. Perplexity Integration Page
-**File**: `website/pages/perplexity-integration.html`
+**File**: `website-archive/pages/perplexity-integration.html` (archived - now in reccaller-ai/websites)
 
 **Contents**:
 - Overview and key benefits
@@ -22,7 +22,7 @@ This document summarizes the documentation enhancements for Perplexity and Sora 
 **Size**: 17,085 bytes
 
 ### 2. Sora Integration Page
-**File**: `website/pages/sora-integration.html`
+**File**: `website-archive/pages/sora-integration.html` (archived - now in reccaller-ai/websites)
 
 **Contents**:
 - Overview and key benefits
@@ -38,7 +38,7 @@ This document summarizes the documentation enhancements for Perplexity and Sora 
 **Size**: 19,829 bytes
 
 ### 3. Updated Integrations Index
-**File**: `website/pages/integrations.html`
+**File**: `website-archive/pages/integrations.html` (archived - now in reccaller-ai/websites)
 
 **Changes**:
 - Added Perplexity integration card with link
@@ -157,22 +157,22 @@ Both pages document:
 ## 📝 File Changes Summary
 
 ### New Files
-- `website/pages/perplexity-integration.html` (17,085 bytes)
-- `website/pages/sora-integration.html` (19,829 bytes)
+- `website-archive/pages/perplexity-integration.html` (archived - now in reccaller-ai/websites)
+- `website-archive/pages/sora-integration.html` (archived - now in reccaller-ai/websites)
 - `docs/INTEGRATION_DOCS_SUMMARY.md` (this file)
 
 ### Modified Files
-- `website/pages/integrations.html` (added Perplexity and Sora cards, updated CSS)
+- `website-archive/pages/integrations.html` (archived - now in reccaller-ai/websites)
 
 ## ✅ Compliance Checklist
 
 - [x] Branch naming convention followed: `docs/perplexity-sora-integration`
 - [x] Documentation complete and comprehensive
-- [x] Website pages updated
+- [x] Website pages updated (moved to reccaller-ai/websites repository)
 - [x] Local testing performed
 - [x] TypeScript validation passed
 - [x] All links functional
-- [x] Content follows website style guidelines
+- [x] Content follows website style guidelines (website now in reccaller-ai/websites repository)
 
 ## 📚 Related Documentation
 
