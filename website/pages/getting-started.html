@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/cli-graphic.css">
 </head>
 <body>
     <header class="header">
@@ -30,6 +31,10 @@
             <p class="hero-subtitle" style="font-size: 1.1rem;">
                 Quick setup to start saving time with AI assistants
             </p>
+            <div style="margin-top: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: 8px; display: inline-block;">
+                <span style="color: var(--gray-600); font-size: 0.9rem;">Latest Version: </span>
+                <span style="color: var(--primary); font-weight: 600; font-size: 1rem;">v2.1.4</span>
+            </div>
         </div>
     </section>
 
@@ -42,11 +47,14 @@
                         <h2>Install RecCall</h2>
                     </div>
                     <div class="step-content">
-                        <p>Install via npm (or your preferred package manager):</p>
+                        <p>Install via npm (automatically configures Cursor):</p>
                         <div class="code-block">
 npm install -g reccall
                         </div>
-                        <p>Or use the installation script:</p>
+                        <p class="cli-comment" style="color: var(--gray-600); font-size: 0.9rem; margin-top: 0.5rem;">
+                            ✨ Post-install script automatically configures Cursor MCP!
+                        </p>
+                        <p style="margin-top: 1.5rem;">Or use the installation script:</p>
                         <div class="code-block">
 curl -fsSL https://raw.githubusercontent.com/reccaller-ai/reccall/main/install.sh | sh
                         </div>
@@ -56,17 +64,78 @@ curl -fsSL https://raw.githubusercontent.com/reccaller-ai/reccall/main/install.s
                 <div class="step-card">
                     <div class="step-header">
                         <div class="step-number">2</div>
-                        <h2>Create Your First Context</h2>
+                        <h2>Try Common Commands</h2>
                     </div>
                     <div class="step-content">
-                        <p>Start capturing context from a conversation or create a static context manually:</p>
-                        <div class="code-block">
-# Create context from conversation
-reccall context from-conversation "My Project Setup" --messages conversation.json
+                        <p>Start using RecCall with these essential commands:</p>
+                        
+                        <div class="cli-demo">
+                            <div class="cli-header">
+                                <span class="cli-dot cli-dot-red"></span>
+                                <span class="cli-dot cli-dot-yellow"></span>
+                                <span class="cli-dot cli-dot-green"></span>
+                                <span class="cli-title">Terminal</span>
+                            </div>
+                            
+                            <div class="cli-section">
+                                <div class="cli-section-title">📝 Record Context</div>
+                                <div class="cli-line">
+                                    <span class="cli-prompt">$</span>
+                                    <span class="cli-command">reccall rec react-component "Create React components with TypeScript, use functional components with hooks"</span>
+                                </div>
+                                <div class="cli-output cli-output-success">✅ Shortcut 'react-component' recorded successfully!</div>
+                            </div>
 
-# Or create a static context
-reccall context create "Project Overview" --content project-overview.md
+                            <div class="cli-section">
+                                <div class="cli-section-title">📋 List All Shortcuts</div>
+                                <div class="cli-line">
+                                    <span class="cli-prompt">$</span>
+                                    <span class="cli-command">reccall list</span>
+                                </div>
+                                <div class="cli-output">
+                                    <div class="cli-output-info">📋 Stored shortcuts (3):</div>
+                                    <div class="cli-output">• react-component: Create React components with TypeScript...</div>
+                                    <div class="cli-output">• api-testing: Comprehensive API testing guidelines...</div>
+                                    <div class="cli-output">• sync-main: Sync main branch with remote...</div>
+                                </div>
+                            </div>
+
+                            <div class="cli-section">
+                                <div class="cli-section-title">🔍 Search Shortcuts</div>
+                                <div class="cli-line">
+                                    <span class="cli-prompt">$</span>
+                                    <span class="cli-command">reccall search react</span>
+                                </div>
+                                <div class="cli-output">
+                                    <div class="cli-output-info">🔍 Found 1 shortcut(s) matching "react":</div>
+                                    <div class="cli-output">• react-component: Create React components with TypeScript...</div>
+                                </div>
+                            </div>
+
+                            <div class="cli-section">
+                                <div class="cli-section-title">📞 Call a Shortcut</div>
+                                <div class="cli-line">
+                                    <span class="cli-prompt">$</span>
+                                    <span class="cli-command">reccall call react-component</span>
+                                </div>
+                                <div class="cli-output cli-output-highlight">
+                                    EXECUTE THESE INSTRUCTIONS: Create React components with TypeScript, use functional components with hooks
+                                </div>
+                            </div>
+
+                            <div class="cli-section">
+                                <div class="cli-section-title">🔄 Update Existing</div>
+                                <div class="cli-line">
+                                    <span class="cli-prompt">$</span>
+                                    <span class="cli-command">reccall update react-component "Create React components with TypeScript, use functional components with hooks, prefer named exports"</span>
+                                </div>
+                                <div class="cli-output cli-output-success">✅ Shortcut 'react-component' updated successfully!</div>
+                            </div>
                         </div>
+
+                        <p style="margin-top: 1.5rem; color: var(--gray-600); font-size: 0.9rem;">
+                            💡 <strong>Tip:</strong> You can also use shortcuts in Cursor IDE by typing <code style="background: var(--gray-100); padding: 0.2rem 0.4rem; border-radius: 4px;">call react-component</code> or <code style="background: var(--gray-100); padding: 0.2rem 0.4rem; border-radius: 4px;">rec_list</code> in AI chat.
+                        </p>
                     </div>
                 </div>
 

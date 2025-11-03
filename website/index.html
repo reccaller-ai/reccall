@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/cli-graphic.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -49,7 +50,7 @@
             </div>
             <div class="cta-buttons">
                 <a href="pages/getting-started.html" class="btn btn-primary">Get Started Free</a>
-                <a href="pages/use-cases.html" class="btn btn-secondary">See How It Works</a>
+                <a href="pages/how-it-works.html" class="btn btn-secondary">See How It Works</a>
             </div>
         </div>
     </section>
@@ -134,6 +135,64 @@
                     <div class="impact-number">3x</div>
                     <h3>Better AI Responses</h3>
                     <p>With full context, AI assistants provide more relevant suggestions that actually match your project's needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLI Demo Section -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Try It Now - Quick Start</h2>
+            <p class="section-intro" style="text-align: center; max-width: 700px; margin: 0 auto 2rem;">
+                Get started in seconds with these essential commands. Install once, use everywhere.
+            </p>
+            
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div class="cli-demo">
+                    <div class="cli-header">
+                        <span class="cli-dot cli-dot-red"></span>
+                        <span class="cli-dot cli-dot-yellow"></span>
+                        <span class="cli-dot cli-dot-green"></span>
+                        <span class="cli-title">Terminal</span>
+                    </div>
+                    
+                    <div class="cli-section">
+                        <div class="cli-section-title">⚡ Quick Commands</div>
+                        <div class="cli-line">
+                            <span class="cli-prompt">$</span>
+                            <span class="cli-command">npm install -g reccall</span>
+                        </div>
+                        <div class="cli-output cli-output-success">✅ Installed! Cursor auto-configured.</div>
+                        
+                        <div class="cli-line" style="margin-top: 1rem;">
+                            <span class="cli-prompt">$</span>
+                            <span class="cli-command">reccall rec api-testing "Use Jest for testing, mock external APIs"</span>
+                        </div>
+                        <div class="cli-output cli-output-success">✅ Shortcut 'api-testing' recorded!</div>
+                        
+                        <div class="cli-line" style="margin-top: 1rem;">
+                            <span class="cli-prompt">$</span>
+                            <span class="cli-command">reccall list</span>
+                        </div>
+                        <div class="cli-output">
+                            <div class="cli-output-info">📋 Your shortcuts:</div>
+                            <div class="cli-output">• api-testing: Use Jest for testing...</div>
+                            <div class="cli-output">• sync-main: Sync main branch...</div>
+                        </div>
+                        
+                        <div class="cli-line" style="margin-top: 1rem;">
+                            <span class="cli-prompt">$</span>
+                            <span class="cli-command">reccall call api-testing</span>
+                        </div>
+                        <div class="cli-output cli-output-highlight">
+                            EXECUTE: Use Jest for testing, mock external APIs
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="pages/getting-started.html" class="btn btn-primary">View Complete Guide →</a>
                 </div>
             </div>
         </div>
