@@ -514,11 +514,23 @@ export class MCPAdapter {
 					case "call": {
 						const { shortcut } = args as { shortcut: string };
 						const context = await this.engine.call(shortcut as ShortcutId);
+						
+						// Safely handle context - ensure it's a string
+						let contextStr: string;
+						if (typeof context === 'string') {
+							contextStr = context;
+						} else if (context !== null && context !== undefined) {
+							// Convert to string if it's not already
+							contextStr = String(context);
+						} else {
+							contextStr = '(no context available)';
+						}
+						
 						return {
 							content: [
 								{
 									type: "text",
-									text: `EXECUTE THESE INSTRUCTIONS: ${context}\n\nPlease follow and execute the above instructions immediately.`,
+									text: `EXECUTE THESE INSTRUCTIONS: ${contextStr}\n\nPlease follow and execute the above instructions immediately.`,
 								},
 							],
 						};
@@ -632,10 +644,13 @@ export class MCPAdapter {
 						}
 
 						const recipeList = recipes
-							.map(
-								(r) =>
-									`• ${r.shortcut}: ${r.name || r.shortcut}\n  ${r.description}`,
-							)
+							.map((r) => {
+								// Safely handle recipe fields - ensure they're strings
+								const shortcut = typeof r.shortcut === 'string' ? r.shortcut : String(r.shortcut || 'unknown');
+								const name = typeof r.name === 'string' ? r.name : (r.name ? String(r.name) : shortcut);
+								const description = typeof r.description === 'string' ? r.description : (r.description ? String(r.description) : '(no description)');
+								return `• ${shortcut}: ${name}\n  ${description}`;
+							})
 							.join("\n");
 
 						return {
@@ -726,11 +741,23 @@ export class MCPAdapter {
 								],
 							};
 						}
+						
+						// Safely handle context content - ensure it's a string
+						let contentStr: string;
+						if (typeof context.content === 'string') {
+							contentStr = context.content;
+						} else if (context.content !== null && context.content !== undefined) {
+							// Convert to string if it's not already
+							contentStr = String(context.content);
+						} else {
+							contentStr = '(no content available)';
+						}
+						
 						return {
 							content: [
 								{
 									type: "text",
-									text: context.content,
+									text: contentStr,
 								},
 							],
 						};
@@ -761,12 +788,12 @@ export class MCPAdapter {
 										{
 											count: results.length,
 											contexts: results.map((c) => ({
-												id: c.id,
-												name: c.name,
-												description: c.description,
-												tags: c.tags,
-												type: c.type,
-												source: c.source,
+												id: typeof c.id === 'string' ? c.id : String(c.id || 'unknown'),
+												name: typeof c.name === 'string' ? c.name : String(c.name || 'unnamed'),
+												description: typeof c.description === 'string' ? c.description : (c.description ? String(c.description) : undefined),
+												tags: Array.isArray(c.tags) ? c.tags.map(t => typeof t === 'string' ? t : String(t)) : [],
+												type: typeof c.type === 'string' ? c.type : String(c.type || 'static'),
+												source: typeof c.source === 'string' ? c.source : String(c.source || 'local'),
 											})),
 										},
 										null,
@@ -801,11 +828,11 @@ export class MCPAdapter {
 										{
 											count: contexts.length,
 											contexts: contexts.map((c) => ({
-												id: c.id,
-												name: c.name,
-												description: c.description,
-												type: c.type,
-												source: c.source,
+												id: typeof c.id === 'string' ? c.id : String(c.id || 'unknown'),
+												name: typeof c.name === 'string' ? c.name : String(c.name || 'unnamed'),
+												description: typeof c.description === 'string' ? c.description : (c.description ? String(c.description) : undefined),
+												type: typeof c.type === 'string' ? c.type : String(c.type || 'static'),
+												source: typeof c.source === 'string' ? c.source : String(c.source || 'local'),
 											})),
 										},
 										null,
