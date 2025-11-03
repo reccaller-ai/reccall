@@ -1044,11 +1044,44 @@ export class MCPAdapter {
 
 			// Start HTTP server if we created the app
 			if (!httpConfig.expressApp) {
-				this.httpServer = app.listen(port, () => {
-					console.error(
-						`RecCall MCP HTTP server running on http://localhost:${port}/mcp`,
-					);
-				});
+				try {
+					this.httpServer = app.listen(port, () => {
+						console.error(
+							`RecCall MCP HTTP server running on http://localhost:${port}/mcp`,
+						);
+					});
+					
+					// Handle port conflicts gracefully (don't crash if port is in use)
+					this.httpServer.on('error', (error: NodeJS.ErrnoException) => {
+						if (error.code === 'EADDRINUSE') {
+							console.error(
+								`⚠️  HTTP server port ${port} is already in use. Continuing with stdio transport only.`,
+							);
+							// Don't crash - stdio transport will still work fine
+							// Close the server instance if it was created
+							const server = this.httpServer;
+							if (server) {
+								server.close();
+								delete (this as any).httpServer;
+							}
+						} else {
+							// Re-throw other errors
+							throw error;
+						}
+					});
+				} catch (error: any) {
+					// Catch port conflict errors during listen() call
+					if (error?.code === 'EADDRINUSE') {
+						console.error(
+							`⚠️  HTTP server port ${port} is already in use. Continuing with stdio transport only.`,
+						);
+						// Don't crash - stdio transport will still work fine
+						delete (this as any).httpServer;
+					} else {
+						// Re-throw other errors
+						throw error;
+					}
+				}
 			} else {
 				console.error(
 					`RecCall MCP HTTP transport attached to existing Express app at /mcp`,
